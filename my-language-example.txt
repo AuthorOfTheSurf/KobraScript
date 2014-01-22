@@ -13,7 +13,7 @@ floatfn average_intake (x : float[])
     $ total = 0
     for ($ i = 0; i < x.length; i++)
         total = total + x[i]
-    }  --this ended something, it ended that for statement
+    }  
     console.log(total) --alternative loge invokation available
     give total / x.length
 }
