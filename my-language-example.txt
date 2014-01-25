@@ -1,15 +1,15 @@
 $ name = "Samson"
-$ a, b, c = 5, 12, 13 : int --unnecessary cast
-$ protein_intake = [12, 21.3, 7.2, 20] : float[] --cast to [12.0, 21.3, 7.2, 20.0]
+$ a, b, c = 5, 12, 13 --implicit cast to int
+$ protein_intake = [12, 21.3, 7.2, 20] : float[]
 ---alternatively:
 $ protein_intake = float[12, 21.3, 7.2, 20]
 ---
 $ body_fat = 11.267 --throws missing typecast, int is a defaulty thing, float must be aknowledged with token
 
-$ secret_code = 110 001 010 : bits --spaces are fine, declare clearly decipherable bit values
+$ secret_code = 110 001 010 : bits --spaces are fine; declare clearly decipherable bit values
 $ lucky_sequence = 111 111 111 : bits
 
-floatfn average_intake (x : float[]) -- consider x by itself to possibly be any type? or dyn
+floatfn average_intake (x : #) --x can be any type, more specifically, x assumes the same value and type of the parameter
     $ total = 0
     for ($ i = 0; i < x.length; i++)
         total = total + x[i]
@@ -30,7 +30,7 @@ $ bicycle = {
     upgrade_speed = floatfn ()
         give this.speed = this.speed * 1.1
     },
-    get_frame = strfn () give this.frame } --illegal?
+    get_frame = strfn () give this.frame } --one-liner function syntax
 }
 
 $ is_red = true,
