@@ -1,0 +1,6 @@
+bit     ->	[01]
+bits	->  [ 01]*
+int		->	[0123456789]*
+hex		->	[0123456789abcdef]*
+str		->	[a-zA-Z...]*
+ID		->  [non-number][any-char]*  --must not be on the banned list (i.e. tokens)

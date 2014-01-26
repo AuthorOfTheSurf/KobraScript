@@ -1,0 +1,14 @@
+Defaulty
+
+int, 0
+float, 0.0
+bool, true
+string, ""
+char, ''
+object, {}
+bit, 0
+bits, 0000 0000
+bits2, 00
+bits16, 0000 0000 0000 0000
+hex, 0
+hex2[3], [00, 00, 00]	--array of 3 two-digit hex values
