@@ -1,5 +1,5 @@
 $ name = "Samson"
-$ a, b, c = 5, 12, 13 --implicit cast to int
+$ a, b, c = 5, 12, 13 --implicit cast to int; multi-assignment ok.
 $ protein_intake = [12, 21.3, 7.2, 20] : float[]
 ---alternatively:
 $ protein_intake = float[12, 21.3, 7.2, 20]
@@ -8,6 +8,7 @@ $ body_fat = 11.267 --throws missing typecast, int is a defaulty thing, float mu
 
 $ secret_code = 110 001 010 : bits --spaces are fine; declare clearly decipherable bit values
 $ lucky_sequence = 111 111 111 : bits
+$ my_color = a6 b4 29 : hex
 
 floatfn average_intake (x : #) --x can be any type, more specifically, x assumes the same value and type of the parameter
     $ total = 0
