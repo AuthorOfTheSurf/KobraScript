@@ -2,7 +2,7 @@ Defaulty
 
 int, 0
 float, 0.0
-bool, true
+bool, false 
 string, ""
 char, ''
 object, {}
