@@ -1,12 +1,12 @@
 $ blueprint Robot
 
 $ has {
-    id : bits8
-    year : int
-    energy_level = 100 : int
-    missle_container = (20, 20) : tuple2
-    base_speed = 320.0 : float
-    speed : float
+    id : bits8,
+    year : int,
+    energy_level = 100 : int,
+    missle_container = (20, 20) : tuple2,
+    base_speed = 320.0 : float,
+    speed : float,
     users : str[]
 }
 
