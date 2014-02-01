@@ -1,0 +1,9 @@
+1) Write regular expressions for:
+	i)		Canadian Postal Codes
+			[A-Z][0-9][A-Z] [0-9][A-Z][0-9]
+	ii)		Legal Visa® Card Numbers, not including checksums
+	        4\d{3} (\d{4} ){3}
+	iii)	MasterCard® Numbers, not including checksums
+			4\d{3} (\d{4} ){3}
+	iv)		Ada 95 numeric literals
+	v)		Strings of letters and numbers beginning with a letter, EXCEPT those strings that are exactly three letters ending with two Latin letter ohs, of any case.

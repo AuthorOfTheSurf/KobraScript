@@ -35,6 +35,4 @@ $ synset {
     //no setters, structure unneccessary
 }
 
-
-
-.. defcc --definition concluded
+defcc --definition concluded
