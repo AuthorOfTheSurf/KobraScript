@@ -9,8 +9,10 @@ VARDEC 	->	'$'  ID  '=' EXP  (':'  TYPE)?  END
 		|   '$'  ID  (',' ID)*  ('='  EXP  (','  EXP)*)?  END
 		|   '$'  ID  (',' ID)*  :  TYPE  (','  TYPE)*  END
 		|   '$'  ID  '='  FNTYPE '(' PARAM (','  PARAM)*  BLOCK
-BLOCK   ->  ')'  (STMT)*  '}'
-FNDEC	->	FNTYPE  ID  '('  PARAM  (','  PARAM)*  BLOCK
+BLOCK   ->  ':'  (STMT)*  'end'
+
+PARAMS  ->  '('  PARAM  (','  PARAM)*  ')'
+FNDEC	->	FNTYPE  ID  PARAMS  BLOCK E
 VAR     ->  ID | VAR '[' EXP  ']'  |  VAR '.' ID
 STMT	->  DEC
 		|   DEC  'if'  EXP
@@ -29,6 +31,7 @@ COND    ->	(COND0  |  COND1  |  COND2  |  COND3)  '}'
 
 RETURN	->  'give'  VAR  END
 PARAM	->	ID (':' TYPE)?
+        |   EXP (':' TYPE)?
 END 	-> 	'\x09'  |  ';'
 INCREMENT	->  VAR  "++"
 			|	VAR  "--"

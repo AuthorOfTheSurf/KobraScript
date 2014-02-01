@@ -1,0 +1,9 @@
+(proc ():
+	window['global_vars'] = {
+	    $ today = new Date(),
+	      year = today.getFullYear();
+	}
+	console.log('Welcome friend, the year is ' + year)
+endcc())
+
+-- endcc -> end (with) conclusive call
