@@ -1,7 +1,7 @@
-* / + - %	-> Standard math
+* / + - %	-> Standard math operators
 x // y		-> integer division (has remainder)
 x ** y		-> Exponentiate
-x -** y		-> 1 / x ** y
+x -** y		-> 1 / (x ** y)
 !~x		-> (unary) factorial
 ==		-> value equality
 *==		-> pointer equality
