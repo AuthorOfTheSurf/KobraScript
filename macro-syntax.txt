@@ -1,46 +1,45 @@
-PROGRAM ->	STMT+
-DEC 	->	VARDEC  |  FNDEC
-TYPE 	->	(boolean | char | int | float | str | ID)  ('[]')*
-FNTYPE 	->	TYPE  'fn'
-ASSIGN  ->  ID  '='  EXP
-VARDEC 	->	'$'  ID  '=' EXP  (':'  TYPE)?  END
-		|	'$'  ID  ':'  TYPE  END		--defaulty dec
-		|	'$'  ID  '#'  TYPE  END     --undefined dec
-		|   '$'  ID  (',' ID)*  ('='  EXP  (','  EXP)*)?  END
-		|   '$'  ID  (',' ID)*  :  TYPE  (','  TYPE)*  END
-		|   '$'  ID  '='  FNTYPE '(' PARAM (','  PARAM)*  BLOCK
-BLOCK   ->  ':'  (STMT)*  'end'
+PROGRAM ::=  STMT+
+DEC     ::=  VARDEC  |  FNDEC
+TYPE    ::=  (boolean | char | int | float | str | ID)  ('[]')*
+FNTYPE  ::=  TYPE  'fn'
+ASSIGN  ::=  ID  '='  EXP
+BLOCK   ::=  ':'  (STMT)*  'end'
+VARDEC  ::=  '$'  ID  '=' EXP  (':'  TYPE)?  END
+        |    '$'  ID  ':'  TYPE  END     --defaulty dec
+        |    '$'  ID  (',' ID)+  ('='  EXP  (','  EXP)?)?  (':'  TYPE)?  END
+        |    '$'  ID  '='  FNTYPE PARAMS  BLOCK  END
+FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK END
+VAR     ::=  ID
+        |    VAR '['  EXP  ']'
+        |    VAR '.' ID
+STMT    ::=  DEC
+        |    DEC  'if'  EXP
+        |    DEC  'unless'  EXP
+        |    COND
+        |    'while'  '('  EXP  BLOCK
+        |    'for'  '('  (('$')?  ASSIGN)?  ';'  EXP  ';'  INCREMENT  BLOCK
+COND0   ::=  'if'  '('  EXP  ')'  (STMT)*
+COND1   ::=  'unless'  '('  EXP  ')'  (STMT)*
+COND2   ::=  COND0  ('..[ ]*else[ ]*if'  '('  EXP  ')'  (STMT)*)+
+COND3   ::=  (COND0  |  COND2)  '..[ ]*else'  (STMT)*  '}' 
+COND    ::=  (COND0  |  COND1  |  COND2  |  COND3)  '}'
 
-PARAMS  ->  '('  PARAM  (','  PARAM)*  ')'
-FNDEC	->	FNTYPE  ID  PARAMS  BLOCK E
-VAR     ->  ID | VAR '[' EXP  ']'  |  VAR '.' ID
-STMT	->  DEC
-		|   DEC  'if'  EXP
-		|	DEC  'unless'  EXP
-	    |   COND
-	    |   'while'  '('  EXP  BLOCK
-	    |   'for'  '('  (('$')?  ASSIGN)?  ';'  EXP  ';'  INCREMENT  BLOCK
-COND0	-> 	'if'  '('  EXP  ')'  (STMT)*
-COND1	->	'unless'  '('  EXP  ')'  (STMT)*
-COND2   ->  COND0  ('..[ ]*else[ ]*if'  '('  EXP  ')'  (STMT)*)+
-COND3	->	(COND0  |  COND2)  '..[ ]*else'  (STMT)*  '}' 
-COND    ->	(COND0  |  COND1  |  COND2  |  COND3)  '}'
-
-		
+        
 
 
-RETURN	->  'give'  VAR  END
-PARAM	->	ID (':' TYPE)?
-        |   EXP (':' TYPE)?
-END 	-> 	'\x09'  |  ';'
-INCREMENT	->  VAR  "++"
-			|	VAR  "--"
-			|	VAR  "+="  int
-			|   VAR  "*="  int
+RETURN  ::=  'give'  VAR  END
+PARAM   ::=  ID (':' TYPE)?
+        |    EXP (':' TYPE)?
+PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
+END     ::=  '\x09'  |  ';'
+INCR    ::=  VAR  "++"
+        |    VAR  "--"
+        |    VAR  "+="  int
+        |    VAR  "*="  int
 
 
 
-COMMENT ->  '--'  TEXT  END
-		|	'---'  TEXT  '!--'
-		|	'//'  TEXT  END
-		|	'/*'  TEXT  '*/'
+COMMENT ::=  '--'  TEXT  END
+        |    '---'  TEXT  '!--'
+        |    '//'  TEXT  END
+        |    '/*'  TEXT  '*/'

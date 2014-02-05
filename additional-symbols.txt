@@ -1,11 +1,11 @@
-[*, /, +, -, %]	-> multiply, divide, add, subtract, modulo
+[*, /, +, -, %] -> multiply, float division, add, subtract, modulo
 [>, <, >=, <=]  -> greater-than, less-than, GTOE, LTOE
-[==, !=, *==]   -> equal-to, not-equal-to, pointer-equal-to  
-x // y		-> integer division (descard remainder)
-x ** y		-> Exponentiate
-x -** y		-> 1 over x^y
-!~x		-> (unary) factorial
-?~x		-> type query of x (returned as string)
-x :=: y		-> swap the values of x and y (x, y = y, x)
+[==, ~=, !=, !~=, is]-> equal-to, type-coerced-equal-to, not-equal-to, type-coerced-not-equal-to, pointer-equal-to  
+x // y          -> integer division (discard remainder)
+x ** y          -> Exponentiate
+x -** y         -> 1 over x^y
+~!x             -> (unary) factorial
+~?x             -> type query of x (returned as string)
+x :=: y         -> swap the values of x and y (x, y = y, x)
 x in [1,2,3]    -> in-array, negatable as !in
-!		-> negation
+!               -> negation
