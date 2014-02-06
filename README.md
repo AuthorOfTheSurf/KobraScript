@@ -61,6 +61,20 @@ Below is also another legal form of an if, else-if, else conditional statement, 
         keep ()                                                 keep();
     end                                                     }
 
+#### `for` and `while` Conditions
+
+For and while loops follow a similar convention to functions: using the `:` and `end` syntax.
+
+    $ a = 0 -- A test variable for loops.               var a = 0; // A test variable for loops.
+
+    for ($ i = 0; i < 4; i++):                          for (var i = 0; i < 4; i++) {
+        a++                                                 a++;
+    end                                                 }
+
+    while (a < 10):                                     while (a < 10) {
+        a++                                                 a++;
+    end                                                 }
+
 
 #### Objects
 Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else.
@@ -80,8 +94,8 @@ Objects are very similar in KobraScript to JavaScript. Braces are used specifica
         get_frame = strfn (): return this.frame; end
     }
 
-#### Blueprints (Classes)
-Blueprints are a form of class implementation in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object.
+#### Blueprints
+Blueprints are special structures in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object.
 
 Blueprints consists of 4 parts:
 
@@ -134,24 +148,90 @@ Here is an example of a blueprint of a robot.
 #### Arrays    
     $ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
 
-
-#### `for` and `while` Conditions
-
-For and while loops follow a similar convention to functions: using the `:` and `end` syntax, and ...
-
-    $ a = 0 -- A test variable for loops.               var a = 0; // A test variable for loops.
-
-    for ($ i = 0; i < 4; i++):                          for (var i = 0; i < 4; i++) {
-        a++                                                 a++;
-    end                                                 }
-
-    while (a < 10):                                     while (a < 10) {
-        a++                                                 a++;
-    end                                                 }
-
 ### Macrosyntax
 
+    PROGRAM ::=  STMT+
+            |    BLUPRNT
+
+    DEC     ::=  VARDEC  |  FNDEC
+    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bits' | ID)  ('[]')*
+    FNTYPE  ::=  TYPE  'fn'
+
+    ASSIGN  ::=  ID  '='  EXP  END
+            |    ID  ':=:'  ID  END
+    BLOCK   ::=  ':'  STMT+  'end'
+            |    ':'  STMT+  '..'
+    VARDEC  ::=  '$'  ID  '=' EXP  (':'  TYPE)?  END
+            |    '$'  ID  ':'  TYPE  END
+            |    '$'  ID  (',' ID)+  ('='  EXP  (','  EXP)?)?  (':'  TYPE)?  END
+            |    '$'  (ID  '='  EXP (':'  TYPE)?  ',')*  ID  '='  EXP (':'  TYPE)?  END
+    FNDEC   ::=  (FN0  |  FN1  |  FN2)  END
+    FN0     ::=  '$'  ID  '='  FNTYPE  PARAMS  BLOCK
+    FN1     ::=  '$'  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  FN0
+    FN2     ::=  FNTYPE  ID  PARAMS  BLOCK
+
+    BLUPRNT ::=  '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNSET?  SYNGET?  'defcc'
+            |    '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNGET?  SYNSET?  'defcc'
+    HASBLK  ::=  '$'  'has'  '{'  VARDEC?  '}'
+    DOESBLK ::=  '$'  'does'  '{'  FNDEC?  '}'
+    SYNSET  ::=  '$'  'synset'  '{'  (ID ',')*  ID  '}'
+    SYNGET  ::=  '$'  'synget'  '{'  (ID ',')*  ID  '}'
+
+    VAR     ::=  ID
+            |    VAR  '['  EXP  ']'
+            |    VAR  '.'  ID
+
+    STMT    ::=  DEC
+            |    DEC  'if'  EXP
+            |    COND
+            |    LOOP
+            |    RETURN
+
+    LOOP    ::=  'while'  '('  EXP  ')'  BLOCK
+            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK    
+
+    COND    ::=  (COND0  |  COND1  |  COND2)
+    COND0   ::=  'if'  '('  EXP  ')'  BLOCK
+    COND1   ::=  COND0  'else if'  '('  EXP  ')'  BLOCK
+    COND2   ::=  (COND0  |  COND1)  'else'  BLOCK
+
+    EXP     ::=  EXP1 ('||' EXP1)*
+    EXP1    ::=  EXP2 ('&&' EXP2)*
+    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '!=' | '>=' | '>') EXP3)?
+    EXP3    ::=  EXP4 ([+-] EXP4)*
+    EXP4    ::=  EXP5 ([*/] EXP5)*
+    EXP5    ::=  EXP6 (('**'  |  '-**')  EXP6)
+    EXP6    ::=  '~!'  EXP7 
+            |    '~?'  EXP7 
+    EXP7    ::=  ('!')?  (EXP7  |  EXP8)
+    EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
+
+    RETURN  ::=  'return'  EXP  END
+    END     ::=  '\x09'  |  ';'
+
+    PARAM   ::=  ID (':' TYPE)?
+            |    EXP (':' TYPE)?
+    PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
+    INCR    ::=  VAR  "++"
+            |    VAR  "--"
+            |    VAR  "+="  int
+            |    VAR  "-="  int
+            |    VAR  "*="  int
+
+    COMMENT ::=  '--'  TEXT  END
+            |    '---'  TEXT  '!--'
+
 ### Microsyntax
+
+    BITS    ->  [01]*
+    INT     ->  -?[\d]*
+    FLOAT   ->  INT.\d*
+    HEX     ->  (\d | [a-f] | [A-F])*
+    STR     ->  \w+
+    BOOL    ->  'true'  |  'false'
+    ID      ->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
+
+
 
 
 

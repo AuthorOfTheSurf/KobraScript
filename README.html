@@ -257,4 +257,83 @@ while (a &lt; 10):                                     while (a &lt; 10) {
 end                                                 }
 </code></pre>
 <h3 id="macrosyntax">Macrosyntax</h3>
-<h3 id="microsyntax">Microsyntax</h3></body></html>
+<pre><code>PROGRAM ::=  STMT+
+        |    BLUPRNT
+
+DEC     ::=  VARDEC  |  FNDEC
+TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bits' | ID)  ('[]')*
+FNTYPE  ::=  TYPE  'fn'
+
+ASSIGN  ::=  ID  '='  EXP  END
+        |    ID  ':=:'  ID  END
+BLOCK   ::=  ':'  STMT+  'end'
+        |    ':'  STMT+  '..'
+VARDEC  ::=  '$'  ID  '=' EXP  (':'  TYPE)?  END
+        |    '$'  ID  ':'  TYPE  END
+        |    '$'  ID  (',' ID)+  ('='  EXP  (','  EXP)?)?  (':'  TYPE)?  END
+        |    '$'  (ID  '='  EXP (':'  TYPE)?  ',')*  ID  '='  EXP (':'  TYPE)?  END
+FNDEC   ::=  (FN0  |  FN1  |  FN2)  END
+FN0     ::=  '$'  ID  '='  FNTYPE  PARAMS  BLOCK
+FN1     ::=  '$'  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  FN0
+FN2     ::=  FNTYPE  ID  PARAMS  BLOCK
+
+BLUPRNT ::=  '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNSET?  SYNGET?  'defcc'
+        |    '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNGET?  SYNSET?  'defcc'
+HASBLK  ::=  '$'  'has'  '{'  VARDEC?  '}'
+DOESBLK ::=  '$'  'does'  '{'  FNDEC?  '}'
+SYNSET  ::=  '$'  'synset'  '{'  (ID ',')*  ID  '}'
+SYNGET  ::=  '$'  'synget'  '{'  (ID ',')*  ID  '}'
+
+VAR     ::=  ID
+        |    VAR  '['  EXP  ']'
+        |    VAR  '.'  ID
+
+STMT    ::=  DEC
+        |    DEC  'if'  EXP
+        |    COND
+        |    LOOP
+        |    RETURN
+
+LOOP    ::=  'while'  '('  EXP  ')'  BLOCK
+        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK
+
+COND    ::=  (COND0  |  COND1  |  COND2)
+COND0   ::=  'if'  '('  EXP  ')'  BLOCK
+COND1   ::=  COND0  'else if'  '('  EXP  ')'  BLOCK
+COND2   ::=  (COND0  |  COND1)  'else'  BLOCK
+
+EXP     ::=  EXP1 ('||' EXP1)*
+EXP1    ::=  EXP2 ('&amp;&amp;' EXP2)*
+EXP2    ::=  EXP3 (('&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;') EXP3)?
+EXP3    ::=  EXP4 ([+-] EXP4)*
+EXP4    ::=  EXP5 ([*/] EXP5)*
+EXP5    ::=  EXP6 (('**'  |  '-**')  EXP6)
+EXP6    ::=  '~!'  EXP7 
+        |    '~?'  EXP7 
+EXP7    ::=  ('!')?  (EXP7  |  EXP8)
+EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
+
+RETURN  ::=  'return'  EXP  END
+END     ::=  '\x09'  |  ';'
+
+PARAM   ::=  ID (':' TYPE)?
+        |    EXP (':' TYPE)?
+PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
+INCR    ::=  VAR  "++"
+        |    VAR  "--"
+        |    VAR  "+="  int
+        |    VAR  "-="  int
+        |    VAR  "*="  int
+
+COMMENT ::=  '--'  TEXT  END
+        |    '---'  TEXT  '!--'
+</code></pre>
+<h3 id="microsyntax">Microsyntax</h3>
+<pre><code>BITS    -&gt;  [01]*
+INT     -&gt;  -?[\d]*
+FLOAT   -&gt;  INT.\d*
+HEX     -&gt;  (\d | [a-f] | [A-F])*
+STR     -&gt;  \w+
+BOOL    -&gt;  'true'  |  'false'
+ID      -&gt;  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
+</code></pre></body></html>
