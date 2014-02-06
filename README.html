@@ -122,14 +122,85 @@ body{font-size:16px;}
 }
 </style><title>README</title></head><body><h1 id="kobrascript">KobraScript</h1>
 <p>KobraScript is a statically-typed language that compiles to JavaScript. The languages favors explicit declarations.</p>
-<h4 id="hello-from-kobra">Hello from Kobra!</h4>
-<pre><code>say("Hello, world!")                                    console.log("Hello, world!");
+<h4 id="kobra-demands-respect-hello-world">Kobra Demands Respect (Hello, world!)</h4>
+<p>Say my name...</p>
+<pre><code>say("Kobra!")                                    console.log("Kobra!");
 </code></pre>
 <h4 id="variable-declarations">Variable Declarations</h4>
 <p>In KobraScript, variable declarations are simplified to one character: <code>$</code>. Add more details.</p>
 <pre><code>$ name = "Samson"                                       var name = "Samson";
+
 $ a, b, c = 5, 12, 13                                   var a = 5, b = 12, c = 13;
+
+$ is_red = true,                                        var is_red = true,
+  is_food = false,                                          is_food = false,
+  is_mine = true                                            is_mine = true;
 </code></pre>
+<p>Variables with uninitialized values must be type-casted on declaration. The default value is set to undefined.</p>
+<pre><code>$ total : int                                           var total = undefined;
+</code></pre>
+<h4 id="functions">Functions</h4>
+<p>Functions in KobraScript take some inspiration from Java. Type of return is written in front of <code>fn</code> complying with the statically typed paradigm of KobraScript. Within the parameter of the function, a type can be specified or omitted for dynamic parameter input.</p>
+<pre><code>floatfn average_intake (x):  --alternatively, (x : float[]) to take in a float array
+    $ total = 0
+    for ($ i = 0; i &lt; x.length; i++)
+        total = total + x[i]
+    }  
+    say(total)
+    return total / x.length
+}
+</code></pre>
+<h4 id="if-else-conditions"><code>if</code>-<code>else</code> Conditions</h4>
+<p><code>If</code> and <code>else</code> conditions follow a similar paradigm as functions. In KobraScript, <code>if</code>-<code>else</code> conditional statement blocks should conclude with <code>..</code> to increase readability.</p>
+<pre><code>if (is_red &amp;&amp; is_food):                                 if (is_red &amp;&amp; is_food) {
+    eat ()                                                  eat ()
+.. else if (is_food &amp;&amp; is_mine):                        } else if (is_food &amp;&amp; is_mine)
+    add_butter ()
+.. else:
+    keep ()
+end
+
+--  Legal if, else-if, else (discouraged)
+if (is_red &amp;&amp; is_food):
+    eat ()
+end else if (is_food &amp;&amp; is_mine):
+    add_butter ()
+end else:
+    keep ()
+end
+</code></pre>
+<h4 id="objects">Objects</h4>
+<p>Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else.</p>
+<pre><code>$ bicycle = {
+    frame = "aluminum" : str,
+    year = 2009 : int,
+    gears = 10 : int,
+    speed = 12.7 : float
+
+    move = proc ():
+        Transform.translate(FORWARD * this.speed)
+    end,
+    upgrade_speed = floatfn ():
+        return this.speed = this.speed * 1.1
+    end,
+    get_frame = strfn (): return this.frame; end
+}
+</code></pre>
+<h4 id="blueprints-classes">Blueprints (Classes)</h4>
 <h4 id="arrays">Arrays</h4>
-<pre><code>$ protein_intake = [12, 21.3, 7.2, 20] : float[]        var protein_intake = [12.0, 21.3, 7.2, 20.0];
-</code></pre></body></html>
+<pre><code>$ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
+</code></pre>
+<h4 id="for-and-while-conditions"><code>for</code> and <code>while</code> Conditions</h4>
+<p>For and while loops follow a similar convention to functions: using the <code>:</code> and <code>end</code> syntax, and ...</p>
+<pre><code>$ a = 0 -- A test variable for loops.               var a = 0; // A test variable for loops.
+
+for ($ i = 0; i &lt; 4; i++):                          for (var i = 0; i &lt; 4; i++) {
+    a++                                                 a++;
+end                                                 }
+
+while (a &lt; 10):                                     while (a &lt; 10) {
+    a++                                                 a++;
+end                                                 }
+</code></pre>
+<h3 id="macrosyntax">Macrosyntax</h3>
+<h3 id="microsyntax">Microsyntax</h3></body></html>
