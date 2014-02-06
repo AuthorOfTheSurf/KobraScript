@@ -32,7 +32,7 @@ $ synget {
 }
 
 $ synset {
-    //no setters, structure unneccessary
+    id, year
 }
 
 defcc --definition concluded
