@@ -122,14 +122,139 @@ body{font-size:16px;}
 }
 </style><title>README</title></head><body><h1 id="kobrascript">KobraScript</h1>
 <p>KobraScript is a statically-typed language that compiles to JavaScript. The languages favors explicit declarations.</p>
-<h4 id="hello-from-kobra">Hello from Kobra!</h4>
-<pre><code>say("Hello, world!")                                    console.log("Hello, world!");
+<h4 id="kobra-demands-respect-hello-world">Kobra Demands Respect (Hello, world!)</h4>
+<p>Say my name...</p>
+<pre><code>say("Kobra!")                                    console.log("Kobra!");
 </code></pre>
 <h4 id="variable-declarations">Variable Declarations</h4>
 <p>In KobraScript, variable declarations are simplified to one character: <code>$</code>. Add more details.</p>
 <pre><code>$ name = "Samson"                                       var name = "Samson";
+
 $ a, b, c = 5, 12, 13                                   var a = 5, b = 12, c = 13;
+
+$ is_red = true,                                        var is_red = true,
+  is_food = false,                                          is_food = false,
+  is_mine = true                                            is_mine = true;
+</code></pre>
+<p>Variables with uninitialized values must be type-casted on declaration. The default value is set to undefined.</p>
+<pre><code>$ total : int                                           var total = undefined;
+</code></pre>
+<h4 id="functions">Functions</h4>
+<p>Functions in KobraScript take some inspiration from Java. Type of return is written in front of <code>fn</code> complying with the statically typed paradigm of KobraScript. Within the parameter of the function, a type can be specified or omitted for dynamic parameter input.</p>
+<pre><code>--alternatively, (x : float[]) to take in a float array
+floatfn average_intake (x):
+    $ total = 0
+    for ($ i = 0; i &lt; x.length; i++)
+        total = total + x[i]
+    }  
+    say(total)
+    return total / x.length
+}
+</code></pre>
+<p>A function that does not return anything in KobraScript is called a procedure, written as <code>proc</code>. These have a special declaration, shown below.</p>
+<pre><code>proc print_intake (y):
+    say(average_intake(y))
+end
+</code></pre>
+<h4 id="if-else-conditions"><code>if</code>-<code>else</code> Conditions</h4>
+<p><code>If</code> and <code>else</code> conditions follow a similar paradigm as functions. In KobraScript, <code>if</code>-<code>else</code> conditional statement blocks should conclude with <code>..</code> to increase readability.</p>
+<pre><code>if (is_red &amp;&amp; is_food):                                 if (is_red &amp;&amp; is_food) {
+    eat ()                                                  eat ();
+.. else if (is_food &amp;&amp; is_mine):                        } else if (is_food &amp;&amp; is_mine) {
+    add_butter ()                                           add_butter ();
+.. else:                                                } else {
+    keep ()                                                 keep();
+end                                                     }
+</code></pre>
+<p>Below is also another legal form of an if, else-if, else conditional statement, but this form is discouraged.</p>
+<pre><code>if (is_red &amp;&amp; is_food):                                 if (is_red &amp;&amp; is_food) {
+    eat ()                                                  eat ();
+end else if (is_food &amp;&amp; is_mine):                       } else if (is_food &amp;&amp; is_mine) {
+    add_butter ()                                           add_butter ();
+end else:                                               } else {
+    keep ()                                                 keep();
+end                                                     }
+</code></pre>
+<h4 id="objects">Objects</h4>
+<p>Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else.</p>
+<pre><code>$ bicycle = {
+    frame = "aluminum" : str,
+    year = 2009 : int,
+    gears = 10 : int,
+    speed = 12.7 : float
+
+    move = proc ():
+        Transform.translate(FORWARD * this.speed)
+    end,
+    upgrade_speed = floatfn ():
+        return this.speed = this.speed * 1.1
+    end,
+    get_frame = strfn (): return this.frame; end
+}
+</code></pre>
+<h4 id="blueprints-classes">Blueprints (Classes)</h4>
+<p>Blueprints are a form of class implementation in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object.</p>
+<p>Blueprints consists of 4 parts:</p>
+<ol>
+<li><code>has</code>, which allows properties of the blueprint to be declared</li>
+<li><code>does</code>, which allows functions of the blueprint to be declared</li>
+<li><code>synget</code>, which allows <code>get_property()</code> functions to be created, and</li>
+<li><code>synset</code>, which allows <code>set_property()</code> functions to be created.</li>
+</ol>
+<p>Here is an example of a blueprint of a robot.  </p>
+<pre><code>$ blueprint Robot   -- initalizes the blueprint
+
+$ has {
+    id : bits8,
+    year : int,
+    energy_level = 100 : int,
+    missle_container = (20, 20) : tuple2,
+    base_speed = 320.0 : float,
+    speed : float,
+    users : str[]
+}
+
+$ does {
+    Init = proc (id : bits8, year : int)
+        this.id, this.year = id, year
+        this.speed = this.base_speed
+    },
+    AddUser = boolfn (username : str)
+        for ($ i = 0; i &lt; users.length; i++)
+            return false if users[i].equals(username)
+        }
+        users = users.push(username)
+        return true
+    },
+    SpeedBoost = floatfn (m : float)
+        return speed = base_speed * m
+    }
+}
+
+$ synget {
+    id, year, energy_level, missle_container
+}
+
+$ synset {
+    //no setters, structure unneccessary
+}
+
+defcc --definition concluded
 </code></pre>
 <h4 id="arrays">Arrays</h4>
-<pre><code>$ protein_intake = [12, 21.3, 7.2, 20] : float[]        var protein_intake = [12.0, 21.3, 7.2, 20.0];
-</code></pre></body></html>
+<pre><code>$ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
+</code></pre>
+<h4 id="for-and-while-conditions"><code>for</code> and <code>while</code> Conditions</h4>
+<p>For and while loops follow a similar convention to functions: using the <code>:</code> and <code>end</code> syntax, and ...</p>
+<pre><code>$ a = 0 -- A test variable for loops.               var a = 0; // A test variable for loops.
+
+for ($ i = 0; i &lt; 4; i++):                          for (var i = 0; i &lt; 4; i++) {
+    a++                                                 a++;
+end                                                 }
+
+while (a &lt; 10):                                     while (a &lt; 10) {
+    a++                                                 a++;
+end                                                 }
+</code></pre>
+<h3 id="macrosyntax">Macrosyntax</h3>
+<h3 id="microsyntax">Microsyntax</h3></body></html>
