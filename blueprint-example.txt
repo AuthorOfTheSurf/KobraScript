@@ -1,0 +1,38 @@
+$ blueprint Robot
+
+$ has {
+    id : bits8,
+    year : int,
+    energy_level = 100 : int,
+    missle_container = (20, 20) : tuple2,
+    base_speed = 320.0 : float,
+    speed : float,
+    users : str[]
+}
+
+$ does {
+    Init = proc (id : bits8, year : int)
+        this.id, this.year = id, year
+        this.speed = this.base_speed
+    },
+    AddUser = boolfn (username : str)
+        for ($ i = 0; i < users.length; i++)
+            give false if users[i].equals(username)
+        }
+        users = users.push(username)
+        give true
+    },
+    SpeedBoost = floatfn (m : float)
+        give speed = base_speed * m
+    }
+}
+
+$ synget {
+    id, year, energy_level, missle_container
+}
+
+$ synset {
+    id, year
+}
+
+defcc --definition concluded
