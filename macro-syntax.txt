@@ -52,7 +52,7 @@ EXP5    ::=  EXP6 (('**'  |  '-**')  EXP6)
 EXP6    ::=  '~!'  EXP7 
         |    '~?'  EXP7 
 EXP7    ::=  ('!')?  (EXP7  |  EXP8)
-EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | ID | '(' EXP ')'
+EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
 
 RETURN  ::=  'return'  EXP  END
 END     ::=  '\x09'  |  ';'

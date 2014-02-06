@@ -1,6 +1,8 @@
 BITS    ->	[01]*
 INT		->	-?[\d]*
-HEX		->	[0123456789 | abcdef | ABCDEF]*
-STR		->	\w*
+FLOAT   ->  INT.\d*
+HEX		->	(\d | [a-f] | [A-F])*
+STR		->	\w+
+BOOL    ->  'true'  |  'false'
 ID		->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
 
