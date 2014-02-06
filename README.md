@@ -27,12 +27,12 @@ Functions in KobraScript take some inspiration from Java. Type of return is writ
     --alternatively, (x : float[]) to take in a float array
     floatfn average_intake (x):
         $ total = 0
-        for ($ i = 0; i < x.length; i++)
+        for ($ i = 0; i < x.length; i++):
             total = total + x[i]
-        }  
+        end  
         say(total)
         return total / x.length
-    }
+    end
 
 A function that does not return anything in KobraScript is called a procedure, written as `proc`. These have a special declaration, shown below.
 
@@ -83,7 +83,7 @@ Objects are very similar in KobraScript to JavaScript. Braces are used specifica
         frame = "aluminum" : str,
         year = 2009 : int,
         gears = 10 : int,
-        speed = 12.7 : float
+        speed = 12.7 : float,
         
         move = proc ():
             Transform.translate(FORWARD * this.speed)
@@ -119,20 +119,20 @@ Here is an example of a blueprint of a robot.
     }
 
     $ does {
-        Init = proc (id : bits8, year : int)
+        Init = proc (id : bits8, year : int):
             this.id, this.year = id, year
             this.speed = this.base_speed
-        },
+        end,
         AddUser = boolfn (username : str)
-            for ($ i = 0; i < users.length; i++)
+            for ($ i = 0; i < users.length; i++):
                 return false if users[i].equals(username)
-            }
+            end
             users = users.push(username)
             return true
-        },
-        SpeedBoost = floatfn (m : float)
+        end,
+        SpeedBoost = floatfn (m : float):
             return speed = base_speed * m
-        }
+        end
     }
 
     $ synget {
