@@ -65,8 +65,13 @@ end else:
     keep ()
 end
 
---  For and while example
 
+-- Extra
+$ is_cold = true if (temperature < 60.0) 
+$ jordan, kobe = 24, 23
+jordan :=: kobe         --swap values
+
+--  For and while example
 $ a = 0
 for ($ i = 0, i < 4, i++):
     a++
