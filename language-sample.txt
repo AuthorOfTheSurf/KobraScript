@@ -45,7 +45,7 @@ $ bicycle = {
 
 $ is_red = true,
   is_food = false,
-  is_mine = true;
+  is_mine = true
 
 --  Optimal if, elseif, else
 if (is_red && is_food):
