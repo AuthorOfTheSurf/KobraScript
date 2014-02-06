@@ -20,12 +20,16 @@ $ my_color = a6 b4 29 : hex
 --x can be any type, more specifically, x assumes the same value and type of the parameter
 floatfn average_intake (x): --parameters have optional type-casting
     $ total = 0
-    for ($ i = 0; i < x.length; i++)
+    for ($ i = 0; i < x.length; i++):
         total = total + x[i]
-    }  
+    end 
     console.log(total) --alternative loge invocation available
     return total / x.length
-}
+end
+
+proc print_intake (y):
+    say(average_intake(y))
+end
 
 $ blue = 00 00 ff : hex
 $ bicycle = {
