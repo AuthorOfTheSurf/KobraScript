@@ -1,31 +1,31 @@
 $ blueprint Calculator:
 
-$ has {
+has {
     pi = 3.14159265 : float,
 }
 
-$ does {
-	floatfn Add (x, y):
+does {
+	$ Add = floatfn (x, y):
 		return x + y
 	..,
-	floatfn Subtract (x, y):
+	Subtract = floatfn (x, y):
 		return x - y
 	..,
-	floatfn Multiply (x, y):
+	Multiply = floatfn (x, y):
 		return x * y
 	..,
-	intfn Divide (x : int, y : int):
+	Divide = floatfn (x : int, y : int):
 		return x // y
 	..,
-	floatfn Divide (x, y):
+	Divide = floatfn (x, y):
 		return x / y
 	..,
-	boolfn IsEven (n):
+	IsEven = floatfn (n):
 		return n % 2 == 0
 	..,
-	boolfn IsPositive (n):
+	IsPositive = floatfn (n):
 		return n > 0
-	end
+	end;
 }
 
 .. defcc

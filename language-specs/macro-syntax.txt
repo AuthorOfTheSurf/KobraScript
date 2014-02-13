@@ -13,17 +13,18 @@ VARDEC  ::=  '$'  ID  '=' EXP  (':'  TYPE)?  END
         |    '$'  ID  ':'  TYPE  END
         |    '$'  ID  (',' ID)+  ('='  EXP  (','  EXP)?)?  (':'  TYPE)?  END
         |    '$'  (ID  '='  EXP (':'  TYPE)?  ',')*  ID  '='  EXP (':'  TYPE)?  END
-FNDEC   ::=  (FN0  |  FN1  |  FN2)  END
+FNDEC   ::=  (FN0 | FN1 | FN2)  END
 FN0     ::=  '$'  ID  '='  FNTYPE  PARAMS  BLOCK
 FN1     ::=  '$'  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  FN0
 FN2     ::=  FNTYPE  ID  PARAMS  BLOCK
 
-BLUPRNT ::=  '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNSET?  SYNGET?  'defcc'
-        |    '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNGET?  SYNSET?  'defcc'
-HASBLK  ::=  '$'  'has'  '{'  VARDEC?  '}'
-DOESBLK ::=  '$'  'does'  '{'  FNDEC?  '}'
-SYNSET  ::=  '$'  'synset'  '{'  (ID ',')*  ID  '}'
-SYNGET  ::=  '$'  'synget'  '{'  (ID ',')*  ID  '}'
+BLUPRNT ::=  '$'  'blueprint'  ID  BLUBLK  'defcc'
+BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNSET?  SYNGET?  ('..' | 'end')
+        |    ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?  ('..' | 'end')
+HASBLK  ::=  'has'  '{'  VARDEC?  '}'
+DOESBLK ::=  'does'  '{'  FNDEC?  '}'
+SYNSET  ::=  'synset'  '{'  (ID ',')*  ID  '}'
+SYNGET  ::=  'synget'  '{'  (ID ',')*  ID  '}'
 
 VAR     ::=  ID
         |    VAR  '['  EXP  ']'
@@ -38,20 +39,20 @@ STMT    ::=  DEC
 LOOP    ::=  'while'  '('  EXP  ')'  BLOCK
         |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK    
 
-COND    ::=  (COND0  |  COND1  |  COND2)
+COND    ::=  (COND0 | COND1 | COND2)
 COND0   ::=  'if'  '('  EXP  ')'  BLOCK
 COND1   ::=  COND0  'else if'  '('  EXP  ')'  BLOCK
-COND2   ::=  (COND0  |  COND1)  'else'  BLOCK
+COND2   ::=  (COND0 | COND1)  'else'  BLOCK
 
 EXP     ::=  EXP1 ('||' EXP1)*
 EXP1    ::=  EXP2 ('&&' EXP2)*
 EXP2    ::=  EXP3 (('<' | '<=' | '==' | '!=' | '>=' | '>') EXP3)?
 EXP3    ::=  EXP4 ([+-] EXP4)*
 EXP4    ::=  EXP5 ([*/] EXP5)*
-EXP5    ::=  EXP6 (('**'  |  '-**')  EXP6)
+EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
 EXP6    ::=  '~!'  EXP7 
         |    '~?'  EXP7 
-EXP7    ::=  ('!')?  (EXP7  |  EXP8)
+EXP7    ::=  ('!')?  (EXP7 | EXP8)
 EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
 
 RETURN  ::=  'return'  EXP  END
