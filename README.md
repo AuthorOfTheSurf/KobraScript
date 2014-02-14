@@ -95,55 +95,49 @@ Objects are very similar in KobraScript to JavaScript. Braces are used specifica
     }
 
 #### Blueprints
-Blueprints are special structures in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object.
+Blueprints are special structures in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
+
+To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages.
+    
+    $ p = construct Person(name = "Joe", age = 18)
 
 Blueprints consists of 4 parts:
 
-1. `has`, which allows properties of the blueprint to be declared
-2. `does`, which allows functions of the blueprint to be declared
+1. `has`
+       * Initialization of Blueprint properties.
+       * Specific and dynamic property construction.
+           - Specific -> `construct Person (hairColor = "black")`
+           - Dynamic  -> `construct Person()`, `construct Person(name = "Joe")`, etc.
+       * Default values
+           - The value to the right of the `#` is the default value.
+               - `haircolor = hairColor : str # "black"`
+2. `does`
+       * Initialization of Blueprint methods (functions).
+       * Methods can be defined from parameters.
+            `do_excercise = excercise : proc # running()`
 3. `synget`, which allows `get_property()` functions to be created, and
 4. `synset`, which allows `set_property()` functions to be created.
 
-Here is an example of a blueprint of a robot.  
+Here is an example of a blueprint of a Person.  
 
-    $ blueprint Robot   -- initalizes the blueprint
-
-    $ has {
-        id : bits8,
-        year : int,
-        energy_level = 100 : int,
-        missle_container = (20, 20) : tuple2,
-        base_speed = 320.0 : float,
-        speed : float,
-        users : str[]
+    $ blueprint Person (name, age, hairColor, excercise)
+    has {
+        name = name : str,
+        age = age : int,
+        hairColor = hairColor : str # "black" 
     }
-
-    $ does {
-        Init = proc (id : bits8, year : int):
-            this.id, this.year = id, year
-            this.speed = this.base_speed
-        end,
-        AddUser = boolfn (username : str)
-            for ($ i = 0; i < users.length; i++):
-                return false if users[i].equals(username)
-            end
-            users = users.push(username)
-            return true
-        end,
-        SpeedBoost = floatfn (m : float):
-            return speed = base_speed * m
+    does {
+        do_excercise = excercise : proc # running,
+        running = proc ():
+            say("26.2 miles")
         end
     }
-
-    $ synget {
-        id, year, energy_level, missle_container
+    synget {
+        name, age, hairColor
     }
-
-    $ synset {
-        //no setters, structure unneccessary
+    synset {
+        hairColor
     }
-
-    defcc --definition concluded
 
 #### Arrays    
     $ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
