@@ -138,6 +138,7 @@ Here is an example of a blueprint of a Person.
     synset {
         hairColor
     }
+    defcc
 
 #### Arrays    
     $ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
