@@ -1,14 +1,18 @@
 RESERVED WORDS
 ==============
 
-*   float
-*   double
-*   bool
-*   int
-*   str
+## TYPES ##
 *   bit
+*   int
+*   float
+*   bool
+*   str
 *   undefined
 *   null
+*   true
+*   false
+
+## FUNCTIONS ##
 *   fn
 *   "type" + fn  
     -   bool
@@ -17,32 +21,36 @@ RESERVED WORDS
     -   float
     -   str
     -   bit
+*   return
+
+## BLUEPRINTS ##
 *   blueprint
 *   has
 *   does
 *   synget
 *   synset
 *   defcc
+*   this
+
+## STATEMENTS ##
 *   $
 *   if
 *   else if
 *   else
+*   do
 *   while
 *   for
-*   true
-*   false
+*   switch
 *   break
 *   case
-*   catch
 *   try
-*   do
+*   catch
 *   finally
+*   throw
+
+## RESERVED ##
 *   function
 *   instanceof
-*   return
-*   switch
-*   this
-*   throw
 *   var
 *   void
 *   with

@@ -32,9 +32,16 @@ function scan(line, linenumber, tokens) {
 
     var start, 
         pos = 0,
-        twoCharTokens = /<=|==|>=|!=/,
-        oneCharTokens = /[+\-*\/(),:;=<>]/,
-        reserved = /^(?:int|bool|var|read|write|while|loop|end|and|or|not|true|false)$/,
+        threeCharTokens = /-**|:=:|end|---|!---/,
+        twoCharTokens = /<=|==|>=|!=|\/\/|**
+                        |~=|is|in|&&|\|\||~?
+                        |~!|\.\./,
+        oneCharTokens = /[!+-*\/(),:;=<>]/,
+        reserved = /^(?:bit|int|float|bool|str|undefined|null|true|false
+                        |fn|bitfn|intfn|floatfn|boolfn|strfn|return|
+                        |blueprint|has|does|synget|synset|defcc|this
+                        |$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw
+                        |function|instanceof|var|void|with)$/,
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
         };
@@ -50,6 +57,12 @@ function scan(line, linenumber, tokens) {
 
         // Comment
         if (line[pos] == '-' && line[pos+1] == '-') break
+
+        // three-character tokens
+        if (threeCharTokens.test(line.substring(pos, pos+3))) {
+            emit(line.substring(pos, pos+3))
+            pos += 3s
+        }
 
         // Two-character tokens
         if (twoCharTokens.test(line.substring(pos, pos+2))) {

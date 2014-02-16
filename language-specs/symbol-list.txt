@@ -1,0 +1,28 @@
+## Binary Operators ##
+SYM     NEG     DESCRIPTION
+*               multiply
+/               float division
+%               modulo
+//              int division
++               add
+-               subtract
+**              Exponentiate
+-**             1 / x ** y
+>       !>      greater-than
+<       !<      less-than
+>=      !>=     GTOE
+<=      !>=     LTOE 
+==      !=      type and value equality
+~=      !~=     coerced value equality
+is      !is     type equality
+=               assignment
+:=:             swap the values LHS of RHS
+&&              AND
+||              OR
+in      !in     in-array
+
+## Unary Operators ##
+SYM     NEG     DESCRIPTION
+~?              typeof
+~!              unary factorial
+!       !!      negation
