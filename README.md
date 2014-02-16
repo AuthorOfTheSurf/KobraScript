@@ -1,6 +1,6 @@
 KobraScript
 ==============
-KobraScript is a statically-typed language that compiles to JavaScript. The languages favors explicit declarations.
+KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
