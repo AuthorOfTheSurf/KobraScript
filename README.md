@@ -148,29 +148,38 @@ Here is an example of a blueprint of a Person.
     PROGRAM ::=  STMT+
             |    BLUPRNT
 
+    BLOCK   ::=  ':'  STMT+  'end'
+            |    ':'  STMT+  '..'
+
     DEC     ::=  VARDEC  |  FNDEC
-    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bits' | ID)  ('[]')*
-    FNTYPE  ::=  TYPE  'fn'
+    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bit' | 'undefined' | 'null' | ID)  ('[]')*
+    FNTYPE  ::=  'proc'
+            |    TYPE  'fn'
+            |    BID  'fn'
 
     ASSIGN  ::=  ID  '='  EXP  END
             |    ID  ':=:'  ID  END
-    BLOCK   ::=  ':'  STMT+  'end'
-            |    ':'  STMT+  '..'
-    VARDEC  ::=  '$'  ID  '=' EXP  (':'  TYPE)?  END
-            |    '$'  ID  ':'  TYPE  END
-            |    '$'  ID  (',' ID)+  ('='  EXP  (','  EXP)?)?  (':'  TYPE)?  END
-            |    '$'  (ID  '='  EXP (':'  TYPE)?  ',')*  ID  '='  EXP (':'  TYPE)?  END
-    FNDEC   ::=  (FN0  |  FN1  |  FN2)  END
-    FN0     ::=  '$'  ID  '='  FNTYPE  PARAMS  BLOCK
-    FN1     ::=  '$'  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  FN0
+    VARDEC  ::=  '$' DEC  (','  DEC)*  END
+    DEC     ::=  ID  '=' EXP  (':'  TYPE)?  ('#'  EXP)?
+            |    ID  ':'  TYPE  ('#'  EXP)?
+            |    SPCONST
+            |    DYCONST
+    FNDEC   ::=  '$'  (FN0 | FN1)  END
+            |    FN2  END
+    FN0     ::=  ID  '='  FNTYPE  PARAMS  BLOCK
+    FN1     ::=  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  FN0
     FN2     ::=  FNTYPE  ID  PARAMS  BLOCK
 
-    BLUPRNT ::=  '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNSET?  SYNGET?  'defcc'
-            |    '$'  'blueprint'  ID  HASBLK  DOESBLK  SYNGET?  SYNSET?  'defcc'
-    HASBLK  ::=  '$'  'has'  '{'  VARDEC?  '}'
-    DOESBLK ::=  '$'  'does'  '{'  FNDEC?  '}'
-    SYNSET  ::=  '$'  'synset'  '{'  (ID ',')*  ID  '}'
-    SYNGET  ::=  '$'  'synget'  '{'  (ID ',')*  ID  '}'
+    BLUPRNT ::=  '$'  'blueprint'  ID  BLUBLK  'defcc'
+    BID     ::=  --The set of x, where x is the name of a .ksb file in this directory
+    SPCONST ::=  BID  '('  ID  '='  EXP  (','  ID  '='  EXP)*  ')'
+    DYCONST ::=  BID  '('  ID  (','  ID)*  ')'
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNSET?  SYNGET?  ('..' | 'end')
+            |    ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?  ('..' | 'end')
+    HASBLK  ::=  'has'  '{'  VARDEC?  '}'
+    DOESBLK ::=  'does'  '{'  FNDEC?  '}'
+    SYNSET  ::=  'synset'  '{'  (ID ',')*  ID  '}'
+    SYNGET  ::=  'synget'  '{'  (ID ',')*  ID  '}'
 
     VAR     ::=  ID
             |    VAR  '['  EXP  ']'
@@ -185,21 +194,21 @@ Here is an example of a blueprint of a Person.
     LOOP    ::=  'while'  '('  EXP  ')'  BLOCK
             |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK    
 
-    COND    ::=  (COND0  |  COND1  |  COND2)
+    COND    ::=  (COND0 | COND1 | COND2)
     COND0   ::=  'if'  '('  EXP  ')'  BLOCK
     COND1   ::=  COND0  'else if'  '('  EXP  ')'  BLOCK
-    COND2   ::=  (COND0  |  COND1)  'else'  BLOCK
+    COND2   ::=  (COND0 | COND1)  'else'  BLOCK
 
     EXP     ::=  EXP1 ('||' EXP1)*
     EXP1    ::=  EXP2 ('&&' EXP2)*
-    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '!=' | '>=' | '>') EXP3)?
+    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
     EXP3    ::=  EXP4 ([+-] EXP4)*
-    EXP4    ::=  EXP5 ([*/] EXP5)*
-    EXP5    ::=  EXP6 (('**'  |  '-**')  EXP6)
+    EXP4    ::=  EXP5 ([%*/] EXP5)*
+    EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
     EXP6    ::=  '~!'  EXP7 
             |    '~?'  EXP7 
-    EXP7    ::=  ('!')?  (EXP7  |  EXP8)
-    EXP8    ::=  'true' | 'false' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
+    EXP7    ::=  ('!')?  (EXP7 | EXP8)
+    EXP8    ::=  'true' | 'false' | 'undefined' | 'null' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
 
     RETURN  ::=  'return'  EXP  END
     END     ::=  '\x09'  |  ';'
