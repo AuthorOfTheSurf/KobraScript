@@ -11,7 +11,7 @@ SYM     NEG     DESCRIPTION
 >       !>      greater-than
 <       !<      less-than
 >=      !>=     GTOE
-<=      !>=     LTOE 
+<=      !>=     LTOE
 ==      !=      type and value equality
 ~=      !~=     coerced value equality
 is      !is     type equality

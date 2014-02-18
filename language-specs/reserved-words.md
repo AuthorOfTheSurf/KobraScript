@@ -3,8 +3,8 @@ RESERVED WORDS
 
 ## TYPES ##
 *   bit
-*   int
-*   float
+*   int (consider: **ero**, mer, zahl)
+*   float (consider: deletion for easier numeric literal interpretation)
 *   bool
 *   str
 *   undefined
@@ -16,7 +16,6 @@ RESERVED WORDS
 *   fn
 *   "type" + fn  
     -   bool
-    -   char
     -   int
     -   float
     -   str

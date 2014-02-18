@@ -37,7 +37,7 @@ function scan(line, linenumber, tokens) {
                         |~=|is|in|&&|\|\||~?
                         |~!|\.\./,
         oneCharTokens = /[!+-*\/(),:;=<>]/,
-        reserved = /^(?:bit|int|float|bool|str|undefined|null|true|false
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false
                         |fn|bitfn|intfn|floatfn|boolfn|strfn|return|
                         |blueprint|has|does|synget|synset|defcc|this
                         |$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw
@@ -79,7 +79,7 @@ function scan(line, linenumber, tokens) {
         else if (/[A-Za-z]/.test(line[pos])) {
             while (/\w/.test(line[pos]) && pos < line.length) pos++
             var word = line.substring(start, pos)
-            if (reserved.test(word)) {
+            if (definedTokens.test(word)) {
                 emit(word)
             } else {
                 emit('ID', word)
