@@ -32,7 +32,7 @@ function scan(line, linenumber, tokens) {
 
     var start, 
         pos = 0,
-        threeCharTokens = /-**|:=:|end|---|!---/,
+        threeCharTokens = /-**|:=:|end|...|---|!--/,
         twoCharTokens = /<=|==|>=|!=|\/\/|**
                         |~=|is|in|&&|\|\||~?
                         |~!|\.\./,
@@ -42,6 +42,9 @@ function scan(line, linenumber, tokens) {
                         |blueprint|has|does|synget|synset|defcc|this
                         |$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw
                         |function|instanceof|var|void|with)$/,
+        numericLit = /-?([1-9]\d*|0)(.\d+)?([eE][+-]?\d+/,
+        strLit = /\"(p{L}|\\(['"rn\\]|u[\p{Nd}A-Fa-f]{4}\"/,
+
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
         };
@@ -91,6 +94,8 @@ function scan(line, linenumber, tokens) {
           while (/\d/.test(line[pos])) pos++
           emit('INTLIT', line.substring(start, pos))
         }
+
+        // Grab str lits @ here?
         
         // All else
         else {
