@@ -1,14 +1,16 @@
-KobraScript
+<p align="center">
+  <img src="ks-logo.jpg" alt="KobraScript Logo"/>
+</p>
 ==============
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
 
-    say("Kobra!")                                    console.log("Kobra!");
+    say("Kobra!")                                           console.log("Kobra!");
 
 #### Variable Declarations
-In KobraScript, variable declarations are simplified to one character: `$`. Add more details.
+In KobraScript, variable declarations are simplified to one character: `$`.
 
     $ name = "Samson"                                       var name = "Samson";
 
@@ -17,15 +19,15 @@ In KobraScript, variable declarations are simplified to one character: `$`. Add 
     $ is_red = true,                                        var is_red = true,
       is_food = false,                                          is_food = false,
       is_mine = true                                            is_mine = true;
-Variables with uninitialized values must be type-casted on declaration. The default value is set to undefined.
 
-    $ total : int                                           var total = undefined;
+Variables with uninitialized values are set to undefined.
+
+    $ total                                                 var total = undefined;
 
 #### Functions
-Functions in KobraScript take some inspiration from Java. Type of return is written in front of `fn` complying with the statically typed paradigm of KobraScript. Within the parameter of the function, a type can be specified or omitted for dynamic parameter input.
+Functions in KobraScript are declared with `fn`, with opening and closing characters `:` and `end`, respectively.
 
-    --alternatively, (x : float[]) to take in a float array
-    floatfn average_intake (x):
+    fn average_intake (x):
         $ total = 0
         for ($ i = 0; i < x.length; i++):
             total = total + x[i]
@@ -33,6 +35,10 @@ Functions in KobraScript take some inspiration from Java. Type of return is writ
         say(total)
         return total / x.length
     end
+
+A one-line function has this syntax, with statements separated by `;`.
+    
+    fn test (): $ f = 1; return f; end
 
 A function that does not return anything in KobraScript is called a procedure, written as `proc`. These have a special declaration, shown below.
 
@@ -51,7 +57,7 @@ A function that does not return anything in KobraScript is called a procedure, w
         keep ()                                                 keep();
     end                                                     }
 
-Below is also another legal form of an if, else-if, else conditional statement, but this form is discouraged.
+Below is also another legal form of an if, else-if, else conditional statement, **but this form is discouraged!**
 
     if (is_red && is_food):                                 if (is_red && is_food) {
         eat ()                                                  eat ();
@@ -61,41 +67,41 @@ Below is also another legal form of an if, else-if, else conditional statement, 
         keep ()                                                 keep();
     end                                                     }
 
-#### `for` and `while` Conditions
+#### `for` and `while` loops
 
 For and while loops follow a similar convention to functions: using the `:` and `end` syntax.
 
-    $ a = 0 -- A test variable for loops.               var a = 0; // A test variable for loops.
+    $ a = 0 -- A test variable for loops.                   var a = 0; // A test variable for loops.
 
-    for ($ i = 0; i < 4; i++):                          for (var i = 0; i < 4; i++) {
-        a++                                                 a++;
-    end                                                 }
+    for ($ i = 0; i < 4; i++):                              for (var i = 0; i < 4; i++) {
+        a++                                                     a++;
+    end                                                     }
 
-    while (a < 10):                                     while (a < 10) {
-        a++                                                 a++;
-    end                                                 }
+    while (a < 10):                                         while (a < 10) {
+        a++                                                     a++;
+    end                                                     }
 
 
 #### Objects
 Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else.
 
     $ bicycle = {
-        frame = "aluminum" : str,
-        year = 2009 : int,
-        gears = 10 : int,
-        speed = 12.7 : float,
+        frame = "aluminum",
+        year = 2009,
+        gears = 10,
+        speed = 12.7,
         
         move = proc ():
             Transform.translate(FORWARD * this.speed)
         end,
-        upgrade_speed = floatfn ():
+        upgrade_speed = fn ():
             return this.speed = this.speed * 1.1
         end,
-        get_frame = strfn (): return this.frame; end
+        get_frame = fn (): return this.frame; end
     }
 
 #### Blueprints
-Blueprints are special structures in KobraScript. It allows for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
+Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
 To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages.
     
@@ -110,24 +116,24 @@ Blueprints consists of 4 parts:
            - Dynamic  -> `construct Person()`, `construct Person(name = "Joe")`, etc.
        * Default values
            - The value to the right of the `#` is the default value.
-               - `haircolor = hairColor : str # "black"`
+               - `haircolor = hairColor # "black"`
 2. `does`
        * Initialization of Blueprint methods (functions).
        * Methods can be defined from parameters.
-            `do_excercise = excercise : proc # running()`
+            `do_exercise = exercise # running()`
 3. `synget`, which allows `get_property()` functions to be created, and
 4. `synset`, which allows `set_property()` functions to be created.
 
 Here is an example of a blueprint of a Person.  
 
-    $ blueprint Person (name, age, hairColor, excercise)
+    $ blueprint Person (name, age, hairColor, exercise)
     has {
-        name = name : str,
-        age = age : int,
-        hairColor = hairColor : str # "black" 
+        name = name,
+        age = age,
+        hairColor = hairColor # "black" 
     }
     does {
-        do_excercise = excercise : proc # running,
+        do_exercise = exercise # running,
         running = proc ():
             say("26.2 miles")
         end
@@ -141,7 +147,7 @@ Here is an example of a blueprint of a Person.
     defcc
 
 #### Arrays    
-    $ protein_intake = [12, 21.3, 7.2, 20] : float[]    var protein_intake = [12.0, 21.3, 7.2, 20.0];
+    $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
 
 ### Macrosyntax
 
