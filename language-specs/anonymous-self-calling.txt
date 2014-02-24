@@ -4,6 +4,4 @@
 	      year = today.getFullYear();
 	}
 	console.log('Welcome friend, the year is ' + year)
-endcc())
-
--- endcc -> end (with) conclusive call
+..())

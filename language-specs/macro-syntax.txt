@@ -3,63 +3,51 @@ PROGRAM ::=  STMT+
 
 BLOCK   ::=  ':'  STMT+  ('end' | '..')
 
-DECLAR  ::=  '$' (VARDEC | FNDEC)
-        |    FNSUG
-TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bit' | 'undefined' | 'null' | ID | BID)  ('[]')*
-FNTYPE  ::=  'proc'
-        |    TYPE  'fn'
-        |    BID  'fn'
 
+TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bit' | 'undefined' | 'null' | ID)  ('[]')*
+FNTYPE  ::=  'proc' | 'fn'
+
+DECLAR  ::=  '$' (VARDEC | FNDEC)
+        |    FNDEC2
 ASSIGN  ::=  ID  '='  EXP  END
         |    ID  ':=:'  ID  END
-VARDEC  ::=  '$' DEC  (','  DEC)*  END
-DEC     ::=  ID  '=' (SPCONST | DYCONST | EXP  (':'  TYPE)?  ('#'  EXP)?)
-        |    ID  ':'  TYPE  ('#'  EXP)?
+VARDEC  ::=  DEC  (','  DEC)*  END
+DEC     ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
 FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  ID  '='  FNTYPE  PARAMS  BLOCK
-FNSUG   ::=  FNTYPE  ID  PARAMS  BLOCK
+FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  BLOCK
 
 BLUPRNT ::=  '$'  'blueprint'  ID  BLUBLK  'defcc'
-BID     ::=  --The set of x, where x is the name of a .ksb file in this directory
-SPCONST ::=  BID  '('  ID  '='  EXP  (','  ID  '='  EXP)*  ')'
-DYCONST ::=  BID  '('  ID  (','  ID)*  ')'
+BLUDEC  ::=  ID  '('  ID  '='  EXP  (','  ID  '='  EXP)*  ')'
+        |    ID  '('  ID  (','  ID)*  ')'
 BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNTH*  ('..' | 'end')
 HASBLK  ::=  'has'  '{'  VARDEC?  '}'
-DOESBLK ::=  'does'  '{'  FNDEC?  FNSUG* '}'
+DOESBLK ::=  'does'  '{'  FNDEC?  FNDEC2* '}'
 SYNTH   ::=  ('synset' | 'synget') '{'  (ID  ',')*  ID  '}'
 
 VAR     ::=  ID
         |    VAR  '['  EXP  ']'
         |    VAR  '.'  ID
 
-STMT    ::=  DEC
+STMT    ::=  STMT END
+        |    DEC
         |    DEC  'if'  EXP
-        |    COND
-        |    LOOP
-        |    RETURN
+        |    'if'  '('  EXP  ')'  BLOCK  ('else if'  '('  EXP  ')'  BLOCK)*  ('else'  '('  EXP  ')'  BLOCK)?
+        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK 
+        |    'while'  '('  EXP  ')'  BLOCK
+        |    'return'  EXP
 
-LOOP    ::=  'while'  '('  EXP  ')'  BLOCK
-        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK    
-
-COND    ::=  (COND0 | COND1 | COND2)
-COND0   ::=  'if'  '('  EXP  ')'  BLOCK
-COND1   ::=  COND0  'else if'  '('  EXP  ')'  BLOCK
-COND2   ::=  (COND0 | COND1)  'else'  BLOCK
-
-
-EXP     ::=  ('~!' | '~?')  EXP1 
+EXP     ::=  ('~!' | '~?')  EXP1
 EXP1    ::=  EXP2 (('**' | '-**')  EXP2)
 EXP2    ::=  EXP3 ([%*/] EXP3)*
 EXP3    ::=  EXP4 ([+-] EXP4)*
 EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP5)?
-EXP5    ::=  ('!')?  (EXP6 | EXP6)
+EXP5    ::=  ('!')?  (EXP5 | EXP6)
 EXP6    ::=  EXP7 ('||' | '&&') EXP7
 EXP7    ::=  'true' | 'false' | 'undefined' | 'null' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
 
-RETURN  ::=  'return'  EXP  END
-END     ::=  '\x09'  |  ';'
+END     ::=  ';'
 
-PARAM   ::=  ID (':' TYPE)?
-        |    EXP (':' TYPE)?
+PARAM   ::=  VAR | EXP
 PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
 INCR    ::=  VAR  "++"
         |    VAR  "--"
