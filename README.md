@@ -1,4 +1,6 @@
-KobraScript
+<p align="center">
+  <img src="ks-logo.jpg" alt="KobraScript Logo"/>
+</p>
 ==============
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
