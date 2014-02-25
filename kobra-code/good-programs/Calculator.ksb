@@ -1,0 +1,24 @@
+-- May need to be reworked.
+$ blueprint Calculator (x, y)
+
+    has {
+        pi = 3.14159265,
+        e = 2.71828
+    }
+
+    does {
+        Add = fn (x, y):
+            return x + y
+        end,
+        Subtract = fn (x, y):
+            return x - y
+        end,
+        Multiply = fn (x, y):
+            return x * y
+        end,
+        Divide = fn (x, y):
+            return x / y
+        end
+    }
+
+    defcc
