@@ -5,7 +5,6 @@ var parseArgs = require('minimist')
 var argv = parseArgs(process.argv.slice(2), opts={
   boolean: ['t', 'a', 'o', 'i']
 })
-console.dir(argv);
 
 var scan = require('./scanner')
 var parse = require('./parser')

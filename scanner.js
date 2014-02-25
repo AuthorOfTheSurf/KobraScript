@@ -69,15 +69,13 @@ function scan(line, linenumber, tokens) {
         if (/[\'\"]/.test(line[pos])) {
             var s = [];
             //regex below needs improvement + refactor
-            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20]/.test(line[++pos]) && pos < line.length) {
+            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length) {     
                 if (line[pos] !== '\'' || line[pos] !== '\"') {
                     s = s.concat(line[pos])
-                    console.log('catted: ' + line[pos])
                 }
-                else {
-                    pos++
-                    console.log(s.join(''))
+                if (line[pos] === '\'' || line[pos] === '\"') {
                     emit('STRLIT', s.join(''))
+                    pos++
                 }
             }
         }
