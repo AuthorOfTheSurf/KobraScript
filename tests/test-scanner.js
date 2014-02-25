@@ -94,5 +94,29 @@ describe('The scanner', function () {
             done()
         })
     })
+    
+    //  multioverload.ks
+    it('reads ugly yet syntactically correct programs', function (done) {
+        scan('../kobra-code/bad-programs/multioverload.ks', function (tokens) {
+            tokens.length.should.equal(14)
+            i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
+            i(tokens[1]).should.equal(i({kind:'ID',lexeme:'x',line:1,col:3}))
+            i(tokens[2]).should.equal(i({kind:'=',lexeme:'=',line:1,col:5}))
+            i(tokens[3]).should.equal(i({kind:'NUMLIT',lexeme:'10',line:1,col:7}))
+            //  IGNORES COMMENTS, NEXT LINE
+            i(tokens[4]).should.equal(i({kind:'ID',lexeme:'x',line:2,col:1}))
+            i(tokens[5]).should.equal(i({kind:'**',lexeme:'**',line:2,col:3}))
+            i(tokens[6]).should.equal(i({kind:'ID',lexeme:'y',line:2,col:6}))
+            i(tokens[7]).should.equal(i({kind:'+',lexeme:'+',line:2,col:8}))
+            i(tokens[8]).should.equal(i({kind:'z',lexeme:'z',line:2,col:10}))
+            i(tokens[9]).should.equal(i({kind:'||',lexeme:'||',line:2,col:12}))
+            //  Scans for two-character tokens before one.
+            i(tokens[10]).should.equal(i({kind:'**',lexeme:'**',line:2,col:15}))
+            i(tokens[11]).should.equal(i({kind:'*',lexeme:'*',line:2,col:17}))
+            i(tokens[12]).should.equal(i({kind:'NUMLIT',lexeme:'10',line:2,col:19}))
+            i(tokens[13]).should.equal(i({kind:'EOF',lexeme:'EOF'}))
+            done()
+        })
+    })
 
 })
