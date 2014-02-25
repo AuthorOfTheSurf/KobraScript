@@ -33,7 +33,7 @@ function scan(line, linenumber, tokens) {
     var start, 
         pos = 0,
         threeCharTokens = /\-\*\*|:=:|end|\.\.\.|\-\-\-|\!\-\-/,
-        twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~?|~\!|\.\./,
+        twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
         oneCharTokens = /[\!\+\-\*\/\(\),:;=<>]/,
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return||blueprint|has|does|synget|synset|defcc|this|\$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
         numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)/,
@@ -59,7 +59,7 @@ function scan(line, linenumber, tokens) {
         // Comment
         if (line[pos] == '-' && line[pos+1] == '-') break
 
-        // three-character tokens
+        // Three-character tokens
         if (threeCharTokens.test(line.substring(pos, pos+3))) {
             emit(line.substring(pos, pos+3))
             pos += 3
@@ -73,7 +73,7 @@ function scan(line, linenumber, tokens) {
 
         // One-character tokens
         else if (oneCharTokens.test(line[pos])) {
-           emit(line[pos++])
+           emit(line[pos++]) // not picking up any one-character tokens
         }
 
         // Reserved words or identifiers
@@ -88,9 +88,9 @@ function scan(line, linenumber, tokens) {
         }
 
         // Numeric literals
-        else if (/\d/.test(line[pos])) {
-          while (/\d/.test(line[pos])) pos++
-          emit('INTLIT', line.substring(start, pos))
+        else if (numericLit.test(line[pos])) {
+          while (numericLit.test(line[pos])) pos++
+          emit('NUMLIT', line.substring(start, pos))
         }
 
         // Grab str lits @ here?
