@@ -37,7 +37,6 @@ function scan(line, linenumber, tokens) {
         oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$]/,
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
         numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)/,
-        strLit = /[A-Za-z0-9_\s]*/,
 
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
@@ -66,22 +65,26 @@ function scan(line, linenumber, tokens) {
             pos += 2
         }
 
-        // One-character tokens
-        else if (oneCharTokens.test(line[pos])) {
-            emit(line[pos++]) // not picking up any one-character tokens
-        }
-
         // String literals
-        else if (/[\'\"]/.test(line[pos])) {
-            console.log('testing for strlit line: ' + line + ', col: ' + (start+1));
-            pos++ //eat. str contents now
-            while (strLit.test(line[pos])) {
-                pos++
-                if (/[\'\"]/.test(line[pos])) {
-                    pos++//eat
-                    emit('STRLIT', line.substring(start, pos))
+        if (/[\'\"]/.test(line[pos])) {
+            var s = [];
+            //regex below needs improvement + refactor
+            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20]/.test(line[++pos]) && pos < line.length) {
+                if (line[pos] !== '\'' || line[pos] !== '\"') {
+                    s = s.concat(line[pos])
+                    console.log('catted: ' + line[pos])
+                }
+                else {
+                    pos++
+                    console.log(s.join(''))
+                    emit('STRLIT', s.join(''))
                 }
             }
+        }
+
+        // One-character tokens
+        else if (oneCharTokens.test(line[pos])) {
+            emit(line[pos++])
         }
 
         // Reserved words or identifiers
