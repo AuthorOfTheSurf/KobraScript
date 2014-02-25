@@ -33,22 +33,20 @@ function scan(line, linenumber, tokens) {
     var start, 
         pos = 0,
         threeCharTokens = /-**|:=:|end|...|---|!--/,
-        twoCharTokens = /<=|==|>=|!=|\/\/|**
-                        |~=|is|in|&&|\|\||~?
-                        |~!|\.\./,
-        oneCharTokens = /[!+-*\/(),:;=<>]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false
-                        |fn|bitfn|intfn|floatfn|boolfn|strfn|return|
-                        |blueprint|has|does|synget|synset|defcc|this
-                        |$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw
-                        |function|instanceof|var|void|with)$/,
+        twoCharTokens = /<=|==|>=|!=|\/\/|**|~=|is|in|&&|\|\||~?|~!|\.\./,
+        oneCharTokens = /[!+-*\/(),:;=<>]/;
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return||blueprint|has|does|synget|synset|defcc|this|$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
         numericLit = /-?([1-9]\d*|0)(.\d+)?([eE][+-]?\d+/,
-        strLit = /\"(p{L}|\\(['"rn\\]|u[\p{Nd}A-Fa-f]{4}\"/,
+        strLit = /(\"|\')\1(p{L}|\\(['"rn\\]|u[\p{Nd}A-Fa-f]{4}\1/,
 
         emit = function (kind, lexeme) {
-            tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
+            tokens.push({
+                kind: kind, 
+                lexeme: lexeme || kind, 
+                line: linenumber, 
+                col: start+1
+            })
         };
-
 
     while (true) {
         // Skip spaces
@@ -64,7 +62,7 @@ function scan(line, linenumber, tokens) {
         // three-character tokens
         if (threeCharTokens.test(line.substring(pos, pos+3))) {
             emit(line.substring(pos, pos+3))
-            pos += 3s
+            pos += 3
         }
 
         // Two-character tokens
@@ -96,6 +94,10 @@ function scan(line, linenumber, tokens) {
         }
 
         // Grab str lits @ here?
+        else if (strLit.test(line[pos])) {
+            while (strLit.test(line[pos])) pos++
+            emit('STRLIT', line.substring(start, pos))
+        }
         
         // All else
         else {

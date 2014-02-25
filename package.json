@@ -1,11 +1,11 @@
 {
-  "name": "iki-compiler",
+  "name": "kobrascript-compiler",
   "version": "0.0.1",
-  "description": "a simple compiler for the Iki programming language",
+  "description": "a compiler for the KobraScript language",
   "dependencies": {
     "byline": "latest",
     "hashmap": "latest",
-    "optimist": "latest"
+    "minimist": "latest"
   },
   "devDependencies": {
     "mocha": "latest",
