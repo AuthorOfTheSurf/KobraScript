@@ -36,7 +36,7 @@ function scan(line, linenumber, tokens) {
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
         oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#]/,
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
-        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)/,
+        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
 
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
@@ -63,23 +63,33 @@ function scan(line, linenumber, tokens) {
         if (twoCharTokens.test(line.substring(pos, pos+2))) {
             emit(line.substring(pos, pos+2))
             pos += 2
+            while (/\s/.test(line[pos])) pos++
+            start = pos
         }
+
 
         // String literals
         if (/[\"\']/.test(line[pos])) {
-            var s = [];
+            var s = [],
+                parenCheck = true;
             //  regex below needs improvement + refactor
-            //  Note: if pos < line.length, it will catch the quotation marks.
-            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length) {     
+            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length && parenCheck) {     
                 if (line[pos] !== '\"' || line[pos] !== '\'') {
                     s = s.concat(line[pos])
-                    console.log(s.length);
                 }
                 if (line[pos] === '\"' || line[pos] === '\'') {
                     s.pop();
+                    parenCheck = false;
                     emit('STRLIT', s.join(''))
                 }
             }
+        }
+
+        // Numeric literals (are not working.)
+        else if (numericLit.test(line[pos]) || /\-/.test(line[pos])) {
+            if (/\-/.test(line[pos])) pos++
+            while (numericLit.test(line[pos])) pos++
+            emit('NUMLIT', line.substring(start, pos))
         }
 
         // One-character tokens
@@ -96,12 +106,6 @@ function scan(line, linenumber, tokens) {
             } else {
                 emit('ID', word)
             }
-        }
-
-        // Numeric literals (are not working.)
-        else if (numericLit.test(line[pos])) {
-          while (numericLit.test(line[pos])) pos++
-          emit('NUMLIT', line.substring(start, pos))
         }
         
         // All else
