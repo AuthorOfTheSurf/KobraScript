@@ -152,7 +152,7 @@ Here is an example of a blueprint of a Person.
 ### Macrosyntax
 
     PROGRAM ::=  STMT+
-        |    BLUPRNT
+            |    BLUPRNT
 
     BLOCK   ::=  ':'  STMT+  ('end' | '..')
 
@@ -184,7 +184,7 @@ Here is an example of a blueprint of a Person.
     STMT    ::=  STMT END
             |    DEC
             |    DEC  'if'  EXP
-            |    'if'  '('  EXP  ')'  BLOCK  ('else if'  '('  EXP  ')'  BLOCK)*  ('else'  '('  EXP  ')'  BLOCK)?
+            |    'if'  '('  EXP  ')'  BLOCK  ('else'  'if'  '('  EXP  ')'  BLOCK)*  ('else'  '('  EXP  ')'  BLOCK)?
             |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK 
             |    'while'  '('  EXP  ')'  BLOCK
             |    'return'  EXP
