@@ -34,18 +34,13 @@ function scan(line, linenumber, tokens) {
         pos = 0,
         threeCharTokens = /\-\*\*|:=:|end|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
-        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return||blueprint|has|does|synget|synset|defcc|this|\$|if|else if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
+        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$]/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
         numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)/,
-        strLit = /(\"|\')\1(p{L}|\\(['"rn\\]|u[\p{Nd}A-Fa-f]{4}))\1/,
+        strLit = /[A-Za-z0-9_\s]*/,
 
         emit = function (kind, lexeme) {
-            tokens.push({
-                kind: kind, 
-                lexeme: lexeme || kind, 
-                line: linenumber, 
-                col: start+1
-            })
+            tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
         };
 
     while (true) {
@@ -73,11 +68,24 @@ function scan(line, linenumber, tokens) {
 
         // One-character tokens
         else if (oneCharTokens.test(line[pos])) {
-           emit(line[pos++]) // not picking up any one-character tokens
+            emit(line[pos++]) // not picking up any one-character tokens
+        }
+
+        // String literals
+        else if (/[\'\"]/.test(line[pos])) {
+            console.log('testing for strlit line: ' + line + ', col: ' + (start+1));
+            pos++ //eat. str contents now
+            while (strLit.test(line[pos])) {
+                pos++
+                if (/[\'\"]/.test(line[pos])) {
+                    pos++//eat
+                    emit('STRLIT', line.substring(start, pos))
+                }
+            }
         }
 
         // Reserved words or identifiers
-        else if (/[A-Za-z]/.test(line[pos])) {
+        else if (/[$A-Za-z]/.test(line[pos])) {
             while (/\w/.test(line[pos]) && pos < line.length) pos++
             var word = line.substring(start, pos)
             if (definedTokens.test(word)) {
@@ -91,12 +99,6 @@ function scan(line, linenumber, tokens) {
         else if (numericLit.test(line[pos])) {
           while (numericLit.test(line[pos])) pos++
           emit('NUMLIT', line.substring(start, pos))
-        }
-
-        // Grab str lits @ here?
-        else if (strLit.test(line[pos])) {
-            while (strLit.test(line[pos])) pos++
-            emit('STRLIT', line.substring(start, pos))
         }
         
         // All else
