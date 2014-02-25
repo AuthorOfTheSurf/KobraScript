@@ -68,7 +68,8 @@ function scan(line, linenumber, tokens) {
         // String literals
         if (/[\"\']/.test(line[pos])) {
             var s = [];
-            //regex below needs improvement + refactor
+            //  regex below needs improvement + refactor
+            //  Note: if pos < line.length, it will catch the quotation marks.
             while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length) {     
                 if (line[pos] !== '\"' || line[pos] !== '\'') {
                     s = s.concat(line[pos])

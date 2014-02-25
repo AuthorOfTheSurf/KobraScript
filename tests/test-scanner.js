@@ -28,7 +28,7 @@ describe('The scanner', function () {
     //  Person.ksb, parentheses after STRLIT are not being captured
     it('properly processes a Blueprint file', function (done) {
         scan('../kobra-code/good-programs/Person.ksb', function (tokens) {
-            tokens.length.should.equal(61)
+            tokens.length.should.equal(62)
             //    First line.
             i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
             i(tokens[1]).should.equal(i({kind:'blueprint',lexeme:'blueprint',line:1,col:3}))
