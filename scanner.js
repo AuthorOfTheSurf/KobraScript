@@ -66,16 +66,17 @@ function scan(line, linenumber, tokens) {
         }
 
         // String literals
-        if (/[\"\"]/.test(line[pos])) {
+        if (/[\"\']/.test(line[pos])) {
             var s = [];
             //regex below needs improvement + refactor
             while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length) {     
-                if (line[pos] !== '\"' || line[pos] !== '\"') {
+                if (line[pos] !== '\"' || line[pos] !== '\'') {
                     s = s.concat(line[pos])
+                    console.log(s.length);
                 }
-                if (line[pos] === '\"' || line[pos] === '\"') {
+                if (line[pos] === '\"' || line[pos] === '\'') {
+                    s.pop();
                     emit('STRLIT', s.join(''))
-                    pos++
                 }
             }
         }
