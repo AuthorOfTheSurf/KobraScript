@@ -32,10 +32,10 @@ function scan(line, linenumber, tokens) {
 
     var start, 
         pos = 0,
-        threeCharTokens = /\-\*\*|:=:|end|\.\.\.|\-\-\-|\!\-\-/,
+        threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
-        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with)$/,
+        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#]/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
         numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)/,
 
         emit = function (kind, lexeme) {
@@ -66,14 +66,14 @@ function scan(line, linenumber, tokens) {
         }
 
         // String literals
-        if (/[\'\"]/.test(line[pos])) {
+        if (/[\"\"]/.test(line[pos])) {
             var s = [];
             //regex below needs improvement + refactor
             while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length) {     
-                if (line[pos] !== '\'' || line[pos] !== '\"') {
+                if (line[pos] !== '\"' || line[pos] !== '\"') {
                     s = s.concat(line[pos])
                 }
-                if (line[pos] === '\'' || line[pos] === '\"') {
+                if (line[pos] === '\"' || line[pos] === '\"') {
                     emit('STRLIT', s.join(''))
                     pos++
                 }
@@ -96,7 +96,7 @@ function scan(line, linenumber, tokens) {
             }
         }
 
-        // Numeric literals
+        // Numeric literals (are not working.)
         else if (numericLit.test(line[pos])) {
           while (numericLit.test(line[pos])) pos++
           emit('NUMLIT', line.substring(start, pos))
