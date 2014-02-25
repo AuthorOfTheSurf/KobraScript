@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
-var argv = require('minimist')(process.argv.slice(2));
+// var argv = require('minimist')(process.argv.slice(2));
+var parseArgs = require('minimist')
+var argv = parseArgs(process.argv.slice(2), opts={
+  boolean: ['t', 'a', 'o', 'i']
+})
 console.dir(argv);
 
 var scan = require('./scanner')
 var parse = require('./parser')
-var generate = require('./generator')(argv.target)
+var generate = require('./generator')('js')
 var error = require('./error')
 
 scan(argv._[0], function (tokens) {
