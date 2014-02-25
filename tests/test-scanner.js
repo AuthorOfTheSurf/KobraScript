@@ -1,3 +1,7 @@
+//  To run this test make sure Mocha is installed.
+//  Command (run in root directory):
+//  sudo npm install -g mocha
+
 var should = require('should');
 var scan = require('../scanner')
 var error = require('../error')
