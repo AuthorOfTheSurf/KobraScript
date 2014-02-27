@@ -25,7 +25,7 @@ describe('The scanner', function () {
         })
     })
 
-    //  Person.ksb, parentheses after STRLIT are not being captured
+    //  Person.ksb
     it('properly processes a Blueprint file', function (done) {
         scan('../kobra-code/good-programs/Person.ksb', function (tokens) {
             tokens.length.should.equal(62)
@@ -103,7 +103,7 @@ describe('The scanner', function () {
         })
     })
     
-    //  multioverload.ks, NUMLITS regex malfunction.
+    //  multioverload.ks
     it('reads ugly yet syntactically correct programs', function (done) {
         scan('../kobra-code/bad-programs/multioverload.ks', function (tokens) {
             tokens.length.should.equal(13)
