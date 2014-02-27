@@ -85,7 +85,7 @@ function scan(line, linenumber, tokens) {
             }
         }
 
-        // Numeric literals (are not working.)
+        // Numeric literals
         else if (numericLit.test(line[pos]) || /\-/.test(line[pos])) {
             if (/\-/.test(line[pos])) pos++
             while (numericLit.test(line[pos])) pos++
