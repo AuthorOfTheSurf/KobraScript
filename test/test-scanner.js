@@ -10,7 +10,7 @@ var i = require('util').inspect
 describe('The scanner', function () {
     //  hello-world.ks
     it('scans the simplest program', function (done) {
-        scan('../kobra-code/good-programs/hello-world.ks', function (tokens) {
+        scan('test/kobra-code/good-programs/hello-world.ks', function (tokens) {
             tokens.length.should.equal(9)
             i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
             i(tokens[1]).should.equal(i({kind:'ID',lexeme:'hello',line:1,col:3}))
@@ -27,7 +27,7 @@ describe('The scanner', function () {
 
     //  Person.ksb
     it('properly processes a Blueprint file', function (done) {
-        scan('../kobra-code/good-programs/Person.ksb', function (tokens) {
+        scan('test/kobra-code/good-programs/Person.ksb', function (tokens) {
             tokens.length.should.equal(62)
             //    First line.
             i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
@@ -105,7 +105,7 @@ describe('The scanner', function () {
     
     //  multioverload.ks
     it('reads ugly yet syntactically correct programs', function (done) {
-        scan('../kobra-code/bad-programs/multioverload.ks', function (tokens) {
+        scan('test/kobra-code/bad-programs/multioverload.ks', function (tokens) {
             tokens.length.should.equal(13)
             i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
             i(tokens[1]).should.equal(i({kind:'ID',lexeme:'x',line:1,col:3}))
