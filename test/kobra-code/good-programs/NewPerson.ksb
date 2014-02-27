@@ -1,0 +1,25 @@
+blueprint NewPerson (name, age, hairColor, exercise, weight)
+
+has:
+    name = name,
+    age = age,
+    hairColor = hairColor # "black",
+    weight = weight # 120
+
+does:
+    do_exercise = exercise # running,
+    weight = proc ():
+        say("I weigh " + x + " lbs")
+        say("I weigh " + kilos(x) + " kgs")
+    ..,
+    |kilos| = fn(x):
+        return x / 2.2
+    end
+
+synget:
+    name, age, hairColor
+
+synset:
+    hairColor
+
+defcc
