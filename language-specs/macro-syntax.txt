@@ -17,8 +17,7 @@ FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  OPENBLK  '..'  ',')*  ID  '='  FNTYPE  PA
 FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  'end'
 
 BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-BLUDEC  ::=  'construct'  ID  '('  ID  '='  EXP  (','  ID  '='  EXP)*  ')'
-        |    'construct'  ID  '('  ID  (','  ID)*  ')'
+BLUDEC  ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
 BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
 HASBLK  ::=  'has'  ':'  VARDEC?
 DOESBLK ::=  'does'  ':'  FNDEC?
