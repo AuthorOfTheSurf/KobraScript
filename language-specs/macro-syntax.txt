@@ -54,6 +54,3 @@ INCR    ::=  VAR  "++"
         |    VAR  "+="  int
         |    VAR  "-="  int
         |    VAR  "*="  int
-
-COMMENT ::=  '--'  TEXT  END
-        |    '---'  TEXT  '!--'

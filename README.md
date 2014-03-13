@@ -57,16 +57,6 @@ A function that does not return anything in KobraScript is called a procedure, w
         keep ()                                                 keep();
     end                                                     }
 
-Below is also another legal form of an if, else-if, else conditional statement, **but this form is discouraged!**
-
-    if (is_red && is_food):                                 if (is_red && is_food) {
-        eat ()                                                  eat ();
-    end else if (is_food && is_mine):                       } else if (is_food && is_mine) {
-        add_butter ()                                           add_butter ();
-    end else:                                               } else {
-        keep ()                                                 keep();
-    end                                                     }
-
 #### `for` and `while` loops
 
 For and while loops follow a similar convention to functions: using the `:` and `end` syntax.
@@ -152,12 +142,12 @@ Here is an example of a blueprint of a Person.
 ### Macrosyntax
 
     PROGRAM ::=  STMT+
-            |    BLUPRNT
+        |    BLUPRNT
 
-    BLOCK   ::=  ':'  STMT+  ('end' | '..')
+    OPENBLK ::=  ':'  STMT+
 
 
-    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'bit' | 'undefined' | 'null' | ID)  ('[]')*
+    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'undefined' | 'null' | ID)  ('[]')*
     FNTYPE  ::=  'proc' | 'fn'
 
     DECLAR  ::=  '$' (VARDEC | FNDEC)
@@ -166,39 +156,39 @@ Here is an example of a blueprint of a Person.
             |    ID  ':=:'  ID  END
     VARDEC  ::=  DEC  (','  DEC)*  END
     DEC     ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
-    FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  BLOCK  ',')*  ID  '='  FNTYPE  PARAMS  BLOCK
-    FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  BLOCK
+    FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  OPENBLK  '..'  ',')*  ID  '='  FNTYPE  PARAMS  OPENBLK  'end'
+    FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  'end'
 
-    BLUPRNT ::=  '$'  'blueprint'  ID  BLUBLK  'defcc'
-    BLUDEC  ::=  ID  '('  ID  '='  EXP  (','  ID  '='  EXP)*  ')'
-            |    ID  '('  ID  (','  ID)*  ')'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNTH*  ('..' | 'end')
-    HASBLK  ::=  'has'  '{'  VARDEC?  '}'
-    DOESBLK ::=  'does'  '{'  FNDEC?  FNDEC2* '}'
-    SYNTH   ::=  ('synset' | 'synget') '{'  (ID  ',')*  ID  '}'
+    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+    BLUDEC  ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
+    HASBLK  ::=  'has'  ':'  VARDEC?
+    DOESBLK ::=  'does'  ':'  FNDEC?
+    SYNGET   ::=  'synget'  ':'  (ID  ',')*  ID
+    SYNSET   ::=  'synset'  ':'  (ID  ',')*  ID
 
     VAR     ::=  ID
             |    VAR  '['  EXP  ']'
             |    VAR  '.'  ID
 
-    STMT    ::=  STMT END
-            |    DEC
-            |    DEC  'if'  EXP
-            |    'if'  '('  EXP  ')'  BLOCK  ('else'  'if'  '('  EXP  ')'  BLOCK)*  ('else'  '('  EXP  ')'  BLOCK)?
-            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK 
-            |    'while'  '('  EXP  ')'  BLOCK
-            |    'return'  EXP
+    STMT    ::=  STMT
+            |    DEC  END
+            |    DEC  'if'  EXP  END
+            |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'  END
+            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'  END
+            |    'while'  '('  EXP  ')'  OPENBLK  'end'  END
+            |    'return'  EXP  OPENBLK  'end'  END
 
     EXP     ::=  ('~!' | '~?')  EXP1
     EXP1    ::=  EXP2 (('**' | '-**')  EXP2)
     EXP2    ::=  EXP3 ([%*/] EXP3)*
     EXP3    ::=  EXP4 ([+-] EXP4)*
     EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP5)?
-    EXP5    ::=  ('!')?  (EXP5 | EXP6)
+    EXP5    ::=  '!'?  (EXP5 | EXP6)
     EXP6    ::=  EXP7 ('||' | '&&') EXP7
     EXP7    ::=  'true' | 'false' | 'undefined' | 'null' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
 
-    END     ::=  ';'
+    END     ::=  ';' | '\x0a'
 
     PARAM   ::=  VAR | EXP
     PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
@@ -208,18 +198,19 @@ Here is an example of a blueprint of a Person.
             |    VAR  "-="  int
             |    VAR  "*="  int
 
-    COMMENT ::=  '--'  TEXT  END
-            |    '---'  TEXT  '!--'
-
 ### Microsyntax
 
     BITS    ->  [01]*
     INT     ->  -?[\d]*
     FLOAT   ->  INT.\d*
     HEX     ->  (\d | [a-f] | [A-F])*
-    STR     ->  \w+
+    STR     ->  "\w+"
     BOOL    ->  'true'  |  'false'
     ID      ->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
+    COMMENT ->  '--'  TEXT  END
+            |   '---'  TEXT  '!--'
+
+
 
 
 
