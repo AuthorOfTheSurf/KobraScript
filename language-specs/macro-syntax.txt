@@ -21,8 +21,8 @@ BLUDEC  ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',
 BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
 HASBLK  ::=  'has'  ':'  VARDEC?
 DOESBLK ::=  'does'  ':'  FNDEC?
-SYNGET   ::=  'synget'  ':'  (ID  ',')*  ID
-SYNSET   ::=  'synset'  ':'  (ID  ',')*  ID
+SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
+SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
 
 VAR     ::=  ID
         |    VAR  '['  EXP  ']'

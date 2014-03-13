@@ -24,6 +24,8 @@ var BinaryExpression = require('./entities/binaryexpression')
 var UnaryExpression = require('./entities/unaryexpression')
 
 var Blueprint = require('./entities/blueprintdeclaration')
+var Params = require('./entities/parameters')
+var Declaration = require('./entities/singledeclaration')
 
 var tokens
 
@@ -38,10 +40,6 @@ function parseProgram() {
   return new Program(parseBlock())
 }
 
-function parseBlueprint() {
-  return new Program(parseBlueprint())
-}
-
 function parseBlock() {
   var statements = []
   do {
@@ -53,18 +51,22 @@ function parseBlock() {
 function parseBlueprint() {
   match('blueprint')
   var blueid = new VariableReference(match('ID'))
-  var p = []
   var params = new Params()
   match(':')
   match('has')
   match(':')
-  if (at('ID')) {
-    parseDec
+  var has = []
+  while (at('ID')) {
+    has.push(parseDeclaration())
   }
-
-
+  match('does')
+  match(':')
+  var does = []
+  while (at('ID')) {
+    does.push(parseFnDeclaration())
+  }
   var source = parseExpression()
-  return new Blueprint(blueid, params)
+  return new Blueprint(blueid, has, does, synget, synset)
 }
 
 function parseStatement() {
@@ -99,6 +101,17 @@ function parseDeclaration() {
   var id = match('ID')
   match('=')
   var value = parseValue()
+  return new Declaration(id, value)
+}
+
+function parseFnDeclaration() {
+  var id = match('ID')
+  match('=')
+  var fntype
+  if (at(['fn', 'proc'])) {
+    fntype = match()
+  }
+  var params =
   return new Declaration(id, value)
 }
 
