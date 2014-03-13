@@ -23,11 +23,13 @@ var VariableReference = require('./entities/variablereference')
 var BinaryExpression = require('./entities/binaryexpression')
 var UnaryExpression = require('./entities/unaryexpression')
 
+var Blueprint = require('./entities/blueprintdeclaration')
+
 var tokens
 
 module.exports = function (scanner_output) {
   tokens = scanner_output
-  var program = parseProgram()
+  var program = (at('blueprint')) ? parseBlueprint() : parseProgram()
   match('EOF')
   return program
 }
@@ -36,17 +38,37 @@ function parseProgram() {
   return new Program(parseBlock())
 }
 
+function parseBlueprint() {
+  return new Program(parseBlueprint())
+}
+
 function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-    match(';')
   } while (at(['var','ID','read','write','while']))
   return new Block(statements)
 }
 
+function parseBlueprint() {
+  match('blueprint')
+  var blueid = new VariableReference(match('ID'))
+  var p = []
+  var params = new Params()
+  match(':')
+  match('has')
+  match(':')
+  if (at('ID')) {
+    parseDec
+  }
+
+
+  var source = parseExpression()
+  return new Blueprint(blueid, params)
+}
+
 function parseStatement() {
-  if (at('var')) {
+  if (at('$')) {
     return parseVariableDeclaration()
   } else if (at('ID')) {
     return parseAssignmentStatement()
@@ -62,11 +84,18 @@ function parseStatement() {
 }
 
 function parseVariableDeclaration() {
-  match('var')
+  match('$')
   var id = match('ID')
-  match(':')
+  match('=')
   var type = parseType()
   return new VariableDeclaration(id, type)
+}
+
+function parseDeclaration() {
+  var id = match('ID')
+  match('=')
+  var type = parseType()
+  return new Declaration(id, type)
 }
 
 function parseType() {
