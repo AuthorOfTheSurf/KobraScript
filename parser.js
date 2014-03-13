@@ -85,20 +85,24 @@ function parseStatement() {
 
 function parseVariableDeclaration() {
   match('$')
-  var id = match('ID')
-  match('=')
-  var type = parseType()
-  return new VariableDeclaration(id, type)
+  var declarations = []
+  do {
+    if (at(',')) match()
+    if (at('ID')) {
+      declaration.push(parseDeclaration())
+    }
+  } while (at(','))
+  return new VariableDeclaration(declarations)
 }
 
 function parseDeclaration() {
   var id = match('ID')
   match('=')
-  var type = parseType()
-  return new Declaration(id, type)
+  var value = parseValue()
+  return new Declaration(id, value)
 }
 
-function parseType() {
+function parseValue() {
   if (at(['int','bool'])) {
     return Type.forName(match().lexeme)
   } else {
