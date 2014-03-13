@@ -35,8 +35,8 @@ function scan(line, linenumber, tokens) {
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
         oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|bitfn|intfn|floatfn|boolfn|strfn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
-        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
+        numericLit = /-?([1-9]\d*|0)(\.\d+)/, /*?([eE][+-]?\d+)?/*/ //removed this, not in grammar, check w/ Zane
 
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
