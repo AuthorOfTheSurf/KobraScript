@@ -14,8 +14,6 @@ var Block = require('./entities/block')
 var Type = require('./entities/type')
 var VariableDeclaration = require('./entities/variabledeclaration')
 var AssignmentStatement = require('./entities/assignmentstatement')
-var ReadStatement = require('./entities/readstatement')
-var WriteStatement = require('./entities/writestatement')
 var WhileStatement = require('./entities/whilestatement')
 var IntegerLiteral = require('./entities/integerliteral')
 var BooleanLiteral = require('./entities/booleanliteral')
@@ -25,7 +23,8 @@ var UnaryExpression = require('./entities/unaryexpression')
 
 var Blueprint = require('./entities/blueprintdeclaration')
 var Params = require('./entities/parameters')
-var Declaration = require('./entities/singledeclaration')
+var Fn = require('./entities/function')
+var ConditionalStatement('./entities/conditionalstatement')
 
 var tokens
 
@@ -57,7 +56,7 @@ function parseBlueprint() {
   match(':')
   var has = []
   while (at('ID')) {
-    has.push(parseDeclaration())
+    has.push(parseAssignmentStatement())
   }
   match('does')
   match(':')
@@ -65,7 +64,29 @@ function parseBlueprint() {
   while (at('ID')) {
     does.push(parseFnDeclaration())
   }
-  var source = parseExpression()
+  var synget = [],
+      synset = []
+
+  if (at('synget')) loadSynget()
+  if (at('synset')) loadSynset()
+  if (at('synget')) loadSynget()  //no order preference of synget and synset, but allows 2x synget's
+
+  function loadSynget () {
+    match('synget')
+    match(':')
+    while (at('ID')) {
+      synget.push(new VariableReference(match('ID')))
+    }
+  }
+
+  function loadSynset () {
+    match('synset')
+    match(':')
+    while (at('ID')) {
+      synget.push(new VariableReference(match('ID')))
+    }
+  }
+
   return new Blueprint(blueid, has, does, synget, synset)
 }
 
@@ -74,12 +95,10 @@ function parseStatement() {
     return parseVariableDeclaration()
   } else if (at('ID')) {
     return parseAssignmentStatement()
-  } else if (at('read')) {
-    return parseReadStatement()
-  } else if (at('write')) {
-    return parseWriteStatement()
   } else if (at('while')) {
     return parseWhileStatement()
+  } else if (at('if')) {
+    return parseConditionalStatement()
   } else {
     error('Statement expected', tokens[0])
   }
@@ -89,19 +108,10 @@ function parseVariableDeclaration() {
   match('$')
   var declarations = []
   do {
+    declaration.push(parseAssignmentStatement())
     if (at(',')) match()
-    if (at('ID')) {
-      declaration.push(parseDeclaration())
-    }
-  } while (at(','))
+  } while (at('ID'))
   return new VariableDeclaration(declarations)
-}
-
-function parseDeclaration() {
-  var id = match('ID')
-  match('=')
-  var value = parseValue()
-  return new Declaration(id, value)
 }
 
 function parseFnDeclaration() {
@@ -111,9 +121,15 @@ function parseFnDeclaration() {
   if (at(['fn', 'proc'])) {
     fntype = match()
   }
-  var params = []
-   
+  var params = parseParams()
   return new Fn(id, params, body)
+}
+
+function parseReference() {
+  /** 
+   * needs to correctly parse an id as a variable reference
+   * or a function call (i.e. including params and whatnot)
+   */
 }
 
 function parseValue() {
@@ -125,7 +141,14 @@ function parseValue() {
 }
 
 function parseParams() {
-  
+  match('(')
+  var params = []
+  while (at('ID')) {
+    params.push(new VariableReference(match('ID'))
+    if (at(',')) match()
+  }
+  match(')')
+  return params
 }
 
 function parseAssignmentStatement() {
