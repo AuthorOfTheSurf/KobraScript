@@ -24,7 +24,8 @@ var UnaryExpression = require('./entities/unaryexpression')
 var Blueprint = require('./entities/blueprintdeclaration')
 var Params = require('./entities/parameters')
 var Fn = require('./entities/function')
-var ConditionalStatement('./entities/conditionalstatement')
+var ConditionalStatement = require('./entities/conditionalstatement')
+var ForStatement = require('./entities/forstatement')
 
 var tokens
 
@@ -43,47 +44,61 @@ function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['var','ID','read','write','while']))
+  } while (at(['$','ID','for','while','if']))
   return new Block(statements)
 }
 
 function parseBlueprint() {
   match('blueprint')
   var blueid = new VariableReference(match('ID'))
-  var params = new Params()
+  var params = new parseParams()
   match(':')
+
   match('has')
   match(':')
   var has = []
   while (at('ID')) {
     has.push(parseAssignmentStatement())
+    if (at(',')) match()
   }
+
   match('does')
   match(':')
   var does = []
   while (at('ID')) {
     does.push(parseFnDeclaration())
+    if (at(',')) match()
   }
+  
   var synget = [],
       synset = []
 
-  if (at('synget')) loadSynget()
-  if (at('synset')) loadSynset()
-  if (at('synget')) loadSynget()  //no order preference of synget and synset, but allows 2x synget's
+  if (at('synget')) {
+    loadSynget()
+    loadSynset()
+  }
+  if (at('synset')) {
+    loadSynset()
+    loadSynget()
+  }
 
   function loadSynget () {
+    if (!at('synget')) return
     match('synget')
     match(':')
     while (at('ID')) {
       synget.push(new VariableReference(match('ID')))
+      if (at(',')) match()
     }
   }
 
   function loadSynset () {
+    if (!at('synset')) return
     match('synset')
     match(':')
     while (at('ID')) {
       synget.push(new VariableReference(match('ID')))
+      if (at(',')) match()
     }
   }
 
@@ -99,6 +114,8 @@ function parseStatement() {
     return parseWhileStatement()
   } else if (at('if')) {
     return parseConditionalStatement()
+  } else if (at('for')) {
+    return parseForStatement()
   } else {
     error('Statement expected', tokens[0])
   }
@@ -133,6 +150,7 @@ function parseReference() {
 }
 
 function parseValue() {
+  //still has type-sensitivity at the syntax level
   if (at(['int','bool'])) {
     return Type.forName(match().lexeme)
   } else {
@@ -158,28 +176,6 @@ function parseAssignmentStatement() {
   return new AssignmentStatement(target, source)
 }
 
-function parseReadStatement() {
-  match('read')
-  var variables = []
-  variables.push(new VariableReference(match('ID')))
-  while (at(',')) {
-    match()
-    variables.push(new VariableReference(match('ID')))
-  }
-  return new ReadStatement(variables)
-}
-
-function parseWriteStatement() {
-  match('write')
-  var expressions = []
-  expressions.push(parseExpression())
-  while (at(',')) {
-    match()
-    expressions.push(parseExpression())
-  }
-  return new WriteStatement(expressions)
-}
-
 function parseWhileStatement() {
   match('while')
   var condition = parseExpression()
@@ -188,6 +184,10 @@ function parseWhileStatement() {
   match('end')
   return new WhileStatement(condition, body)
 }  
+
+function parseForStatement() {
+  //
+}
 
 function parseExpression() {
   var left = parseExp1()
