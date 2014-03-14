@@ -111,8 +111,9 @@ function parseFnDeclaration() {
   if (at(['fn', 'proc'])) {
     fntype = match()
   }
-  var params =
-  return new Declaration(id, value)
+  var params = []
+   
+  return new Fn(id, params, body)
 }
 
 function parseValue() {
@@ -121,6 +122,10 @@ function parseValue() {
   } else {
     error('Type expected', tokens[0])
   }
+}
+
+function parseParams() {
+  
 }
 
 function parseAssignmentStatement() {
