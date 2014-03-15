@@ -9,10 +9,9 @@ FNTYPE  ::=  'proc' | 'fn'
 
 DECLAR  ::=  '$' (VARDEC | FNDEC)
         |    FNDEC2
-ASSIGN  ::=  ID  '='  EXP  END
+VARDEC  ::=  ASSIGN  (','  ASSIGN)*  END
+ASSIGN  ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
         |    ID  ':=:'  ID  END
-VARDEC  ::=  DEC  (','  DEC)*  END
-DEC     ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
 FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  OPENBLK  '..'  ',')*  ID  '='  FNTYPE  PARAMS  OPENBLK  'end'
 FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  'end'
 
@@ -28,9 +27,9 @@ VAR     ::=  ID
         |    VAR  '['  EXP  ']'
         |    VAR  '.'  ID
 
-STMT    ::=  STMT
-        |    DEC  END
-        |    DEC  'if'  EXP  END
+STMT    ::=  DECLAR
+        |    ASSIGN  END
+        |    ASSIGN  'if'  EXP  END
         |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'  END
         |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'  END
         |    'while'  '('  EXP  ')'  OPENBLK  'end'  END

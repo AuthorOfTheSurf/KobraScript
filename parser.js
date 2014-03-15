@@ -26,8 +26,11 @@ var Params = require('./entities/parameters')
 var Fn = require('./entities/function')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var ForStatement = require('./entities/forstatement')
+var ObjectLiteral = require('./entities/objectliteral')
+var ArrayLiteral = require('./entities/arrayliteral')
 
 var tokens
+
 
 module.exports = function (scanner_output) {
   tokens = scanner_output
@@ -51,7 +54,7 @@ function parseBlock() {
 function parseBlueprint() {
   match('blueprint')
   var blueid = new VariableReference(match('ID'))
-  var params = new parseParams()
+  var params = new Params(parseParams())
   match(':')
 
   match('has')
@@ -124,10 +127,11 @@ function parseStatement() {
 function parseVariableDeclaration() {
   match('$')
   var declarations = []
-  do {
-    declarations.push(parseAssignmentStatement())
-    if (at(',')) match()
-  } while (at('ID'))
+  declaration.push(parseAssignmentStatement())
+  while (at(',')) {
+    match()
+    declaration.push(parseAssignmentStatement())
+  }
   return new VariableDeclaration(declarations)
 }
 
@@ -142,20 +146,49 @@ function parseFnDeclaration() {
   return new Fn(id, params, body)
 }
 
-function parseReference() {
-  /** 
-   * needs to correctly parse an id as a variable reference
-   * or a function call (i.e. including params and whatnot)
-   */
-}
-
+/*  This is anything that can be assigned to a value! */
 function parseValue() {
-  //still has type-sensitivity at the syntax level
-  if (at(['int','bool'])) {
+  if (at('{')) {
+    return parseObjectLiteral()
+  }
+  else if (at('[')) {
+    return parseArrayLiteral()
+  }
+  else if (at(['INTLIT','bool'])) {
     return Type.forName(match().lexeme)
   } else {
     error('Type expected', tokens[0])
   }
+}
+
+function parseObjectLiteral() {
+  var properties = []
+  function property (id, value) {
+    return {id: id, value: value}
+  }
+  match('{')
+  if (at('ID')) {
+    properties.push(property(new VariableReference(match('ID')), parseValue()))
+  }
+  while (at(',')) {
+    match()
+    var id = match('ID')
+    match(':')
+    var value = parseValue()
+    properties.push(property(id, value))
+  }
+  match('}')
+  return new Object(properties)
+}
+
+function parseArrayLiteral() {
+  var elements = []
+  match('[')
+  while(at['ID','{','[') {
+    elements.push(parseValue())
+  }
+  match(']')
+  return ArrayLiteral(elements)
 }
 
 function parseParams() {
