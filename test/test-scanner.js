@@ -125,4 +125,27 @@ describe('The scanner', function () {
         })
     })
 
+    //  object.ks
+    it('reads our new object syntax', function (done) {
+        scan('test/kobra-code/good-programs/object.ks', function (tokens) {
+            //tokens.length.should.equal()
+            i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
+            i(tokens[1]).should.equal(i({kind:'ID',lexeme:'bicycle',line:1,col:3}))
+            i(tokens[2]).should.equal(i({kind:'=',lexeme:'=',line:1,col:11}))
+            /*i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:})) */
+            done()
+        })
+    })
+
 })

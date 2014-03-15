@@ -125,7 +125,7 @@ function parseVariableDeclaration() {
   match('$')
   var declarations = []
   do {
-    declaration.push(parseAssignmentStatement())
+    declarations.push(parseAssignmentStatement())
     if (at(',')) match()
   } while (at('ID'))
   return new VariableDeclaration(declarations)
