@@ -162,7 +162,7 @@ function parseParams() {
   match('(')
   var params = []
   while (at('ID')) {
-    params.push(new VariableReference(match('ID'))
+    params.push(new VariableReference(match('ID')))
     if (at(',')) match()
   }
   match(')')
