@@ -34,9 +34,10 @@ function scan(line, linenumber, tokens) {
         pos = 0,
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
-        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#\.]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|true|false|fn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
-        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/
+        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#]/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
+        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
+        booleanLit = /^(?:true|false)$/,
 
         emit = function (kind, lexeme) {
             tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
@@ -95,6 +96,23 @@ function scan(line, linenumber, tokens) {
         // One-character tokens
         else if (oneCharTokens.test(line[pos])) {
             emit(line[pos++])
+        }
+
+        // Boolean literals
+        else if (/[tf]/.test(line[pos])) {
+            if (line[pos] === 't') {
+                var word = line.slice(pos, pos + 4)
+                if (booleanLit.test(word)) {
+                    emit('BOOLIT', word)
+                    pos += 4
+                }
+            } else if (line[pos] === 'f') {
+                var word = line.slice(pos, pos + 5)
+                if (booleanLit.test(word)) {
+                    emit('BOOLIT', word)
+                    pos += 5
+                }
+            }
         }
 
         // Reserved words or identifiers
