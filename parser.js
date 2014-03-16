@@ -28,13 +28,14 @@ var ConditionalStatement = require('./entities/conditionalstatement')
 var ForStatement = require('./entities/forstatement')
 var ObjectLiteral = require('./entities/objectliteral')
 var ArrayLiteral = require('./entities/arrayliteral')
+var StringLiteral = require('./entities/stringliteral')
 
 var tokens
 
 
 module.exports = function (scanner_output) {
   tokens = scanner_output
-  var program = (at('blueprint')) ? parseBlueprint() : parseProgram()
+  var program = at('blueprint') ? parseBlueprint() : parseProgram()
   match('EOF')
   return program
 }
@@ -60,51 +61,58 @@ function parseBlueprint() {
   match('has')
   match(':')
   var has = []
-  while (at('ID')) {
+  if (at('ID')) {
     has.push(parseAssignmentStatement())
-    if (at(',')) match()
+    while (at(',')) {
+      match()
+      has.push(parseAssignmentStatement())
   }
 
   match('does')
   match(':')
   var does = []
-  while (at('ID')) {
+  if (at('ID')) {
     does.push(parseFnDeclaration())
-    if (at(',')) match()
+    while (at(',')) {
+      match()
+      does.push(parseFnDeclaration())
+    }
   }
   
-  var synget = [],
-      synset = []
-
+  var synget = synset = []
   if (at('synget')) {
     loadSynget()
     loadSynset()
   }
-  if (at('synset')) {
+  else if (at('synset')) {
     loadSynset()
     loadSynget()
   }
+  match('defcc')
 
   function loadSynget () {
-    if (!at('synget')) return
     match('synget')
     match(':')
-    while (at('ID')) {
+    if (at('ID')) {
       synget.push(new VariableReference(match('ID')))
-      if (at(',')) match()
+      while (at(',')) {
+        match()
+        synget.push(new VariableReference(match('ID')))
+      }
     }
   }
 
   function loadSynset () {
-    if (!at('synset')) return
     match('synset')
     match(':')
-    while (at('ID')) {
+    if (at('ID')) {
       synget.push(new VariableReference(match('ID')))
-      if (at(',')) match()
+      while (at(',')) {
+        match()
+        synget.push(new VariableReference(match('ID')))
+      }
     }
   }
-
   return new Blueprint(blueid, has, does, synget, synset)
 }
 
@@ -135,46 +143,65 @@ function parseVariableDeclaration() {
   return new VariableDeclaration(declarations)
 }
 
-function parseFnDeclaration() {
+function parseFnDeclaration(expectingDotDot) {
   var id = match('ID')
   match('=')
   var fntype
   if (at(['fn', 'proc'])) {
     fntype = match()
+  } else {
+    error('Illegal function type', tokens[0])
   }
   var params = parseParams()
+  match(':')
+  var body = parseBlock()
+  if (expectingDotDot) {
+    match('..')
+  } else if (at['..', 'end']) {
+    match()
+  } else {
+    error('Illegal end of function token', tokens[0])
+  }
   return new Fn(id, params, body)
 }
 
-/*  This is anything that can be assigned to a value! */
+/*  This is anything that can be assigned to an id; RHS values */
 function parseValue() {
   if (at('{')) {
     return parseObjectLiteral()
-  }
-  else if (at('[')) {
+  } else if (at('[')) {
     return parseArrayLiteral()
-  }
-  else if (at(['INTLIT','bool'])) {
-    return Type.forName(match().lexeme)
+  } else if (at('INTLIT')) {
+    return new IntegerLiteral(match())
+  } else if (at('BOOLIT')) {
+    return new BooleanLiteral(match())
+  } else if (at('STRLIT')) {
+    return new StringLiteral(match())
+  } else if (at('ID')) {
+    return new VariableReference(match())
   } else {
-    error('Type expected', tokens[0])
+    return parseExpression()
   }
 }
 
 function parseObjectLiteral() {
-  var properties = []
-  function property (id, value) {
-    return {id: id, value: value}
-  }
+  var properties = [],
+      id,
+      value,
+      property = function (id, value) return {id: id, value: value}
+
   match('{')
   if (at('ID')) {
-    properties.push(property(new VariableReference(match('ID')), parseValue()))
+    id = new VariableReference(match('ID'))
+    match(':')
+    value = parseValue()
+    properties.push(property(id, value))
   }
   while (at(',')) {
     match()
-    var id = match('ID')
+    id = new VariableReference(match('ID'))
     match(':')
-    var value = parseValue()
+    value = parseValue()
     properties.push(property(id, value))
   }
   match('}')
@@ -184,19 +211,22 @@ function parseObjectLiteral() {
 function parseArrayLiteral() {
   var elements = []
   match('[')
-  while(at['ID','{','[']) {
+  while(!at[']']) {
     elements.push(parseValue())
   }
   match(']')
-  return ArrayLiteral(elements)
+  return new ArrayLiteral(elements)
 }
 
 function parseParams() {
   match('(')
   var params = []
-  while (at('ID')) {
-    params.push(new VariableReference(match('ID')))
-    if (at(',')) match()
+  if (!at(')')) {
+    params.push(parseValue())
+    while (at(',')) {
+      match()
+      params.push(parseValue())
+    }
   }
   match(')')
   return params
@@ -205,8 +235,8 @@ function parseParams() {
 function parseAssignmentStatement() {
   var target = new VariableReference(match('ID'))
   match('=')
-  var source = parseExpression()
-  return new AssignmentStatement(target, source)
+  var value = parseExpression()
+  return new AssignmentStatement(target, value)
 }
 
 function parseWhileStatement() {
@@ -219,7 +249,64 @@ function parseWhileStatement() {
 }  
 
 function parseForStatement() {
-  //
+  match('for')
+  match('(')
+  var assignments = []
+  assignments.push(parseAssignmentStatement())
+  while (at(',')) {
+    match()
+    assignments.push(parseAssignmentStatement())    
+  }
+  match(';')
+  var condition = parseExpression()
+  match(';')
+  var after = []
+  after.push(parseStatement())
+  while (at(',')) {
+    match()
+    assignments.push(parseStatement()) 
+  }
+  match(')')
+  match(':')
+  var body = parseBlock()
+  match('end')
+  return new ForStatement(assignments, condition, after, body)
+}
+
+function parseConditionalExpression() {
+  var checklist = [],
+      check, action, defaultAct,
+      elseEncountered = false,
+      conditional = function(check, action) return {check: check, action: action}
+  
+  match('if')
+  match('(')
+  check = parseExpression()
+  match(')')
+  match(':')
+  action = parseBlock()
+  checklist.push(conditional(check, action))
+  while(at('..') && !elseEncountered) {
+    match()
+    match('else')
+    if (at('if')) {
+      match('if')
+      match('(')
+      check = parseExpression()
+      match(')')
+      match(':')
+      action = parseBlock()
+      checklist.push(conditional(check, action))
+    } else if (at(':')) {
+      match()
+      defaultAct = parseBlock()
+      elseEncountered = true
+    } else {
+      error('Illegal token in conditional statement', tokens[0])
+    }
+  }
+  match('end')
+  return new ConditionalStatement(checklist, defaultAct)
 }
 
 function parseExpression() {
