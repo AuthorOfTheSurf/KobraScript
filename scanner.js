@@ -87,10 +87,14 @@ function scan(line, linenumber, tokens) {
         }
 
         // Numeric literals
-        else if (numericLit.test(line[pos]) || /\-/.test(line[pos])) {
+        else if (/[\d\-]/.test(line[pos])) {
+            var number = [];
             if (/\-/.test(line[pos])) pos++
-            while (numericLit.test(line[pos])) pos++
-            emit('NUMLIT', line.substring(start, pos))
+            while (numericLit.test(line[++pos])) {
+                number = number.concat(line[pos])
+            }
+            console.log(s)
+            emit('NUMLIT', number.join(""))
         }
 
         // One-character tokens
