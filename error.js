@@ -15,7 +15,9 @@ function error(message, location) {
     if (location.col) {
       message = message.concat(', column ', location.col)
     }
-  }
+  } else if (location && location.path) {
+    message = message.concat(', found ', location.path)
+  } 
   console.log('Error: ' + message)
   error.count++
 }
