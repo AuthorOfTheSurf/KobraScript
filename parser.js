@@ -188,7 +188,7 @@ function parseObjectLiteral() {
   var properties = [],
       id,
       value,
-      property = function (id, value) return {id: id, value: value}
+      property = function (id, value) {return {id: id, value: value}} 
 
   match('{')
   if (at('ID')) {
@@ -277,7 +277,7 @@ function parseConditionalExpression() {
   var checklist = [],
       check, action, defaultAct,
       elseEncountered = false,
-      conditional = function(check, action) return {check: check, action: action}
+      conditional = function(check, action) {return {check: check, action: action}}
   
   match('if')
   match('(')
@@ -405,3 +405,4 @@ function match(symbol) {
     error('Expected ' + symbol + ' but found ' + tokens[0].kind, tokens[0])
   }
 }
+
