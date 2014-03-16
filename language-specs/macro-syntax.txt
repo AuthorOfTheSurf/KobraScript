@@ -23,7 +23,7 @@ VAR     ::=  ID
 VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
         |    EASYFN
 ASSIGN  ::=  ID  '=' VALUE
-        |    ID  ':=:'  ID  END
+        |    ID  ':=:'  ID
 PRPRTY  ::=  ID  ':' VALUE
 
 FNDEC   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')

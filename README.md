@@ -14,40 +14,44 @@ In KobraScript, variable declarations are simplified to one character: `$`.
 
     $ name = "Samson"                                       var name = "Samson";
 
-    $ a, b, c = 5, 12, 13                                   var a = 5, b = 12, c = 13;
+    $ likesMusic = true,                                    var likesMusic = true,
+      likesJazz = true                                          likesJazz;
 
-    $ is_red = true,                                        var is_red = true,
-      is_food = false,                                          is_food = false,
-      is_mine = true                                            is_mine = true;
+    $ isRed = true,                                         var isRed = true,
+      isFood = false,                                          isFood = false,
+      isMine = true                                            isMine = true;
 
 Variables with uninitialized values are set to undefined.
 
     $ total                                                 var total = undefined;
 
 #### Functions
-Functions in KobraScript are declared with `fn`, with opening and closing characters `:` and `end`, respectively.
+Functions in KobraScript are declared with `fn`, with open with `:` and close with `end`, or `..` if declared consecutively.
 
-    fn average_intake (x):
-        $ total = 0
-        for ($ i = 0; i < x.length; i++):
-            total = total + x[i]
-        end  
-        say(total)
-        return total / x.length
-    end
-
-A one-line function has this syntax, with statements separated by `;`.
+    fn average_intake (x):                                  function averageIntake (x) {
+        $ total = 0                                             var total = 0;
+        for ($ i = 0; i < x.length; i++):                       for (var i = 0; i < x.length; i++) {
+            total = total + x[i]                                    total = total + x[i]
+        end                                                     }
+        say(total)                                              console.log(total)
+        return total / x.length                                 return total / x.length
+    end                                                     }
     
-    fn test (): $ f = 1; return f; end
+    $ getSoup = fn (): return Res.soupOfTheDay() ..,        var getSoup = function () {return Res.soupOfTheDay()},
+      getDrink = fn (): return Res.specdrinks ..,               getDrink = function () {return Res.spacdrinks},
+      placeOrder = fn (item, quantity):                         placeOrder = function (item, quantity) {
+          Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity)
+          return true                                               return true
+      end                                                       };
 
-A function that does not return anything in KobraScript is called a procedure, written as `proc`. These have a special declaration, shown below.
+A subroutine that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and are expected to have a return statement.
 
-    proc print_intake (y):
-        say(average_intake(y))
-    end
+    proc print_intake (y):                                  function printIntake (y) {
+        say(average_intake(y))                                  console.log(averageIntake(y))
+    end                                                     }
 
 #### `if`-`else` Conditions
-`If` and `else` conditions follow a similar paradigm as functions. In KobraScript, `if`-`else` conditional statement blocks should conclude with `..` to increase readability.
+In KobraScript the `if`-`else` statement is written with a '..' between conditions and 'end' after the final block to signal the conclusion of the statement. Marvel in the beauty of the KobraScript.
 
     if (is_red && is_food):                                 if (is_red && is_food) {
         eat ()                                                  eat ();
@@ -58,8 +62,7 @@ A function that does not return anything in KobraScript is called a procedure, w
     end                                                     }
 
 #### `for` and `while` loops
-
-For and while loops follow a similar convention to functions: using the `:` and `end` syntax.
+For and while loops look as expected, using the `:` and `end` blocking syntax.
 
     $ a = 0 -- A test variable for loops.                   var a = 0; // A test variable for loops.
 
@@ -73,29 +76,28 @@ For and while loops follow a similar convention to functions: using the `:` and 
 
 
 #### Objects
-Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else.
+Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else. Properties in objects are assigned using the `:` with `,` delimiting declarations.
 
-    $ bicycle = {
-        frame = "aluminum",
-        year = 2009,
-        gears = 10,
-        speed = 12.7,
-        
-        move = proc ():
-            Transform.translate(FORWARD * this.speed)
-        end,
-        upgrade_speed = fn ():
-            return this.speed = this.speed * 1.1
-        end,
-        get_frame = fn (): return this.frame; end
-    }
+    $ bicycle = {                                           var bicycle = {
+        frame: "aluminum",                                          frame: "aluminum",
+        year: 2009,                                                 year: 2009,
+        gears: 10,                                                  gears: 10,
+        speed: 12.7,                                                speed: 12.7,                           
+        move: proc ():                                              move: function () {
+            Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed)
+        ..,                                                         },
+        upgrade_speed: fn ():                                       upgradeSpeed: function () {
+            return this.speed = this.speed * 1.1                        return this.speed = this.speed * 1.1
+        ..,                                                         },
+        get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame}
+    }                                                       }
 
 #### Blueprints
 Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
 To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages.
     
-    $ p = construct Person(name = "Joe", age = 18)
+    $ p = construct Person(name = "Joe", age = 18)          var p = new Person("Joe", 18)
 
 Blueprints consists of 4 parts:
 
@@ -117,87 +119,92 @@ Blueprints consists of 4 parts:
 Here is an example of a blueprint of a Person.  
 
     $ blueprint Person (name, age, hairColor, exercise)
-    has {
-        name = name,
-        age = age,
-        hairColor = hairColor # "black" 
-    }
-    does {
-        do_exercise = exercise # running,
-        running = proc ():
+    has:
+        name: name,
+        age: age,
+        hairColor: hairColor # "black"
+    
+    does:
+        do_exercise: exercise # running,
+        running: proc ():
             say("26.2 miles")
         end
-    }
-    synget {
+    
+    synget:
         name, age, hairColor
-    }
-    synset {
+    
+    synset:
         hairColor
-    }
+    
     defcc
 
 #### Arrays    
     $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
+    $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false]
 
 ### Macrosyntax
 
-    PROGRAM ::=  STMT+
-        |    BLUPRNT
+    /**
+     * KobraScript Syntax v.1.2
+     */
 
+    PROGRAM ::=  STMT+
+            |    BLUPRNT
     OPENBLK ::=  ':'  STMT+
 
-
-    TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'undefined' | 'null' | ID)  ('[]')*
     FNTYPE  ::=  'proc' | 'fn'
-
-    DECLAR  ::=  '$' (VARDEC | FNDEC)
-            |    FNDEC2
-    ASSIGN  ::=  ID  '='  EXP  END
-            |    ID  ':=:'  ID  END
-    VARDEC  ::=  DEC  (','  DEC)*  END
-    DEC     ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
-    FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  OPENBLK  '..'  ',')*  ID  '='  FNTYPE  PARAMS  OPENBLK  'end'
-    FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  'end'
-
-    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-    BLUDEC  ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
-    HASBLK  ::=  'has'  ':'  VARDEC?
-    DOESBLK ::=  'does'  ':'  FNDEC?
-    SYNGET   ::=  'synget'  ':'  (ID  ',')*  ID
-    SYNSET   ::=  'synset'  ':'  (ID  ',')*  ID
-
+    VALUE   ::   VAR
+            |    EXP  ('#'  EXP)? 
+            |    MAKE
+            |    FNDEC
+            |    FNCALL
     VAR     ::=  ID
             |    VAR  '['  EXP  ']'
             |    VAR  '.'  ID
+            |    EASYFN
 
-    STMT    ::=  STMT
-            |    DEC  END
-            |    DEC  'if'  EXP  END
-            |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'  END
-            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'  END
-            |    'while'  '('  EXP  ')'  OPENBLK  'end'  END
-            |    'return'  EXP  OPENBLK  'end'  END
+    VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
+            |    EASYFN
+    ASSIGN  ::=  ID  '=' VALUE
+            |    ID  ':=:'  ID
+    PRPRTY  ::=  ID  ':' VALUE
+
+    FNDEC   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+    EASYFN  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  ('..' | 'end')
+    FNCALL  ::=  VAR PARAMS
+
+    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
+    HASBLK  ::=  'has'  ':'  VARDEC?
+    DOESBLK ::=  'does'  ':'  FNDEC?
+    SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
+    SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
+
+    STMT    ::=  VARDEC
+            |    ASSIGN
+            |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+            |    'while'  '('  EXP  ')'  OPENBLK  'end'
+            |    'return'  EXP  OPENBLK  'end'
 
     EXP     ::=  ('~!' | '~?')  EXP1
     EXP1    ::=  EXP2 (('**' | '-**')  EXP2)
     EXP2    ::=  EXP3 ([%*/] EXP3)*
     EXP3    ::=  EXP4 ([+-] EXP4)*
-    EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP5)?
-    EXP5    ::=  '!'?  (EXP5 | EXP6)
+    EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is' | '-^') EXP5)?
+    EXP5    ::=  '!'?  EXP6
     EXP6    ::=  EXP7 ('||' | '&&') EXP7
-    EXP7    ::=  'true' | 'false' | 'undefined' | 'null' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
-
-    END     ::=  ';' | '\x0a'
+    EXP7    ::=  'undefined' | 'null' | BOOLIT | STRLIT | INTLIT | ID | '(' EXP ')'
 
     PARAM   ::=  VAR | EXP
     PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
-    INCR    ::=  VAR  "++"
-            |    VAR  "--"
-            |    VAR  "+="  int
-            |    VAR  "-="  int
-            |    VAR  "*="  int
-
+    INCR    ::=  VAR  "++" | "++"  VAR
+            |    VAR  "--" | "-^"  VAR
+            |    VAR  "+="  INTLIT
+            |    VAR  "-="  INTLIT
+            |    VAR  "*="  INTLIT
+            |    VAR  "%="  INTLIT
 ### Microsyntax
 
     BITS    ->  [01]*
