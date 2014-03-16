@@ -38,16 +38,27 @@ function scan(line, linenumber, tokens) {
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
         numericLit = /([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
         booleanLit = /^(?:true|false)$/,
+        oneCharEscapeChars = /[bfnrtv0\"\']/,
+        controlEscapeChars = /c[a-zA-z]/,
+        uniEscapeChars = /u[a-fA-F0-9]{4}/,
+        hexEscapeCharacters = /x[a-fA-F0-9]{2}/
 
-        emit = function (kind, lexeme) {
-            tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
+        emit = function (kind, lexeme, isEmpty) {
+            if (isEmpty) {
+                tokens.push({kind: kind, lexeme: '', line: linenumber, col: start+1})
+            } else {
+                tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
+            }
+        },
+
+        skipSpaces = function () {
+            while (/\s/.test(line[pos])) pos++
+            start = pos
         };
 
     while (true) {
 
-        // Skip spaces
-        while (/\s/.test(line[pos])) pos++
-        start = pos
+        skipSpaces()
 
         // Nothing on the line
         if (pos >= line.length) break
@@ -59,7 +70,12 @@ function scan(line, linenumber, tokens) {
         if (threeCharTokens.test(line.substring(pos, pos+3))) {
             emit(line.substring(pos, pos+3))
             pos += 3
+            skipSpaces()
         }
+
+        //  Capture for Boolean literals
+        var trueTest = line.slice(pos, pos + 4)
+        var falseTest = line.slice(pos, pos + 5)
 
         // Two-character tokens
         if (twoCharTokens.test(line.substring(pos, pos+2))) {
@@ -69,23 +85,45 @@ function scan(line, linenumber, tokens) {
             start = pos
         }
 
-        //  Capture for Boolean literals
-        var trueTest = line.slice(pos, pos + 4)
-        var falseTest = line.slice(pos, pos + 5)
-
         // String literals
-        if (/[\"\']/.test(line[pos])) {
+        else if (/[\"\']/.test(line[pos])) {
             var s = [],
-                parenCheck = true;
-            //  regex below needs improvement + refactor
-            while (/[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/.test(line[++pos]) && pos < line.length && parenCheck) {     
-                if (line[pos] !== '\"' || line[pos] !== '\'') {
+                parenCheck = true,
+                emptyString = (line[pos+1] === '\"' || line[pos+1] === '\'')
+                //  Line continuation? Someday we might.
+            if (emptyString) {
+                emit('STRLIT', "", true)
+            }
+            //  old regex, needed improvement + refactor
+            //  var stringRegex = /[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/
+            //  implemented /.+/ instead
+            while (/.+/.test(line[++pos]) && pos < line.length && parenCheck && !emptyString) {
+                //  Checks for escape characters
+                //  Link below helped immensely:
+                //  http://mathiasbynens.be/notes/javascript-escapes    
+                if (line[pos] === '\\') {
                     s = s.concat(line[pos])
-                }
-                if (line[pos] === '\"' || line[pos] === '\'') {
-                    s.pop();
+                    console.log(line[pos+1])
+                    if (oneCharEscapeChars.test(line.substring(pos+1, pos+2))) {
+                        s = s.concat(line.substring(pos+1, pos+2))
+                        pos++
+                    } else if (controlEscapeChars.test(line.substring(pos+1, pos+3))) {
+                        s = s.concat(line.substring(pos+1, pos+3))
+                        pos += 2
+                    } else if (hexEscapeCharacters.test(line.substring(pos+1, pos+4))) {
+                        s = s.concat(line.substring())
+                        pos += 4
+                    } else if (uniEscapeChars.test(line.substring(pos+1, pos+6))) {
+                        s = s.concat(line.substring(pos+1, pos+6))
+                        pos += 5
+                    } else {
+                        pos++
+                    }
+                } else if (line[pos] === '\"' || line[pos] === '\'') {
                     parenCheck = false;
                     emit('STRLIT', s.join(''))
+                } else {
+                    s = s.concat(line[pos])
                 }
             }
         }
