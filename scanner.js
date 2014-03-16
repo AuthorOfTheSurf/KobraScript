@@ -110,8 +110,8 @@ function scan(line, linenumber, tokens) {
                         s = s.concat(line.substring(pos+1, pos+3))
                         pos += 2
                     } else if (hexEscapeCharacters.test(line.substring(pos+1, pos+4))) {
-                        s = s.concat(line.substring())
-                        pos += 4
+                        s = s.concat(line.substring(pos+1, pos+4))
+                        pos += 3
                     } else if (uniEscapeChars.test(line.substring(pos+1, pos+6))) {
                         s = s.concat(line.substring(pos+1, pos+6))
                         pos += 5
