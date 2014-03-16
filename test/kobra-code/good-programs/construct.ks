@@ -1,0 +1,1 @@
+$ a = construct NewPerson(name = "Joe", age = 18)
