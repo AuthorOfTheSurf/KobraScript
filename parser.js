@@ -184,7 +184,7 @@ function parseObjectLiteral() {
 function parseArrayLiteral() {
   var elements = []
   match('[')
-  while(at['ID','{','[') {
+  while(at['ID','{','[']) {
     elements.push(parseValue())
   }
   match(']')

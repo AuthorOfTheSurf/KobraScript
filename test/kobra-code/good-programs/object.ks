@@ -3,6 +3,7 @@ $ bicycle = {
         year = 2009,
         gears = 10,
         speed = 12.7,
+        derp = true,
         
         move = proc ():
             Transform.translate(FORWARD * this.speed)

@@ -34,9 +34,9 @@ function scan(line, linenumber, tokens) {
         pos = 0,
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
-        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#]/,
+        oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#\.]/,
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say)$/,
-        numericLit = /-?([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
+        numericLit = /([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
         booleanLit = /^(?:true|false)$/,
 
         emit = function (kind, lexeme) {
@@ -44,6 +44,7 @@ function scan(line, linenumber, tokens) {
         };
 
     while (true) {
+
         // Skip spaces
         while (/\s/.test(line[pos])) pos++
         start = pos
@@ -68,6 +69,9 @@ function scan(line, linenumber, tokens) {
             start = pos
         }
 
+        //  Capture for Boolean literals
+        var trueTest = line.slice(pos, pos + 4)
+        var falseTest = line.slice(pos, pos + 5)
 
         // String literals
         if (/[\"\']/.test(line[pos])) {
@@ -89,12 +93,12 @@ function scan(line, linenumber, tokens) {
         // Numeric literals
         else if (/[\d\-]/.test(line[pos])) {
             var number = [];
-            if (/\-/.test(line[pos])) pos++
-            while (numericLit.test(line[++pos])) {
-                number = number.concat(line[pos])
+            if (/\-/.test(line[pos])) number.push(line[pos++])
+            while (/[\deE\.]/.test(line[pos]) && pos < line.length) {
+                number.push(line[pos++])
             }
-            console.log(s)
-            emit('NUMLIT', number.join(""))
+            number = number.join('')
+            if (numericLit.test(number)) emit('NUMLIT', number)
         }
 
         // One-character tokens
@@ -103,19 +107,13 @@ function scan(line, linenumber, tokens) {
         }
 
         // Boolean literals
-        else if (/[tf]/.test(line[pos])) {
-            if (line[pos] === 't') {
-                var word = line.slice(pos, pos + 4)
-                if (booleanLit.test(word)) {
-                    emit('BOOLIT', word)
-                    pos += 4
-                }
-            } else if (line[pos] === 'f') {
-                var word = line.slice(pos, pos + 5)
-                if (booleanLit.test(word)) {
-                    emit('BOOLIT', word)
-                    pos += 5
-                }
+        else if (booleanLit.test(trueTest) || booleanLit.test(falseTest)) {
+            if (booleanLit.test(trueTest)) {
+                emit('BOOLIT', trueTest)
+                pos += 4
+            } else {
+                emit('BOOLIT', falseTest)
+                pos += 5
             }
         }
 
