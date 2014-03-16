@@ -103,7 +103,6 @@ function scan(line, linenumber, tokens) {
                 //  http://mathiasbynens.be/notes/javascript-escapes    
                 if (line[pos] === '\\') {
                     s = s.concat(line[pos])
-                    console.log(line[pos+1])
                     if (oneCharEscapeChars.test(line.substring(pos+1, pos+2))) {
                         s = s.concat(line.substring(pos+1, pos+2))
                         pos++
