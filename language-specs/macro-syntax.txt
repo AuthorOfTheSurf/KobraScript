@@ -1,55 +1,64 @@
+/**
+ * This is regarded as the the most up to date specification of KS
+ * KobraScript Syntax v.1.2
+ * 
+ * Absent: specification for increments (pre/post) 
+ */
+
 PROGRAM ::=  STMT+
         |    BLUPRNT
-
 OPENBLK ::=  ':'  STMT+
 
-
-TYPE    ::=  ('bool' | 'char' | 'int' | 'float' | 'str' | 'undefined' | 'null' | ID)  ('[]')*
 FNTYPE  ::=  'proc' | 'fn'
+VALUE   ::   VAR
+        |    EXP  ('#'  EXP)? 
+        |    MAKE
+        |    FNDEC
+        |    FNCALL
+VAR     ::=  ID
+        |    VAR  '['  EXP  ']'
+        |    VAR  '.'  ID
+        |    EASYFN
 
-DECLAR  ::=  '$' (VARDEC | FNDEC)
-        |    FNDEC2
-VARDEC  ::=  ASSIGN  (','  ASSIGN)*  END
-ASSIGN  ::=  ID  '=' (BLUDEC | EXP  ('#'  EXP)?)
+VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
+        |    EASYFN
+ASSIGN  ::=  ID  '=' VALUE
         |    ID  ':=:'  ID  END
-FNDEC   ::=  (ID  '='  FNTYPE  PARAMS  OPENBLK  '..'  ',')*  ID  '='  FNTYPE  PARAMS  OPENBLK  'end'
-FNDEC2  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  'end'
+PRPRTY  ::=  ID  ':' VALUE
+
+FNDEC   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+EASYFN  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  ('..' | 'end')
+FNCALL  ::=  VAR PARAMS
 
 BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-BLUDEC  ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
 BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
 HASBLK  ::=  'has'  ':'  VARDEC?
 DOESBLK ::=  'does'  ':'  FNDEC?
 SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
 SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
 
-VAR     ::=  ID
-        |    VAR  '['  EXP  ']'
-        |    VAR  '.'  ID
-
-STMT    ::=  DECLAR
-        |    ASSIGN  END
-        |    ASSIGN  'if'  EXP  END
-        |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'  END
-        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'  END
-        |    'while'  '('  EXP  ')'  OPENBLK  'end'  END
-        |    'return'  EXP  OPENBLK  'end'  END
+STMT    ::=  VARDEC
+        |    ASSIGN
+        |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+        |    'while'  '('  EXP  ')'  OPENBLK  'end'
+        |    'return'  EXP  OPENBLK  'end'
 
 EXP     ::=  ('~!' | '~?')  EXP1
 EXP1    ::=  EXP2 (('**' | '-**')  EXP2)
 EXP2    ::=  EXP3 ([%*/] EXP3)*
 EXP3    ::=  EXP4 ([+-] EXP4)*
-EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP5)?
-EXP5    ::=  '!'?  (EXP5 | EXP6)
+EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is' | '-^') EXP5)?
+EXP5    ::=  '!'?  EXP6
 EXP6    ::=  EXP7 ('||' | '&&') EXP7
-EXP7    ::=  'true' | 'false' | 'undefined' | 'null' | STR | INT | FLOAT | HEX | ID | '(' EXP ')'
-
-END     ::=  ';' | '\x0a'
+EXP7    ::=  'undefined' | 'null' | BOOLIT | STRLIT | INTLIT | ID | '(' EXP ')'
 
 PARAM   ::=  VAR | EXP
 PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
-INCR    ::=  VAR  "++"
-        |    VAR  "--"
-        |    VAR  "+="  int
-        |    VAR  "-="  int
-        |    VAR  "*="  int
+INCR    ::=  VAR  "++" | "++"  VAR
+        |    VAR  "--" | "-^"  VAR
+        |    VAR  "+="  INTLIT
+        |    VAR  "-="  INTLIT
+        |    VAR  "*="  INTLIT
+        |    VAR  "%="  INTLIT
