@@ -188,6 +188,8 @@ function parseAssignmentStatement(assignmentToken) {
     } else {
       error('Illegal end of function token', tokens[0])
     }
+  } else if (at(['{','['])) {
+    value = parseValue()
   } else {
     value = parseExpression()
   }
@@ -197,7 +199,7 @@ function parseAssignmentStatement(assignmentToken) {
 function parseName() {
   var dereferences = []
   var gather = function () {
-    if (at(['STRLIT', 'NUMLIT'])) {
+    if (at(['STRLIT', 'NUMLIT', 'ID'])) {
       dereferences.push(parseValue())
     } else {
       error('Illegal dereference', tokens[0])
@@ -267,7 +269,11 @@ function parseObjectLiteral() {
 function parseArrayLiteral() {
   var elements = []
   match('[')
-  while(!at[']']) {
+  if (!at(']')) {
+    elements.push(parseValue())
+  }
+  while (at(',')) {
+    match()
     elements.push(parseValue())
   }
   match(']')
@@ -277,11 +283,17 @@ function parseArrayLiteral() {
 function parseParams() {
   match('(')
   var params = []
-  if (!at(')')) {
+  if (at(['{','['])) {
     params.push(parseValue())
-    while (at(',')) {
-      match()
+  } else {
+    params.push(parseExpression())
+  }
+  while (at(',')) {
+    match()
+    if (at(['{','['])) {
       params.push(parseValue())
+    } else {
+      params.push(parseExpression())
     }
   }
   match(')')
@@ -457,7 +469,7 @@ function parseExp8() {
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('ID')) {
-    return new VariableReference(match())
+    return parseName()
   } else if (at('(')) {
     match()
     var expression = parseExpression()
