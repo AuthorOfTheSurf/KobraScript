@@ -21,7 +21,7 @@ var VariableReference = require('./entities/variablereference')
 var BinaryExpression = require('./entities/binaryexpression')
 var UnaryExpression = require('./entities/unaryexpression')
 
-var Blueprint = require('./entities/blueprintdeclaration')
+var Blueprint = require('./entities/blueprint')
 var Params = require('./entities/parameters')
 var Fn = require('./entities/function')
 var ConditionalStatement = require('./entities/conditionalstatement')
@@ -66,6 +66,7 @@ function parseBlueprint() {
     while (at(',')) {
       match()
       has.push(parseAssignmentStatement(':'))
+    }
   }
 
   match('does')
@@ -120,12 +121,7 @@ function parseStatement() {
   if (at('$')) {
     return parseVariableDeclaration()
   } else if (at('ID')) {
-    if (next('=')) {
-      return parseAssignmentStatement('=')
-    }
-    else if (next(['[','.'])) {
-      return parseName()
-    }
+    parseCallOrAssignment()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -138,14 +134,36 @@ function parseStatement() {
 }
 
 function parseVariableDeclaration() {
-  match('$')
   var declarations = []
-  declaration.push(parseAssignmentStatement())
+  var gather = function () {
+    if (next('=')) {
+      declaration.push(parseAssignmentStatement())
+    } else if (next(',')) {
+      declaration.push(new AssignmentStatement(match('ID'), {kind: 'undefined', lexeme: 'undefined'}))
+    }
+  }
+
+  match('$')
+  gather()
   while (at(',')) {
     match()
-    declaration.push(parseAssignmentStatement())
+    gather()
   }
   return new VariableDeclaration(declarations)
+}
+
+function parseCallOrAssignment() {
+  var name = parseName()
+  if (at('(')) {
+    var params = parseParams()
+    return new FnCall(name, params)
+  } else if (at('=')) {
+    match()
+    var value = parseValue()
+    return new AssignmentStatement(name, value)
+  } else {
+    error('Dangling identifier', tokens[0])
+  }
 }
 
 /* assignment token is '=' (general) or ':' (property declaration) */
@@ -153,12 +171,12 @@ function parseAssignmentStatement(assignmentToken) {
   var target = parseName()
   match(assignmentToken)
   var value
-  if (at['fn','proc'])) {
+  if (at(['fn','proc'])) {
     var fntype = match()
     var params = parseParams()
     match(':')
     var body = parseBlock()
-    if (at['..', 'end']) {
+    if (at(['..','end'])) {
       match()
       value = Fn(fntype, params, body)
     } else {
@@ -171,26 +189,28 @@ function parseAssignmentStatement(assignmentToken) {
 }
 
 function parseName() {
-  var name = match()
   var dereferences = []
-  while (at['[','.']) {
-    if (at['[']) {
-      match()
-      gather()
-      match(']')
-    }
-    else (at('.')) {
-      gather()
-    }
-  }
-  function gather() {
-    if (at['STRLIT', 'INTLIT']) {
+  var gather = function () {
+    if (at(['STRLIT', 'NUMLIT'])) {
       dereferences.push(parseValue())
     } else {
       error('Illegal dereference', tokens[0])
     }
   }
-  return VariableReference(name, dereference)
+
+  var name = match()
+  while (at(['[','.'])) {
+    if (at['[']) {
+      match()
+      gather()
+      match(']')
+    }
+    else if (at('.')) {
+      match()
+      gather()
+    }
+  }
+  return VariableReference(name, dereferences)
 }
 
 /*  This is anything that can be assigned to an id; RHS values */
@@ -199,7 +219,7 @@ function parseValue() {
     return parseObjectLiteral()
   } else if (at('[')) {
     return parseArrayLiteral()
-  } else if (at('INTLIT')) {
+  } else if (at('NUMLIT')) {
     return new IntegerLiteral(match())
   } else if (at('BOOLIT')) {
     return new BooleanLiteral(match())
@@ -215,7 +235,7 @@ function parseValue() {
 }
 
 function parseFnCall() {
-  var name = match('ID')
+  var name = parseName()
   var params = parseParams()
   return new FnCall(name, params)
 }
@@ -293,26 +313,11 @@ function parseForStatement() {
 }
 
 function parseConditionalExpression() {
-<<<<<<< HEAD
-  var checklist = [],
-      check, action, defaultAct,
-      elseEncountered = false,
-      conditional = function(check, action) {return {check: check, action: action}}
-  
-  match('if')
-  match('(')
-  check = parseExpression()
-  match(')')
-  match(':')
-  action = parseBlock()
-  checklist.push(conditional(check, action))
-=======
   var conditionals = [],
       defaultAct,
       elseEncountered = false
 
   conditionals.push(parseIfThen())
->>>>>>> Work focusing on variable reference and defreferencing.
   while(at('..') && !elseEncountered) {
     match()
     match('else')
@@ -337,7 +342,7 @@ function parseIfThen() {
   match(')')
   match(':')
   var action = parseBlock()
-  return new Conditional(condition, action))
+  return new Conditional(condition, action)
 }
 
 function parseExpression() {
@@ -403,7 +408,7 @@ function parseExp5() {
 function parseExp6() {
   if (at(['true','false'])) {
     return new BooleanLiteral.forName(match().lexeme)
-  } else if (at('INTLIT')) {
+  } else if (at('NUMLIT')) {
     return new IntegerLiteral(match())
   } else if (at('ID')) {
     return new VariableReference(match())
@@ -446,4 +451,3 @@ function match(symbol) {
     error('Expected ' + symbol + ' but found ' + tokens[0].kind, tokens[0])
   }
 }
-
