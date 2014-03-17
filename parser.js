@@ -15,7 +15,7 @@ var Type = require('./entities/type')
 var VariableDeclaration = require('./entities/variabledeclaration')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var WhileStatement = require('./entities/whilestatement')
-var IntegerLiteral = require('./entities/integerliteral')
+var NumericLiteral = require('./entities/numericliteral')
 var BooleanLiteral = require('./entities/booleanliteral')
 var VariableReference = require('./entities/variablereference')
 var BinaryExpression = require('./entities/binaryexpression')
@@ -137,9 +137,9 @@ function parseVariableDeclaration() {
   var declarations = []
   var gather = function () {
     if (next('=')) {
-      declaration.push(parseAssignmentStatement())
+      declarations.push(parseAssignmentStatement())
     } else if (next(',')) {
-      declaration.push(new AssignmentStatement(match('ID'), {kind: 'undefined', lexeme: 'undefined'}))
+      declarations.push(new AssignmentStatement(match('ID'), {kind: 'undefined', lexeme: 'undefined'}))
     }
   }
 
@@ -220,7 +220,7 @@ function parseValue() {
   } else if (at('[')) {
     return parseArrayLiteral()
   } else if (at('NUMLIT')) {
-    return new IntegerLiteral(match())
+    return new NumericLiteral(match())
   } else if (at('BOOLIT')) {
     return new BooleanLiteral(match())
   } else if (at('STRLIT')) {
@@ -409,7 +409,7 @@ function parseExp6() {
   if (at(['true','false'])) {
     return new BooleanLiteral.forName(match().lexeme)
   } else if (at('NUMLIT')) {
-    return new IntegerLiteral(match())
+    return new NumericLiteral(match())
   } else if (at('ID')) {
     return new VariableReference(match())
   } else if (at('(')) {

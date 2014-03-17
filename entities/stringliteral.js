@@ -12,4 +12,4 @@ StringLiteral.prototype.analyze = function (context) {
   this.type = Type.STRLIT
 }
 
-module.exports = NumericLiteral
+module.exports = StringLiteral
