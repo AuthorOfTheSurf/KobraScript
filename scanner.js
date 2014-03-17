@@ -27,6 +27,8 @@ module.exports = function (filename, callback) {
     })
 }
 
+var multiLine = false
+
 function scan(line, linenumber, tokens) {
     if (!line) return
 
@@ -41,7 +43,7 @@ function scan(line, linenumber, tokens) {
         oneCharEscapeChars = /[bfnrtv0\"\']/,
         controlEscapeChars = /c[a-zA-z]/,
         uniEscapeChars = /u[a-fA-F0-9]{4}/,
-        hexEscapeCharacters = /x[a-fA-F0-9]{2}/
+        hexEscapeCharacters = /x[a-fA-F0-9]{2}/,
 
         emit = function (kind, lexeme, isEmpty) {
             if (isEmpty) {
@@ -54,7 +56,12 @@ function scan(line, linenumber, tokens) {
         skipSpaces = function () {
             while (/\s/.test(line[pos])) pos++
             start = pos
-        };
+        },
+
+        multiLineComment = function() {
+            while (line[pos] != '<' && line[pos + 1] != '|') pos++
+        }
+
 
     while (true) {
 
@@ -63,8 +70,25 @@ function scan(line, linenumber, tokens) {
         // Nothing on the line
         if (pos >= line.length) break
 
-        // Comment
-        if (line[pos] == '-' && line[pos+1] == '-') break
+        // Single-line comments
+        if (line[pos] === '>' && line[pos+1] === '>') break
+        
+        // Multi-line comments
+        if (line[pos] === '>' && line[pos+1] === '|' && !multiLine) {
+            multiLine = true
+            break
+        }
+        if (line.charAt(0) === '<' && line.charAt(1) === '|' && multiLine) {
+            multiLine = false
+            break
+        } else if (line.charAt(line.length - 2) === '<' && line.charAt(line.length - 1) === '|' && multiLine) {
+            multiLine = false
+            break
+        }
+        if (multiLine) {
+            break
+        }
+
 
         // Three-character tokens
         if (threeCharTokens.test(line.substring(pos, pos+3))) {

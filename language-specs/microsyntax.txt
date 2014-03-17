@@ -5,6 +5,6 @@ HEX		->	(\d | [a-f] | [A-F])*
 STR		->	"\w+"
 BOOL    ->  'true'  |  'false'
 ID		->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
-COMMENT ->  '--'  TEXT  END
-        |   '---'  TEXT  '!--'
+COMMENT ->  '>>'  TEXT
+        |   '>|'  TEXT  '<|'
 

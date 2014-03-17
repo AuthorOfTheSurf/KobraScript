@@ -8,7 +8,7 @@ var argv = parseArgs(process.argv.slice(2), opts={
 })
 if (argv._.length === 0) console.log("This is KobraScript compiler!\n$ node kobra.js [-t] [-a] [-o] [-i] filename\n-t scans, prints the tokens, then exits\n-a scans, parses, prints the abstract syntax tree, then exits\n-o does optimizations\n-i goes up to semantic analysis, prints the semantic graph, then exits");
 var scan = require('./scanner')
-var parse = require('./parser')
+//var parse = require('./parser')
 var generate = require('./generator')('js')
 var error = require('./error')
 
