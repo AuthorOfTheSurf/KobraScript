@@ -1,7 +1,7 @@
 var initialContext = require('../analyzer').initialContext
 var HashMap = require('hashmap').HashMap
 
-function Blueprint(blueid, has, does, synget, synset) {
+function Blueprint (blueid, has, does, synget, synset) {
   this.blueid = blueid
   this.has = has
   this.does = does

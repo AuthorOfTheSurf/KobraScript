@@ -15,10 +15,10 @@ Type.prototype.toString = function () {
 }
 
 //native types
-exports.BOOLLIT = Type.BOOLLIT = new Type('boolLit')
-exports.NUMLIT = Type.NUMLIT = new Type('numLit')
-exports.ARRAYLIT = Type.ARRAYLIT = new Type('arrayLit')
-exports.OBJLIT = Type.OBJLIT = new Type('objLit')
+exports.BOOLIT = Type.BOOLIT = new Type('BOOLIT')
+exports.NUMLIT = Type.NUMLIT = new Type('NUMLIT')
+exports.ARRAYLIT = Type.ARRAYLIT = new Type('ARRAYLIT')
+exports.OBJLIT = Type.OBJLIT = new Type('OBJLIT')
 
 //returns undefined if the type doesn't exist or just the stringy type
 exports.forName = function (name) {return cache[name]}
@@ -30,7 +30,7 @@ Type.prototype.mustBeNumericLit = function (message, location) {
 }
 
 Type.prototype.mustBeBooleanLit = function (message, location) {
-  if (this !== Type.BOOLLIT) {
+  if (this !== Type.BOOLIT) {
     error(message, location)
   }
 }
