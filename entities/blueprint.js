@@ -1,12 +1,17 @@
 var initialContext = require('../analyzer').initialContext
 var HashMap = require('hashmap').HashMap
 
-function Blueprint(block) {
-  this.block = block
+function Blueprint(blueid, has, does, synget, synset) {
+  this.blueid = blueid
+  this.has = has
+  this.does = does
+  this.synget = synget
+  this.synset = synset
+  this.block = [blueid, has, does, synget, synset]
 }
 
 Blueprint.prototype.toString = function () {
-  return '(Blueprint ' + this.block + ')' 
+  return '(Blueprint ' + this.block.join(' ') + ')' 
 }
 
 Blueprint.prototype.analyze = function () {
@@ -19,6 +24,9 @@ Blueprint.prototype.optimize = function () {
 }
 
 Blueprint.prototype.showSemanticGraph = function () {
+
+  //  Commented out for now, needed for semantic analyzer.
+
   /*var tag = 0
   var seenEntities = new HashMap();
 

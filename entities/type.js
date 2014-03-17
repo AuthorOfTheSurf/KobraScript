@@ -15,20 +15,34 @@ Type.prototype.toString = function () {
 }
 
 //native types
-exports.BOOL = Type.BOOL = new Type('bool')
-exports.INT = Type.INT = new Type('int')
+exports.BOOLLIT = Type.BOOLLIT = new Type('boolLit')
+exports.NUMLIT = Type.NUMLIT = new Type('numLit')
+exports.ARRAYLIT = Type.ARRAYLIT = new Type('arrayLit')
+exports.OBJLIT = Type.OBJLIT = new Type('objLit')
 
 //returns undefined if the type doesn't exist or just the stringy type
 exports.forName = function (name) {return cache[name]}
 
-Type.prototype.mustBeInteger = function (message, location) {
-  if (this !== Type.INT) {
+Type.prototype.mustBeNumericLit = function (message, location) {
+  if (this !== Type.NUMLIT) {
     error(message, location)
   }
 }
 
-Type.prototype.mustBeBoolean = function (message, location) {
-  if (this !== Type.BOOL) {
+Type.prototype.mustBeBooleanLit = function (message, location) {
+  if (this !== Type.BOOLLIT) {
+    error(message, location)
+  }
+}
+
+Type.prototype.mustBeArrayLit = function (message, location) {
+  if (this !== Type.ARRAYLIT) {
+    error(message, location)
+  }
+}
+
+Type.prototype.mustBeObjectLit = function (message, location) {
+  if (this !== Type.OBJLIT) {
     error(message, location)
   }
 }
@@ -40,7 +54,7 @@ Type.prototype.isCompatibleWith = function (otherType) {
 }
 
 Type.prototype.mustBeCompatibleWith = function (otherType, message, location) {
-  if (! this.isCompatibleWith(otherType)) {
+  if (!this.isCompatibleWith(otherType)) {
     error(message, location)
   }
 }
