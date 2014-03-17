@@ -1,10 +1,10 @@
-function AssignmentStatement(target, source) {
+function AssignmentStatement(target, value) {
   this.target = target
-  this.source = source
+  this.value = value
 }
 
 AssignmentStatement.prototype.toString = function () {
-  return '(= ' + this.target + ' ' + this.source + ')'
+  return '(' + this.target.toString() + ' <- ' + this.value.toString() + ')'
 }
 
 AssignmentStatement.prototype.analyze = function (context) {

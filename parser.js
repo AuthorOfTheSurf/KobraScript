@@ -22,7 +22,7 @@ var BinaryExpression = require('./entities/binaryexpression')
 var UnaryExpression = require('./entities/unaryexpression')
 
 var Blueprint = require('./entities/blueprint')
-var Params = require('./entities/parameters')
+var Params = require('./entities/params')
 var Fn = require('./entities/function')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var ForStatement = require('./entities/forstatement')
@@ -31,6 +31,8 @@ var ArrayLiteral = require('./entities/arrayliteral')
 var StringLiteral = require('./entities/stringliteral')
 var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
+var FnCall = require('./entities/fncall')
+var ReturnStatement = require('./entities/returnstatement')
 
 var tokens
 
@@ -123,13 +125,15 @@ function parseStatement() {
   if (at('$')) {
     return parseVariableDeclaration()
   } else if (at('ID')) {
-    parseCallOrAssignment()
+    return parseCallOrAssignment()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
     return parseConditionalStatement()
   } else if (at('for')) {
     return parseForStatement()
+  } else if (at('return')) {
+    return parseReturnStatement()
   } else {
     error('Statement expected', tokens[0])
   }
@@ -141,7 +145,7 @@ function parseVariableDeclaration() {
     if (next('=')) {
       declarations.push(parseAssignmentStatement())
     } else if (next(',')) {
-      declarations.push(new AssignmentStatement(match('ID'), {kind: 'undefined', lexeme: 'undefined'}))
+      declarations.push(new AssignmentStatement(new VariableReference(match('ID')), new UndefinedLiteral()))
     }
   }
 
@@ -180,7 +184,7 @@ function parseAssignmentStatement(assignmentToken) {
     var body = parseBlock()
     if (at(['..','end'])) {
       match()
-      value = Fn(fntype, params, body)
+      value = new Fn(fntype, params, body)
     } else {
       error('Illegal end of function token', tokens[0])
     }
@@ -212,7 +216,7 @@ function parseName() {
       gather()
     }
   }
-  return VariableReference(name, dereferences)
+  return new VariableReference(name, dereferences)
 }
 
 /*  This is anything that can be assigned to an id; RHS values */
@@ -221,6 +225,10 @@ function parseValue() {
     return parseObjectLiteral()
   } else if (at('[')) {
     return parseArrayLiteral()
+  } else if (at('UNDEFLIT')) {
+    return new UndefinedLiteral(match())
+  } else if (at('NULLLIT')) {
+    return new NullLiteral(match())
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('BOOLIT')) {
@@ -277,7 +285,7 @@ function parseParams() {
     }
   }
   match(')')
-  return params
+  return new Params(params)
 }
 
 function parseWhileStatement() {
@@ -312,6 +320,11 @@ function parseForStatement() {
   var body = parseBlock()
   match('end')
   return new ForStatement(assignments, condition, after, body)
+}
+
+function parseReturnStatement() {
+  match('return')
+  return new ReturnStatement(parseExpression())
 }
 
 function parseConditionalExpression() {
@@ -350,6 +363,11 @@ function parseIfThen() {
 function parseExpression() {
   var left = parseExp1()
   while (at('||')) {
+    var op = match()
+    var right = parseExp1()
+    left = new BinaryExpression(op, left, right)
+  }
+  if (at('#')) {
     var op = match()
     var right = parseExp1()
     left = new BinaryExpression(op, left, right)
@@ -398,7 +416,7 @@ function parseExp4() {
 }
 
 function parseExp5() {
-  var left = parseExp5()
+  var left = parseExp6()
   while (at(['**', '-**'])) {
     op = match()
     right = parseExp6()

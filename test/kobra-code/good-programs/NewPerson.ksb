@@ -1,18 +1,17 @@
-blueprint NewPerson (name, age, hairColor, exercise, weight)
+blueprint NewPerson (name, age, hairColor, exercise, weight):
 
 has:
-    name = name,
-    age = age,
-    hairColor = hairColor # "black",
-    weight = weight # 120
+    name: name,
+    age: age,
+    hairColor: hairColor # "black",
+    weight: weight # 120
 
 does:
-    do_exercise = exercise # running,
-    weight = proc ():
-        say("I weigh " + x + " lbs")
-        say("I weigh " + kilos(x) + " kgs")
+    do_exercise: exercise # running,
+    weight: proc ():
+        say("I will weigh less")
     ..,
-    |kilos| = fn(x):
+    kilos: fn(x): >> |kilos| would make it private
         return x / 2.2
     end
 

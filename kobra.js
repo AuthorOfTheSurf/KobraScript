@@ -26,8 +26,7 @@ if (validExtension) {
     var program = parse(tokens)
     if (error.count > 0) return;
     if (argv.a) {
-      if (fileExtension === '.ks') console.log(program.toString())
-      if (fileExtension === '.ksb') console.log(blueprint.toString())
+      console.log(program.toString())
       return
     }
     if (argv.o) {

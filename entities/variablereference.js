@@ -1,13 +1,13 @@
 function VariableReference(token, dereferences) {
   this.token = token
-  this.dereferences = dereferences
+  this.dereferences = dereferences || []
 }
 
 VariableReference.prototype.toString = function () {
   var result = this.token.lexeme
-  if (dereferences.length > 0) {
+  if (this.dereferences.length > 0) {
   	result = result.concat('.[')
-  	result = result.concat(dereferences.toString())
+  	result = result.concat(this.dereferences.toString())
   	result = result.concat(']')
   }
   return result

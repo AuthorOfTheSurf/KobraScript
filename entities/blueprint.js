@@ -7,11 +7,23 @@ function Blueprint (blueid, has, does, synget, synset) {
   this.does = does
   this.synget = synget
   this.synset = synset
-  this.block = [blueid, has, does, synget, synset]
 }
 
 Blueprint.prototype.toString = function () {
-  return '(Blueprint ' + this.block.join(' ') + ')' 
+  var result = ''
+  result = result.concat(this.blueid.toString())
+  result = result.concat(' (Has ')
+  for (var i = 0; i < this.has.length; i++) {
+    result = result.concat(this.has[i].toString())
+  }
+  result = result.concat (') (Does ')
+  for (var i = 0; i < this.does.length; i++) {
+    result = result.concat(this.does[i].toString())
+  }
+  result = result.concat(')')
+  if (this.synget.length > 0) result = result.concat(' (Synget [' + this.synget.toString() + '])')
+  if (this.synset.length > 0) result = result.concat(' (Synset [' + this.synset[i].toString() + '])')
+  return '(Blueprint ' + result + ')'
 }
 
 Blueprint.prototype.analyze = function () {

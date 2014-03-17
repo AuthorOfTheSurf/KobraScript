@@ -19,6 +19,8 @@ exports.BOOLIT = Type.BOOLIT = new Type('BOOLIT')
 exports.NUMLIT = Type.NUMLIT = new Type('NUMLIT')
 exports.ARRAYLIT = Type.ARRAYLIT = new Type('ARRAYLIT')
 exports.OBJLIT = Type.OBJLIT = new Type('OBJLIT')
+exports.NULLLIT = Type.NULLLIT = new Type('NULLLIT')
+exports.UNDEFLIT = Type.UNDEFLIT = new Type('UNDEFLIT')
 
 //returns undefined if the type doesn't exist or just the stringy type
 exports.forName = function (name) {return cache[name]}
@@ -43,6 +45,18 @@ Type.prototype.mustBeArrayLit = function (message, location) {
 
 Type.prototype.mustBeObjectLit = function (message, location) {
   if (this !== Type.OBJLIT) {
+    error(message, location)
+  }
+}
+
+Type.prototype.mustBeNullLit = function (message, location) {
+  if (this !== Type.NULLLIT) {
+    error(message, location)
+  }
+}
+
+Type.prototype.mustBeUndefLit = function (message, location) {
+  if (this !== Type.UNDEFLIT) {
     error(message, location)
   }
 }

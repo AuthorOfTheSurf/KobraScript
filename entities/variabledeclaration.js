@@ -1,10 +1,14 @@
-function VariableDeclaration(id, type) {
-  this.id = id
-  this.type = type
+function VariableDeclaration(declarations) {
+  this.declarations = declarations
 }
 
 VariableDeclaration.prototype.toString = function () {
-  return '(Var :' + this.id.lexeme + ' ' + this.type + ')'
+  var result = '(Declare '
+  for (var i = 0; i < this.declarations.length; i++) {
+    result = result.concat(this.declarations[i].toString() + ', ')
+  }
+  result = result.substring(0, result.length-2).concat(')')
+  return result
 }
 
 VariableDeclaration.prototype.analyze = function (context) {
