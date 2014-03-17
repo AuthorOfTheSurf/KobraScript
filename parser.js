@@ -29,6 +29,8 @@ var ForStatement = require('./entities/forstatement')
 var ObjectLiteral = require('./entities/objectliteral')
 var ArrayLiteral = require('./entities/arrayliteral')
 var StringLiteral = require('./entities/stringliteral')
+var UndefinedLiteral = require('./entities/undefinedliteral')
+var NullLiteral = require('./entities/nullliteral')
 
 var tokens
 
@@ -347,7 +349,7 @@ function parseIfThen() {
 
 function parseExpression() {
   var left = parseExp1()
-  while (at('or')) {
+  while (at('||')) {
     var op = match()
     var right = parseExp1()
     left = new BinaryExpression(op, left, right)
@@ -357,7 +359,7 @@ function parseExpression() {
 
 function parseExp1() {
   var left = parseExp2()
-  while (at('and')) {
+  while (at('&&')) {
     var op = match()
     var right = parseExp2()
     left = new BinaryExpression(op, left, right)
@@ -367,7 +369,7 @@ function parseExp1() {
 
 function parseExp2() {
   var left = parseExp3()
-  if (at(['<','<=','==','!=','>=','>'])) {
+  if (at(['<', '<=', '==', '~=', '!=', '>=', '>', 'is'])) {
     var op = match()
     var right = parseExp3()
     left = new BinaryExpression(op, left, right)
@@ -387,7 +389,7 @@ function parseExp3() {
 
 function parseExp4() {
   var left = parseExp5()
-  while (at(['*','/'])) {
+  while (at(['*','/', '%'])) {
     op = match()
     right = parseExp5()
     left = new BinaryExpression(op, left, right)
@@ -396,18 +398,44 @@ function parseExp4() {
 }
 
 function parseExp5() {
-  if (at(['-','not'])) {
+  var left = parseExp5()
+  while (at(['**', '-**'])) {
     op = match()
-    operand = parseExp6()
-    return new UnaryExpression(op, operand)
-  } else {
-    return parseExp6()
+    right = parseExp6()
+    left = new BinaryExpression(op, left, right)
   }
+  return left
 }
 
 function parseExp6() {
-  if (at(['true','false'])) {
-    return new BooleanLiteral.forName(match().lexeme)
+  if (at(['~!','~?'])) {
+    op = match()
+    operand = parseExp7()
+    return new UnaryExpression(op, operand)
+  } else {
+    return parseExp7()
+  }
+}
+
+function parseExp7() {
+  if (at(['!'])) {
+    op = match()
+    operand = parseExp8()
+    return new UnaryExpression(op, operand)
+  } else {
+    return parseExp8()
+  }
+}
+
+function parseExp8() {
+  if (at('undefined')) {
+    return new UndefinedLiteral(match())
+  } else if (at('null')) {
+    return new NullLiteral(match())
+  } else if (at('BOOLIT')) {
+    return new BooleanLiteral(match())
+  } else if (at('STRLIT')) {
+    return new StringLiteral(match())
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('ID')) {
