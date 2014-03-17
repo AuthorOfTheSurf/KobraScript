@@ -1,11 +1,11 @@
 var Type = require('./type')
 
-function ArrayLiteral(token) {
-  this.token = token
+function ArrayLiteral(elements) {
+  this.elements = elements
 }
 
 ArrayLiteral.prototype.toString = function () {
-  return this.token.lexeme
+  return '(Array Elements: ' + this.statements.join(', ') + ')'
 }
 
 ArrayLiteral.prototype.analyze = function (context) {
