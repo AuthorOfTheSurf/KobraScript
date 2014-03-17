@@ -62,20 +62,20 @@ function parseBlueprint() {
   match(':')
   var has = []
   if (at('ID')) {
-    has.push(parseAssignmentStatement())
+    has.push(parseAssignmentStatement(':'))
     while (at(',')) {
       match()
-      has.push(parseAssignmentStatement())
+      has.push(parseAssignmentStatement(':'))
   }
 
   match('does')
   match(':')
   var does = []
   if (at('ID')) {
-    does.push(parseFnDeclaration())
+    does.push(parseAssignmentStatement(':'))
     while (at(',')) {
       match()
-      does.push(parseFnDeclaration())
+      does.push(parseAssignmentStatement(':'))
     }
   }
   
@@ -120,7 +120,12 @@ function parseStatement() {
   if (at('$')) {
     return parseVariableDeclaration()
   } else if (at('ID')) {
-    return parseAssignmentStatement()
+    if (next('=')) {
+      return parseAssignmentStatement('=')
+    }
+    else if (next(['[','.'])) {
+      return parseName()
+    }
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -143,26 +148,49 @@ function parseVariableDeclaration() {
   return new VariableDeclaration(declarations)
 }
 
-function parseFnDeclaration(expectingDotDot) {
-  var id = match('ID')
-  match('=')
-  var fntype
-  if (at(['fn', 'proc'])) {
-    fntype = match()
+/* assignment token is '=' (general) or ':' (property declaration) */
+function parseAssignmentStatement(assignmentToken) {
+  var target = parseName()
+  match(assignmentToken)
+  var value
+  if (at['fn','proc'])) {
+    var fntype = match()
+    var params = parseParams()
+    match(':')
+    var body = parseBlock()
+    if (at['..', 'end']) {
+      match()
+      value = Fn(fntype, params, body)
+    } else {
+      error('Illegal end of function token', tokens[0])
+    }
   } else {
-    error('Illegal function type', tokens[0])
+    value = parseExpression()
   }
-  var params = parseParams()
-  match(':')
-  var body = parseBlock()
-  if (expectingDotDot) {
-    match('..')
-  } else if (at['..', 'end']) {
-    match()
-  } else {
-    error('Illegal end of function token', tokens[0])
+  return new AssignmentStatement(target, value)
+}
+
+function parseName() {
+  var name = match()
+  var dereferences = []
+  while (at['[','.']) {
+    if (at['[']) {
+      match()
+      gather()
+      match(']')
+    }
+    else (at('.')) {
+      gather()
+    }
   }
-  return new Fn(id, params, body)
+  function gather() {
+    if (at['STRLIT', 'INTLIT']) {
+      dereferences.push(parseValue())
+    } else {
+      error('Illegal dereference', tokens[0])
+    }
+  }
+  return VariableReference(name, dereference)
 }
 
 /*  This is anything that can be assigned to an id; RHS values */
@@ -177,6 +205,8 @@ function parseValue() {
     return new BooleanLiteral(match())
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
+  } else if (at('ID') && next('(')) {
+    return new parseFnCall()
   } else if (at('ID')) {
     return new VariableReference(match())
   } else {
@@ -184,25 +214,21 @@ function parseValue() {
   }
 }
 
-function parseObjectLiteral() {
-  var properties = [],
-      id,
-      value,
-      property = function (id, value) {return {id: id, value: value}} 
+function parseFnCall() {
+  var name = match('ID')
+  var params = parseParams()
+  return new FnCall(name, params)
+}
 
+function parseObjectLiteral() {
+  var properties = []
   match('{')
   if (at('ID')) {
-    id = new VariableReference(match('ID'))
-    match(':')
-    value = parseValue()
-    properties.push(property(id, value))
+    properties.push(parseAssignmentStatement(':'))
   }
   while (at(',')) {
     match()
-    id = new VariableReference(match('ID'))
-    match(':')
-    value = parseValue()
-    properties.push(property(id, value))
+    properties.push(parseAssignmentStatement(':'))
   }
   match('}')
   return new Object(properties)
@@ -230,13 +256,6 @@ function parseParams() {
   }
   match(')')
   return params
-}
-
-function parseAssignmentStatement() {
-  var target = new VariableReference(match('ID'))
-  match('=')
-  var value = parseExpression()
-  return new AssignmentStatement(target, value)
 }
 
 function parseWhileStatement() {
@@ -274,6 +293,7 @@ function parseForStatement() {
 }
 
 function parseConditionalExpression() {
+<<<<<<< HEAD
   var checklist = [],
       check, action, defaultAct,
       elseEncountered = false,
@@ -286,17 +306,18 @@ function parseConditionalExpression() {
   match(':')
   action = parseBlock()
   checklist.push(conditional(check, action))
+=======
+  var conditionals = [],
+      defaultAct,
+      elseEncountered = false
+
+  conditionals.push(parseIfThen())
+>>>>>>> Work focusing on variable reference and defreferencing.
   while(at('..') && !elseEncountered) {
     match()
     match('else')
     if (at('if')) {
-      match('if')
-      match('(')
-      check = parseExpression()
-      match(')')
-      match(':')
-      action = parseBlock()
-      checklist.push(conditional(check, action))
+      conditionals.push(parseIfThen())
     } else if (at(':')) {
       match()
       defaultAct = parseBlock()
@@ -306,7 +327,17 @@ function parseConditionalExpression() {
     }
   }
   match('end')
-  return new ConditionalStatement(checklist, defaultAct)
+  return new ConditionalStatement(conditionals, defaultAct)
+}
+
+function parseIfThen() {
+  match('if')
+  match('(')
+  var condition = parseExpression()
+  match(')')
+  match(':')
+  var action = parseBlock()
+  return new Conditional(condition, action))
 }
 
 function parseExpression() {
@@ -393,6 +424,16 @@ function at(symbol) {
     return symbol.some(function (s) {return at(s)})
   } else {
     return symbol === tokens[0].kind
+  }  
+}
+
+function next(symbol) {
+  if (tokens.length === 1) {
+    return false
+  } else if (Array.isArray(symbol)) {
+    return symbol.some(function (s) {return next(s)})
+  } else {
+    return symbol === tokens[1].kind
   }  
 }
 
