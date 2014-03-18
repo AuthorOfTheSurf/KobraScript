@@ -160,6 +160,9 @@ function scan(line, linenumber, tokens) {
             }
             number = number.join('')
             if (numericLit.test(number)) emit('NUMLIT', number)
+            //  Check for '-' if not used as part of NUMLITS.
+            //  TODO move this to unary operators.
+            if (/\-/.test(number) && !numericLit.test(number)) emit(number, number)
         }
 
         // One-character tokens
