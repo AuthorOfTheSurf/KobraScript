@@ -146,62 +146,45 @@ Here is an example of a blueprint of a Person.
 
     /**
       * This is regarded as the the most up to date specification of KS
-      * KobraScript Syntax v.1.3a
+      * KobraScript Syntax v.1.3b
       * 
       * Absent: specification for increments (pre/post) 
       */
 
-    UNIT    ::=  BLUEPRINT 
-            |    PROGRAM
+    UNIT    ::=  PROGRAM
+            |    BLUPRNT
 
     PROGRAM ::=  BLOCK
 
     BLOCK   ::=  STMT+
 
-    OPENBLK ::=  ':'  BLOCK
-
-    NAME    ::=  ID
-
-    FNTYPE  ::=  'proc' | 'fn'
-
-    VALUE   ::=  EXP  ('#'  EXP)? 
-            |    MAKE
-            |    FNVAL
-            |    FNCALL
-
-    VAR     ::=  ID SUFFIX*
-            |    VAR  '['  EXP  ']'
-            |    VAR  '.'  ID
-            |    FNCALL
-
-    SUFFIX ::= '[' EXP ']'
-            |  '.' ID
-            |  '(' ARGS ')'
-
-    VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
-            |    FNDEC
-    ASSIGN  ::=  ID  '=' VALUE
-            |    ID  ':=:'  ID
-    PRPRTY  ::=  ID  ':' VALUE
-
-    FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
-    FNDEC   ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  ('..' | 'end')
-    FNCALL  ::=  VAR PARAMS
-
-    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
-    HASBLK  ::=  'has'  ':'  VARDEC?
-    DOESBLK ::=  'does'  ':'  FNDEC?
-    SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
-    SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
-
     STMT    ::=  VARDEC
+            |    FNDEC
             |    ASSIGN
-            |    'if'  '('  EXP  ')'  OPENBLK  ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+            |    INCR
+            |    'if'  '('  EXP  ')'  OPENBLK  
+                 ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  
+                 ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
             |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
             |    'while'  '('  EXP  ')'  OPENBLK  'end'
             |    'return'  EXP  OPENBLK  'end'
+
+    VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
+    FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
+    FNTYPE  ::=  'proc' | 'fn'
+    PARAMS  ::=  '('  ID  (','  ID)*  ')'
+
+    ASSIGN  ::=  VAR  '=' EXP
+            |    VAR  ':=:'  VAR
+            
+    INCR    ::=  VAR  "++" | "++"  VAR
+            |    VAR  "--" | "-^"  VAR
+            |    VAR  "+="  INTLIT
+            |    VAR  "-="  INTLIT
+            |    VAR  "*="  INTLIT
+            |    VAR  "%="  INTLIT
+            
+    OPENBLK ::=  ':'  BLOCK
 
     EXP     ::=  EXP1 (('||' | '#') EXP1)*
     EXP1    ::=  EXP2 ('&&' EXP2)*
@@ -211,17 +194,30 @@ Here is an example of a blueprint of a Person.
     EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
     EXP6    ::=  ('~!' | '~?')?  EXP7
     EXP7    ::=  ('!')?  EXP8
-    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR | FNCALL | '(' EXP ')'
+    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
+            |    MAKE  |  FNVAL  |  OBJECT  | '(' EXP ')'
 
-    PARAM   ::=  VAR | EXP
-    PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
-    INCR    ::=  VAR  "++" | "++"  VAR
-            |    VAR  "--" | "-^"  VAR
-            |    VAR  "+="  INTLIT
-            |    VAR  "-="  INTLIT
-            |    VAR  "*="  INTLIT
-            |    VAR  "%="  INTLIT
-            
+    VAR     ::=  ID SUFFIX*
+    SUFFIX  ::=  '[' EXP ']'
+            |    '.' ID
+            |    '(' ARGS ')'
+
+    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+    FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+    FNCALL  ::=  VAR  ARGS
+    ARGS    ::=  '('  EXP  (','  EXP)*  ')'
+    
+    OBJECT  ::=  '{'  PRPRTY  (','  PRPTRY)*  '}'
+    PRPRTY  ::=  ID  ':' VALUE
+
+    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
+    HASBLK  ::=  'has'  ':'  VARDEC?
+    DOESBLK ::=  'does'  ':'  FNDEC?
+    SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
+    SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
+
+
 ### Microsyntax
 
     BITS    ->  [01]*
@@ -231,15 +227,8 @@ Here is an example of a blueprint of a Person.
     STR     ->  "\w+"
     BOOL    ->  'true'  |  'false'
     ID      ->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
-    COMMENT ->  '--'  TEXT  END
-            |   '---'  TEXT  '!--'
-
-
-
-
-
-
-
+    COMMENT ->  '>>'  TEXT  END
+            |   '>|'  TEXT  '|<'
 
 
 
