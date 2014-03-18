@@ -33,6 +33,7 @@ var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
 var FnCall = require('./entities/fncall')
 var ReturnStatement = require('./entities/returnstatement')
+var ConstructStatement = require('./entities/constructstatement')
 
 var tokens
 
@@ -124,6 +125,8 @@ function parseBlueprint() {
 function parseStatement() {
   if (at('$')) {
     return parseVariableDeclaration()
+  } else if (at(['fn','proc'])) {
+    return parseFnDeclaration()
   } else if (at('ID')) {
     return parseCallOrAssignment()
   } else if (at('while')) {
@@ -172,24 +175,27 @@ function parseCallOrAssignment() {
   }
 }
 
+function parseNameOrFnCall() {
+  var name = parseName()
+  if (at('(')) {
+    var params = parseParams()
+    return new FnCall(name, params)
+  } else {
+    return name
+  }
+}
+
 /* assignment token is '=' (general) or ':' (property declaration) */
 function parseAssignmentStatement(assignmentToken) {
   var target = parseName()
   match(assignmentToken)
   var value
   if (at(['fn','proc'])) {
-    var fntype = match()
-    var params = parseParams()
-    match(':')
-    var body = parseBlock()
-    if (at(['..','end'])) {
-      match()
-      value = new Fn(fntype, params, body)
-    } else {
-      error('Illegal end of function token', tokens[0])
-    }
-  } else if (at(['{','['])) {
+    value = parseFn()
+  } else if (at(['{','[','construct'])) {
     value = parseValue()
+  } else if (at('ID')) {
+    value = parseNameOrFnCall()
   } else {
     value = parseExpression()
   }
@@ -199,8 +205,12 @@ function parseAssignmentStatement(assignmentToken) {
 function parseName() {
   var dereferences = []
   var gather = function () {
-    if (at(['STRLIT', 'NUMLIT', 'ID'])) {
-      dereferences.push(parseValue())
+    if (at('STRLIT')) {
+      dereferences.push(new StringLiteral(match()))
+    } else if (at('NUMLIT')) {
+      dereferences.push(new NumericLiteral(match()))
+    } else if (at('ID')) {
+      dereferences.push(new VariableReference(match()))
     } else {
       error('Illegal dereference', tokens[0])
     }
@@ -238,11 +248,26 @@ function parseValue() {
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
   } else if (at('ID') && next('(')) {
-    return new parseFnCall()
+    return parseFnCall()
   } else if (at('ID')) {
     return new VariableReference(match())
+  } else if (at('construct')) {
+    return parseConstructStatement()
   } else {
     return parseExpression()
+  }
+}
+
+function parseFn() {
+  var fntype = match()
+  var params = parseParams()
+  match(':')
+  var body = parseBlock()
+  if (at(['..','end'])) {
+    match()
+    value = new Fn(fntype, params, body)
+  } else {
+    error('Illegal end of function token', tokens[0])
   }
 }
 
@@ -250,6 +275,23 @@ function parseFnCall() {
   var name = parseName()
   var params = parseParams()
   return new FnCall(name, params)
+}
+
+function parseFnDeclaration() {
+  var fntype = match()
+  var name
+  if (at('ID')) {
+    name = match()
+  }
+  var params = parseParams()
+  match(':')
+  var body = parseBlock()
+  if (at(['..','end'])) {
+    match()
+    return new AssignmentStatement(name, new Fn(fntype, params, body))
+  } else {
+    error('Illegal end of function token', tokens[0])
+  }
 }
 
 function parseObjectLiteral() {
@@ -285,7 +327,7 @@ function parseParams() {
   var params = []
   if (at(['{','['])) {
     params.push(parseValue())
-  } else {
+  } else if (!at(')')) {
     params.push(parseExpression())
   }
   while (at(',')) {
@@ -298,6 +340,30 @@ function parseParams() {
   }
   match(')')
   return new Params(params)
+}
+
+function parseConstructParams() {
+  match('(')
+  var params = []
+  if (at(['{','['])) {
+    params.push(parseValue())
+  } else if (at('ID') && next('=')) {
+    params.push(parseAssignmentStatement())
+  } else {
+    params.push(parseExpression())
+  }
+  while (at(',')) {
+    match()
+    if (at(['{','['])) {
+      params.push(parseValue())
+    } else if (at('ID') && next('=')) {
+      params.push(parseAssignmentStatement())
+    } else {
+      params.push(parseExpression())
+    }
+  }
+  match(')')
+  return new Params(params) //figure this out
 }
 
 function parseWhileStatement() {
@@ -337,6 +403,13 @@ function parseForStatement() {
 function parseReturnStatement() {
   match('return')
   return new ReturnStatement(parseExpression())
+}
+
+function parseConstructStatement() {
+  match('construct')
+  var name = parseName()
+  var params = parseConstructParams()
+  return new ConstructStatement(name, params)
 }
 
 function parseConditionalExpression() {
@@ -469,7 +542,7 @@ function parseExp8() {
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('ID')) {
-    return parseName()
+    return parseNameOrFnCall()
   } else if (at('(')) {
     match()
     var expression = parseExpression()
