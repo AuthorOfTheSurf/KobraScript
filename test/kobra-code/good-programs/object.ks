@@ -10,7 +10,7 @@ $ bicycle = {
         Transform.translate(FORWARD * this.speed)
     end,
     upgrade_speed: fn ():
-        return this.speed = this.speed * 1.1
+        return this.speed * 1.1
     end,
     get_frame: fn (): return this.frame end
 }

@@ -1,1 +1,2 @@
-$ a = construct NewPerson(name = "Joe", age = 18)
+$ a = construct NewPerson("Joe", 18)
+$ b = construct NewPerson(name = 'Joe', weight = 190)
