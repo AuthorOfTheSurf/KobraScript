@@ -54,7 +54,7 @@ function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$','ID','for','while','if']))
+  } while (at(['$','ID','for','while','if','fn','proc','++','--','return']))
   return new Block(statements)
 }
 
@@ -250,10 +250,8 @@ function parseValue() {
     return new BooleanLiteral(match())
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
-  } else if (at('ID') && next('(')) {
-    return parseFnCall()
   } else if (at('ID')) {
-    return new VariableReference(match())
+    return parseNameOrFnCall()
   } else if (at('construct')) {
     return parseConstructStatement()
   } else {
@@ -371,10 +369,16 @@ function parseConstructParams() {
 
 function parseWhileStatement() {
   match('while')
+  match('(')
   var condition = parseExpression()
-  match('loop')
+  match(')')
+  match(':')
   var body = parseBlock()
-  match('end')
+  if (at('end')) {
+    match('end')
+  } else if (at('..')) {
+    match('..')
+  }
   return new WhileStatement(condition, body)
 }  
 
@@ -399,7 +403,11 @@ function parseForStatement() {
   match(')')
   match(':')
   var body = parseBlock()
-  match('end')
+  if (at('end')) {
+    match('end')
+  } else if (at('..')) {
+    match('..')
+  }
   return new ForStatement(assignments, condition, after, body)
 }
 
@@ -412,10 +420,10 @@ function parseIncrementStatement() {
     post = false
     increments = at('++')
     match()
-    name = match(parseName())
+    name = parseName()
   } else {
+    name = parseName()
     increments = at('++')
-    name = match(parseName())
     match()
   }
   return new IncrementStatement(name, increments, post)
