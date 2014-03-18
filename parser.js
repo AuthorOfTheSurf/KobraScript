@@ -155,7 +155,6 @@ function parseVariableDeclaration() {
       declarations.push(new AssignmentStatement(new VariableReference(match('ID')), new UndefinedLiteral()))
     }
   }
-
   match('$')
   gather()
   while (at(',')) {
@@ -379,7 +378,6 @@ function parseWhileStatement() {
   match(')')
   match(':')
   var body = parseBlock()
-  console.log(at('end'))
   if (at('..')) {
     match('..')
   } else {
