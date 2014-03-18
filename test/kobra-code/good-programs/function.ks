@@ -8,3 +8,5 @@ end
 
 $ move2 = move()
 $ move3 = move
+
+move2 :=: move3

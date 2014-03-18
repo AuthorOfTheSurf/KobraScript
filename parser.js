@@ -35,6 +35,7 @@ var FnCall = require('./entities/fncall')
 var ReturnStatement = require('./entities/returnstatement')
 var ConstructStatement = require('./entities/constructstatement')
 var IncrementStatement = require('./entities/incrementstatement')
+var ExchangeStatement = require('./entities/exchangestatement')
 
 var tokens
 
@@ -169,6 +170,10 @@ function parseCallOrAssignment() {
   if (at('(')) {
     var params = parseParams()
     return new FnCall(name, params)
+  } else if (at(':=:')) {
+    match()
+    var right = parseValue()
+    return new ExchangeStatement(name, right)
   } else if (at('=')) {
     match()
     var value = parseValue()
@@ -197,8 +202,6 @@ function parseAssignmentStatement(assignmentToken) {
     value = parseFn()
   } else if (at(['{','[','construct'])) {
     value = parseValue()
-  } else if (at('ID')) {
-    value = parseNameOrFnCall()
   } else {
     value = parseExpression()
   }
@@ -254,6 +257,8 @@ function parseValue() {
     return parseNameOrFnCall()
   } else if (at('construct')) {
     return parseConstructStatement()
+  } else if (at(['fn','proc'])) {
+    return parseFn()
   } else {
     return parseExpression()
   }
@@ -266,7 +271,7 @@ function parseFn() {
   var body = parseBlock()
   if (at(['..','end'])) {
     match()
-    value = new Fn(fntype, params, body)
+    return new Fn(fntype, params, body)
   } else {
     error('Illegal end of function token', tokens[0])
   }
@@ -306,7 +311,7 @@ function parseObjectLiteral() {
     properties.push(parseAssignmentStatement(':'))
   }
   match('}')
-  return new Object(properties)
+  return new ObjectLiteral(properties)
 }
 
 function parseArrayLiteral() {
