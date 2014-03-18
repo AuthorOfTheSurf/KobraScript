@@ -95,25 +95,24 @@ Objects are very similar in KobraScript to JavaScript. Braces are used specifica
 #### Blueprints
 Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
-To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages.
+To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically. 
+- Specific -> `construct Person (hairColor = "black")`
+- Dynamic  -> `construct Person()` or `construct Person("Joe")`
     
-    $ p = construct Person(name = "Joe", age = 18)          var p = new Person("Joe", 18)
+    $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
+    $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
 
 Blueprints consists of 4 parts:
 
 1. `has`
-       * Initialization of Blueprint properties.
-       * Specific and dynamic property construction.
-           - Specific -> `construct Person (hairColor = "black")`
-           - Dynamic  -> `construct Person()`, `construct Person(name = "Joe")`, etc.
-       * Default values
-           - The value to the right of the `#` is the default value.
-               - `haircolor = hairColor # "black"`
+       * Specify Blueprint properties.
+       * The `#` operator can be used to specify a default value.
+            `haircolor = hairColor # "black"`
 2. `does`
-       * Initialization of Blueprint methods (functions).
-       * Methods can be defined from parameters.
+       * Specify Blueprint methods (functions).
+       * Methods can be defined from parameters
             `do_exercise = exercise # running()`
-3. `synget`, which allows `get_property()` functions to be created, and
+3. `synget`, which allows `get_property()` functions to be created.
 4. `synset`, which allows `set_property()` functions to be created.
 
 Here is an example of a blueprint of a Person.  
@@ -135,7 +134,7 @@ Here is an example of a blueprint of a Person.
     
     synset:
         hairColor
-    
+
     defcc
 
 #### Arrays    
@@ -145,11 +144,10 @@ Here is an example of a blueprint of a Person.
 ### Macrosyntax
 
     /**
-      * This is regarded as the the most up to date specification of KS
-      * KobraScript Syntax v.1.3b
-      * 
-      * Absent: specification for increments (pre/post) 
-      */
+    * This is regarded as the the most up to date specification of KS
+    * KobraScript Syntax v.1.4
+    * 
+    */
 
     UNIT    ::=  PROGRAM
             |    BLUPRNT
@@ -162,28 +160,28 @@ Here is an example of a blueprint of a Person.
             |    FNDEC
             |    ASSIGN
             |    INCR
-            |    'if'  '('  EXP  ')'  OPENBLK  
-                 ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*  
+            |    'if'  '('  EXP  ')'  OPENBLK
+                 ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
                  ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
             |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
             |    'while'  '('  EXP  ')'  OPENBLK  'end'
             |    'return'  EXP  OPENBLK  'end'
 
-    VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
+    VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
     FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
     FNTYPE  ::=  'proc' | 'fn'
     PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
     ASSIGN  ::=  VAR  '=' EXP
             |    VAR  ':=:'  VAR
-            
+        
     INCR    ::=  VAR  "++" | "++"  VAR
-            |    VAR  "--" | "-^"  VAR
+            |    VAR  "--" | "--"  VAR
             |    VAR  "+="  INTLIT
             |    VAR  "-="  INTLIT
             |    VAR  "*="  INTLIT
             |    VAR  "%="  INTLIT
-            
+        
     OPENBLK ::=  ':'  BLOCK
 
     EXP     ::=  EXP1 (('||' | '#') EXP1)*
@@ -195,7 +193,7 @@ Here is an example of a blueprint of a Person.
     EXP6    ::=  ('~!' | '~?')?  EXP7
     EXP7    ::=  ('!')?  EXP8
     EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-            |    MAKE  |  FNVAL  |  OBJECT  | '(' EXP ')'
+            |    MAKE | FNVAL | OBJECT | '('  EXP  ')'
 
     VAR     ::=  ID SUFFIX*
     SUFFIX  ::=  '[' EXP ']'
@@ -206,31 +204,26 @@ Here is an example of a blueprint of a Person.
     FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
     FNCALL  ::=  VAR  ARGS
     ARGS    ::=  '('  EXP  (','  EXP)*  ')'
-    
-    OBJECT  ::=  '{'  PRPRTY  (','  PRPTRY)*  '}'
-    PRPRTY  ::=  ID  ':' VALUE
+
+    OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
+    PRPRTY  ::=  ID  ':'  EXP
 
     BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNGET?  SYNSET?
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  ((SYNGET?  SYNSET?) | (SYNSET?  SYNGET?))
     HASBLK  ::=  'has'  ':'  VARDEC?
     DOESBLK ::=  'does'  ':'  FNDEC?
     SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
     SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
 
 
-### Microsyntax
+    ### Microsyntax
 
     BITS    ->  [01]*
     INT     ->  -?[\d]*
     FLOAT   ->  INT.\d*
     HEX     ->  (\d | [a-f] | [A-F])*
-    STR     ->  "\w+"
-    BOOL    ->  'true'  |  'false'
-    ID      ->  [_a-zA-Z]\w*  --must not be on the banned list (i.e. tokens)
-    COMMENT ->  '>>'  TEXT  END
+    STR     ->  '\w+'
+    BOOL    ->  'true' | 'false'
+    ID      ->  [_a-zA-Z]\w*
+    COMMENT ->  '>>'  TEXT
             |   '>|'  TEXT  '|<'
-
-
-
-
-
