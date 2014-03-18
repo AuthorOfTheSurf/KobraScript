@@ -1,4 +1,4 @@
-blueprint NewPerson (name, age, hairColor, exercise, weight):
+blueprint Person (name, age, hairColor, exercise, weight):
 
 has:
     name: name,

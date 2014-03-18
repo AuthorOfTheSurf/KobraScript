@@ -102,7 +102,7 @@ describe('The parser', function () {
 
   //  Checks that good blueprints succeed.
   var checksForBlueprintSuccess = {
-    'correctly parses a Blueprint': 'NewPerson'
+    'correctly parses a Blueprint': 'Person'
   }
 
   for (var blueprintSuccessCheck in checksForBlueprintSuccess) {
