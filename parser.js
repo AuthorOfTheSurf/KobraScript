@@ -379,10 +379,11 @@ function parseWhileStatement() {
   match(')')
   match(':')
   var body = parseBlock()
-  if (at('end')) {
-    match('end')
-  } else if (at('..')) {
+  console.log(at('end'))
+  if (at('..')) {
     match('..')
+  } else {
+    match('end')
   }
   return new WhileStatement(condition, body)
 }  
@@ -408,10 +409,10 @@ function parseForStatement() {
   match(')')
   match(':')
   var body = parseBlock()
-  if (at('end')) {
-    match('end')
-  } else if (at('..')) {
+  if (at('..')) {
     match('..')
+  } else {
+    match('end')
   }
   return new ForStatement(assignments, condition, after, body)
 }
