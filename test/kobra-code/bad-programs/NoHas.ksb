@@ -1,0 +1,6 @@
+blueprint NoHas (fail):
+does:
+    toString: proc():
+        say("Hello, world!")
+    end
+defcc
