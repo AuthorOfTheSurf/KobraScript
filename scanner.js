@@ -37,7 +37,7 @@ function scan(line, linenumber, tokens) {
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\/\/|\*\*|~=|is|in|&&|\|\||~\?|~\!|\.\./,
         oneCharTokens = /[\!\+\-\*\/\(\),:;=<>\|\$\{\}\#\.\[\]]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|construct|blueprint|has|does|synget|synset|defcc|this|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc)$/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|construct|blueprint|has|does|synget|synset|defcc|if|else|do|while|for|switch|break|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc)$/,
         numericLit = /([1-9]\d*|0)(\.\d+)?([eE][+-]?\d+)?/,
         booleanLit = /^(?:true|false)$/,
         oneCharEscapeChars = /[bfnrtv0\"\']/,
@@ -115,13 +115,10 @@ function scan(line, linenumber, tokens) {
                 parenCheck = true,
                 emptyString = (line[pos+1] === '\"' || line[pos+1] === '\'')
                 //  Line continuation? Someday we might.
-            if (emptyString) {
-                emit('STRLIT', "", true)
-            }
             //  old regex, needed improvement + refactor
             //  var stringRegex = /[A-Za-z0-9_,.;:\(\)\!\@\#\$\%\^\&\*\<\>\\\?\x20\'\"]/
             //  implemented /.+/ instead
-            while (/.+/.test(line[++pos]) && pos < line.length && parenCheck && !emptyString) {
+            while (/.+/.test(line[++pos]) && pos < line.length && parenCheck) {
                 //  Checks for escape characters
                 //  Link below helped immensely:
                 //  http://mathiasbynens.be/notes/javascript-escapes    
@@ -142,6 +139,9 @@ function scan(line, linenumber, tokens) {
                     } else {
                         pos++
                     }
+                } else if (emptyString) {
+                    parenCheck = false;
+                    emit('STRLIT', "", true)
                 } else if (line[pos] === '\"' || line[pos] === '\'') {
                     parenCheck = false;
                     emit('STRLIT', s.join(''))
