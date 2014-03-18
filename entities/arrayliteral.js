@@ -5,7 +5,7 @@ function ArrayLiteral(elements) {
 }
 
 ArrayLiteral.prototype.toString = function () {
-  return '(Array Elements: ' + this.elements.join(', ') + ')'
+  return '(Array [' + this.elements.join(', ') + '])'
 }
 
 ArrayLiteral.prototype.analyze = function (context) {

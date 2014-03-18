@@ -1,12 +1,12 @@
 function ForStatement(assignments, condition, after, body) {
-  this.assignment = target
+  this.assignments = assignments
   this.condition = condition
   this.after = after
   this.body = body
 }
 
 ForStatement.prototype.toString = function () {
-  return '(= ' + this.target + ' ' + this.source + ')'
+  return '(For ' + this.assignments + ' ' + this.condition + ' ' + this.after + ' ' + this.body + ')'
 }
 
 ForStatement.prototype.analyze = function (context) {
