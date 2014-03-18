@@ -145,32 +145,47 @@ Here is an example of a blueprint of a Person.
 ### Macrosyntax
 
     /**
-     * KobraScript Syntax v.1.2
-     */
+      * This is regarded as the the most up to date specification of KS
+      * KobraScript Syntax v.1.3a
+      * 
+      * Absent: specification for increments (pre/post) 
+      */
 
-    PROGRAM ::=  STMT+
-            |    BLUPRNT
-    OPENBLK ::=  ':'  STMT+
+    UNIT    ::=  BLUEPRINT 
+            |    PROGRAM
+
+    PROGRAM ::=  BLOCK
+
+    BLOCK   ::=  STMT+
+
+    OPENBLK ::=  ':'  BLOCK
+
+    NAME    ::=  ID
 
     FNTYPE  ::=  'proc' | 'fn'
-    VALUE   ::   VAR
-            |    EXP  ('#'  EXP)? 
+
+    VALUE   ::=  EXP  ('#'  EXP)? 
             |    MAKE
-            |    FNDEC
+            |    FNVAL
             |    FNCALL
-    VAR     ::=  ID
+
+    VAR     ::=  ID SUFFIX*
             |    VAR  '['  EXP  ']'
             |    VAR  '.'  ID
-            |    EASYFN
+            |    FNCALL
+
+    SUFFIX ::= '[' EXP ']'
+            |  '.' ID
+            |  '(' ARGS ')'
 
     VARDEC  ::=  '$' ASSIGN  (','  ASSIGN)*
-            |    EASYFN
+            |    FNDEC
     ASSIGN  ::=  ID  '=' VALUE
             |    ID  ':=:'  ID
     PRPRTY  ::=  ID  ':' VALUE
 
-    FNDEC   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
-    EASYFN  ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  ('..' | 'end')
+    FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+    FNDEC   ::=  FNTYPE  (ID)?  PARAMS  OPENBLK  ('..' | 'end')
     FNCALL  ::=  VAR PARAMS
 
     BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
@@ -188,14 +203,15 @@ Here is an example of a blueprint of a Person.
             |    'while'  '('  EXP  ')'  OPENBLK  'end'
             |    'return'  EXP  OPENBLK  'end'
 
-    EXP     ::=  ('~!' | '~?')  EXP1
-    EXP1    ::=  EXP2 (('**' | '-**')  EXP2)
-    EXP2    ::=  EXP3 ([%*/] EXP3)*
+    EXP     ::=  EXP1 (('||' | '#') EXP1)*
+    EXP1    ::=  EXP2 ('&&' EXP2)*
+    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
     EXP3    ::=  EXP4 ([+-] EXP4)*
-    EXP4    ::=  EXP5 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is' | '-^') EXP5)?
-    EXP5    ::=  '!'?  EXP6
-    EXP6    ::=  EXP7 ('||' | '&&') EXP7
-    EXP7    ::=  'undefined' | 'null' | BOOLIT | STRLIT | INTLIT | ID | '(' EXP ')'
+    EXP4    ::=  EXP5 ([%*/] EXP5)*
+    EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
+    EXP6    ::=  ('~!' | '~?')?  EXP7
+    EXP7    ::=  ('!')?  EXP8
+    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR | FNCALL | '(' EXP ')'
 
     PARAM   ::=  VAR | EXP
     PARAMS  ::=  '('  PARAM  (','  PARAM)*  ')'
@@ -205,6 +221,7 @@ Here is an example of a blueprint of a Person.
             |    VAR  "-="  INTLIT
             |    VAR  "*="  INTLIT
             |    VAR  "%="  INTLIT
+            
 ### Microsyntax
 
     BITS    ->  [01]*
