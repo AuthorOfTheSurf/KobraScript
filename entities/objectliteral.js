@@ -5,7 +5,7 @@ function ObjectLiteral(properties) {
 }
 
 ObjectLiteral.prototype.toString = function () {
-  return '(ObjProperties: ' + this.statements.join(', ') + ')'
+  return '(Obj ' + this.properties.join(', ') + ')'
 }
 
 ObjectLiteral.prototype.analyze = function (context) {
