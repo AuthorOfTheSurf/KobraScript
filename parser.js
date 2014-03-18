@@ -34,6 +34,7 @@ var NullLiteral = require('./entities/nullliteral')
 var FnCall = require('./entities/fncall')
 var ReturnStatement = require('./entities/returnstatement')
 var ConstructStatement = require('./entities/constructstatement')
+var IncrementStatement = require('./entities/incrementstatement')
 
 var tokens
 
@@ -127,6 +128,8 @@ function parseStatement() {
     return parseVariableDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
+  } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
+    return parseIncrementStatement()
   } else if (at('ID')) {
     return parseCallOrAssignment()
   } else if (at('while')) {
@@ -379,7 +382,7 @@ function parseForStatement() {
   match('for')
   match('(')
   var assignments = []
-  assignments.push(parseAssignmentStatement())
+  assignments.push(parseVariableDeclaration())
   while (at(',')) {
     match()
     assignments.push(parseAssignmentStatement())    
@@ -398,6 +401,24 @@ function parseForStatement() {
   var body = parseBlock()
   match('end')
   return new ForStatement(assignments, condition, after, body)
+}
+
+function parseIncrementStatement() {
+  var name,
+    increments,
+    post = true
+
+  if (at(['++', '--'])) {
+    post = false
+    increments = at('++')
+    match()
+    name = match(parseName())
+  } else {
+    increments = at('++')
+    name = match(parseName())
+    match()
+  }
+  return new IncrementStatement(name, increments, post)
 }
 
 function parseReturnStatement() {
