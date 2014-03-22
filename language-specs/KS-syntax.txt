@@ -1,6 +1,6 @@
 /**
 * This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.4
+* KobraScript Syntax v.1.4b
 * 
 */
 
@@ -10,6 +10,7 @@ UNIT    ::=  PROGRAM
 PROGRAM ::=  BLOCK
 
 BLOCK   ::=  STMT+
+OPENBLK ::=  ':'  BLOCK
 
 STMT    ::=  VARDEC
         |    FNDEC
@@ -36,8 +37,6 @@ INCR    ::=  VAR  "++" | "++"  VAR
         |    VAR  "-="  INTLIT
         |    VAR  "*="  INTLIT
         |    VAR  "%="  INTLIT
-    
-OPENBLK ::=  ':'  BLOCK
 
 EXP     ::=  EXP1 (('||' | '#') EXP1)*
 EXP1    ::=  EXP2 ('&&' EXP2)*
@@ -48,7 +47,7 @@ EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
 EXP6    ::=  ('~!' | '~?')?  EXP7
 EXP7    ::=  ('!')?  EXP8
 EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-        |    MAKE | FNVAL | OBJECT | '('  EXP  ')'
+        |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
 
 VAR     ::=  ID SUFFIX*
 SUFFIX  ::=  '[' EXP ']'
@@ -60,6 +59,7 @@ FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
 FNCALL  ::=  VAR  ARGS
 ARGS    ::=  '('  EXP  (','  EXP)*  ')'
 
+ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
 OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
 PRPRTY  ::=  ID  ':'  EXP
 
@@ -73,10 +73,7 @@ SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
 
 ### Microsyntax
 
-BITS    ->  [01]*
-INT     ->  -?[\d]*
-FLOAT   ->  INT.\d*
-HEX     ->  (\d | [a-f] | [A-F])*
+NUMLIT  ->  -?[\d]*
 STR     ->  '\w+'
 BOOL    ->  'true' | 'false'
 ID      ->  [_a-zA-Z]\w*

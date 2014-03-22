@@ -10,32 +10,31 @@ var scanner = require('./scanner')
 var error = require('./error')
 
 var Program = require('./entities/program')
+var Blueprint = require('./entities/blueprint')
 var Block = require('./entities/block')
 var Type = require('./entities/type')
 var VariableDeclaration = require('./entities/variabledeclaration')
-var AssignmentStatement = require('./entities/assignmentstatement')
-var WhileStatement = require('./entities/whilestatement')
-var NumericLiteral = require('./entities/numericliteral')
-var BooleanLiteral = require('./entities/booleanliteral')
-var VariableReference = require('./entities/variablereference')
-var BinaryExpression = require('./entities/binaryexpression')
-var UnaryExpression = require('./entities/unaryexpression')
-
-var Blueprint = require('./entities/blueprint')
-var Params = require('./entities/params')
 var Fn = require('./entities/function')
+var AssignmentStatement = require('./entities/assignmentstatement')
+var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var ForStatement = require('./entities/forstatement')
-var ObjectLiteral = require('./entities/objectliteral')
+var WhileStatement = require('./entities/whilestatement')
+var ReturnStatement = require('./entities/returnstatement')
+var ConstructStatement = require('./entities/constructstatement')
+var ExchangeStatement = require('./entities/exchangestatement')
+var Params = require('./entities/params')
+var UnaryExpression = require('./entities/unaryexpression')
+var BinaryExpression = require('./entities/binaryexpression')
+var VariableReference = require('./entities/variablereference')
+var FnCall = require('./entities/fncall')
 var ArrayLiteral = require('./entities/arrayliteral')
+var ObjectLiteral = require('./entities/objectliteral')
+var NumericLiteral = require('./entities/numericliteral')
+var BooleanLiteral = require('./entities/booleanliteral')
 var StringLiteral = require('./entities/stringliteral')
 var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
-var FnCall = require('./entities/fncall')
-var ReturnStatement = require('./entities/returnstatement')
-var ConstructStatement = require('./entities/constructstatement')
-var IncrementStatement = require('./entities/incrementstatement')
-var ExchangeStatement = require('./entities/exchangestatement')
 
 var tokens
 
@@ -164,6 +163,21 @@ function parseVariableDeclaration() {
   return new VariableDeclaration(declarations)
 }
 
+/* assignment token is '=' (general) or ':' (property declaration) */
+function parseAssignmentStatement(assignmentToken) {
+  var target = parseName()
+  match(assignmentToken)
+  var value
+  if (at(['fn','proc'])) {
+    value = parseFn()
+  } else if (at(['{','[','construct'])) {
+    value = parseValue()
+  } else {
+    value = parseExpression()
+  }
+  return new AssignmentStatement(target, value)
+}
+
 function parseCallOrAssignment() {
   var name = parseName()
   if (at('(')) {
@@ -192,21 +206,7 @@ function parseNameOrFnCall() {
   }
 }
 
-/* assignment token is '=' (general) or ':' (property declaration) */
-function parseAssignmentStatement(assignmentToken) {
-  var target = parseName()
-  match(assignmentToken)
-  var value
-  if (at(['fn','proc'])) {
-    value = parseFn()
-  } else if (at(['{','[','construct'])) {
-    value = parseValue()
-  } else {
-    value = parseExpression()
-  }
-  return new AssignmentStatement(target, value)
-}
-
+/* change to parse value, collect suffixes (including calls) */
 function parseName() {
   var dereferences = []
   var gather = function () {
@@ -299,34 +299,6 @@ function parseFnDeclaration() {
   }
 }
 
-function parseObjectLiteral() {
-  var properties = []
-  match('{')
-  if (at('ID')) {
-    properties.push(parseAssignmentStatement(':'))
-  }
-  while (at(',')) {
-    match()
-    properties.push(parseAssignmentStatement(':'))
-  }
-  match('}')
-  return new ObjectLiteral(properties)
-}
-
-function parseArrayLiteral() {
-  var elements = []
-  match('[')
-  if (!at(']')) {
-    elements.push(parseValue())
-  }
-  while (at(',')) {
-    match()
-    elements.push(parseValue())
-  }
-  match(']')
-  return new ArrayLiteral(elements)
-}
-
 function parseParams() {
   match('(')
   var params = []
@@ -369,6 +341,34 @@ function parseConstructParams() {
   }
   match(')')
   return new Params(params) //figure this out
+}
+
+function parseArrayLiteral() {
+  var elements = []
+  match('[')
+  if (!at(']')) {
+    elements.push(parseValue())
+  }
+  while (at(',')) {
+    match()
+    elements.push(parseValue())
+  }
+  match(']')
+  return new ArrayLiteral(elements)
+}
+
+function parseObjectLiteral() {
+  var properties = []
+  match('{')
+  if (at('ID')) {
+    properties.push(parseAssignmentStatement(':'))
+  }
+  while (at(',')) {
+    match()
+    properties.push(parseAssignmentStatement(':'))
+  }
+  match('}')
+  return new ObjectLiteral(properties)
 }
 
 function parseWhileStatement() {
@@ -466,16 +466,16 @@ function parseConditionalExpression() {
   }
   match('end')
   return new ConditionalStatement(conditionals, defaultAct)
-}
 
-function parseIfThen() {
-  match('if')
-  match('(')
-  var condition = parseExpression()
-  match(')')
-  match(':')
-  var action = parseBlock()
-  return new Conditional(condition, action)
+  function parseIfThen() {
+    match('if')
+    match('(')
+    var condition = parseExpression()
+    match(')')
+    match(':')
+    var action = parseBlock()
+    return new Conditional(condition, action)
+  }
 }
 
 function parseExpression() {
