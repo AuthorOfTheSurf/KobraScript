@@ -1,0 +1,84 @@
+/**
+* This is regarded as the the most up to date specification of KS
+* KobraScript Syntax v.1.4
+* 
+*/
+
+UNIT    ::=  PROGRAM
+        |    BLUPRNT
+
+PROGRAM ::=  BLOCK
+
+BLOCK   ::=  STMT+
+
+STMT    ::=  VARDEC
+        |    FNDEC
+        |    ASSIGN
+        |    INCR
+        |    'if'  '('  EXP  ')'  OPENBLK
+             ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
+             ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+        |    'while'  '('  EXP  ')'  OPENBLK  'end'
+        |    'return'  EXP  OPENBLK  'end'
+
+VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
+FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
+FNTYPE  ::=  'proc' | 'fn'
+PARAMS  ::=  '('  ID  (','  ID)*  ')'
+
+ASSIGN  ::=  VAR  '=' EXP
+        |    VAR  ':=:'  VAR
+    
+INCR    ::=  VAR  "++" | "++"  VAR
+        |    VAR  "--" | "--"  VAR
+        |    VAR  "+="  INTLIT
+        |    VAR  "-="  INTLIT
+        |    VAR  "*="  INTLIT
+        |    VAR  "%="  INTLIT
+    
+OPENBLK ::=  ':'  BLOCK
+
+EXP     ::=  EXP1 (('||' | '#') EXP1)*
+EXP1    ::=  EXP2 ('&&' EXP2)*
+EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
+EXP3    ::=  EXP4 ([+-] EXP4)*
+EXP4    ::=  EXP5 ([%*/] EXP5)*
+EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
+EXP6    ::=  ('~!' | '~?')?  EXP7
+EXP7    ::=  ('!')?  EXP8
+EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
+        |    MAKE | FNVAL | OBJECT | '('  EXP  ')'
+
+VAR     ::=  ID SUFFIX*
+SUFFIX  ::=  '[' EXP ']'
+        |    '.' ID
+        |    '(' ARGS ')'
+
+MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+FNCALL  ::=  VAR  ARGS
+ARGS    ::=  '('  EXP  (','  EXP)*  ')'
+
+OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
+PRPRTY  ::=  ID  ':'  EXP
+
+BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+BLUBLK  ::=  ':'  HASBLK  DOESBLK  ((SYNGET?  SYNSET?) | (SYNSET?  SYNGET?))
+HASBLK  ::=  'has'  ':'  VARDEC?
+DOESBLK ::=  'does'  ':'  FNDEC?
+SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
+SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
+
+
+### Microsyntax
+
+BITS    ->  [01]*
+INT     ->  -?[\d]*
+FLOAT   ->  INT.\d*
+HEX     ->  (\d | [a-f] | [A-F])*
+STR     ->  '\w+'
+BOOL    ->  'true' | 'false'
+ID      ->  [_a-zA-Z]\w*
+COMMENT ->  '>>'  TEXT
+        |   '>|'  TEXT  '|<'
