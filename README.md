@@ -145,7 +145,7 @@ Here is an example of a blueprint of a Person.
 
     /**
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.4
+    * KobraScript Syntax v.1.4b
     * 
     */
 
@@ -155,6 +155,7 @@ Here is an example of a blueprint of a Person.
     PROGRAM ::=  BLOCK
 
     BLOCK   ::=  STMT+
+    OPENBLK ::=  ':'  BLOCK
 
     STMT    ::=  VARDEC
             |    FNDEC
@@ -181,8 +182,6 @@ Here is an example of a blueprint of a Person.
             |    VAR  "-="  INTLIT
             |    VAR  "*="  INTLIT
             |    VAR  "%="  INTLIT
-        
-    OPENBLK ::=  ':'  BLOCK
 
     EXP     ::=  EXP1 (('||' | '#') EXP1)*
     EXP1    ::=  EXP2 ('&&' EXP2)*
@@ -193,7 +192,7 @@ Here is an example of a blueprint of a Person.
     EXP6    ::=  ('~!' | '~?')?  EXP7
     EXP7    ::=  ('!')?  EXP8
     EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-            |    MAKE | FNVAL | OBJECT | '('  EXP  ')'
+            |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
 
     VAR     ::=  ID SUFFIX*
     SUFFIX  ::=  '[' EXP ']'
@@ -205,6 +204,7 @@ Here is an example of a blueprint of a Person.
     FNCALL  ::=  VAR  ARGS
     ARGS    ::=  '('  EXP  (','  EXP)*  ')'
 
+    ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
     OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
     PRPRTY  ::=  ID  ':'  EXP
 
@@ -218,10 +218,7 @@ Here is an example of a blueprint of a Person.
 
     ### Microsyntax
 
-    BITS    ->  [01]*
-    INT     ->  -?[\d]*
-    FLOAT   ->  INT.\d*
-    HEX     ->  (\d | [a-f] | [A-F])*
+    NUMLIT  ->  -?[\d]*
     STR     ->  '\w+'
     BOOL    ->  'true' | 'false'
     ID      ->  [_a-zA-Z]\w*
