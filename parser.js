@@ -27,7 +27,7 @@ var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
 var BinaryExpression = require('./entities/binaryexpression')
 var VariableReference = require('./entities/variablereference')
-var FnCall = require('./entities/fncall')
+var Call = require('./entities/call')
 var ArrayLiteral = require('./entities/arrayliteral')
 var ObjectLiteral = require('./entities/objectliteral')
 var NumericLiteral = require('./entities/numericliteral')
@@ -165,7 +165,7 @@ function parseVariableDeclaration() {
 
 /* assignment token is '=' (general) or ':' (property declaration) */
 function parseAssignmentStatement(assignmentToken) {
-  var target = parseName()
+  var target = parseVar()
   match(assignmentToken)
   var value
   if (at(['fn','proc'])) {
@@ -180,10 +180,7 @@ function parseAssignmentStatement(assignmentToken) {
 
 function parseCallOrAssignment() {
   var name = parseName()
-  if (at('(')) {
-    var params = parseParams()
-    return new FnCall(name, params)
-  } else if (at(':=:')) {
+  if (at(':=:')) {
     match()
     var right = parseValue()
     return new ExchangeStatement(name, right)
@@ -192,36 +189,39 @@ function parseCallOrAssignment() {
     var value = parseValue()
     return new AssignmentStatement(name, value)
   } else {
-    error('Dangling identifier', tokens[0])
+    error('Non-assigning token found in variable-related statement', tokens[0])
   }
 }
 
-function parseNameOrFnCall() {
-  var name = parseName()
-  if (at('(')) {
-    var params = parseParams()
-    return new FnCall(name, params)
-  } else {
-    return name
-  }
-}
+/* DEPRICATED */
+// function parseNameOrFnCall() {
+//   var name = parseName()
+//   if (at('(')) {
+//     var params = parseParams()
+//     return new FnCall(name, params)
+//   } else {
+//     return name
+//   }
+// }
 
-/* change to parse value, collect suffixes (including calls) */
-function parseName() {
-  var dereferences = []
-  var gather = function () {
+/* change to parse var, collect suffixes (including calls) */
+function parseVar() {
+  function gather () {
     if (at('STRLIT')) {
-      dereferences.push(new StringLiteral(match()))
+      suffixes.push(new StringLiteral(match()))
     } else if (at('NUMLIT')) {
-      dereferences.push(new NumericLiteral(match()))
+      suffixes.push(new NumericLiteral(match())) //add convert to strlit to numlit
     } else if (at('ID')) {
-      dereferences.push(new VariableReference(match()))
+      suffixes.push(new VariableReference(match())) //add convert to strlit (if suff = 0)
+    } else if (at('(')) {
+      suffixes.push(parseCall())
     } else {
       error('Illegal dereference', tokens[0])
     }
   }
 
   var name = match()
+  var suffixes = []
   while (at(['[','.'])) {
     if (at['[']) {
       match()
@@ -232,8 +232,11 @@ function parseName() {
       match()
       gather()
     }
+    else if (at('(')) {
+      gather()
+    }
   }
-  return new VariableReference(name, dereferences)
+  return new VariableReference(name, suffixes)
 }
 
 /*  This is anything that can be assigned to an id; RHS values */
@@ -253,7 +256,7 @@ function parseValue() {
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
   } else if (at('ID')) {
-    return parseNameOrFnCall()
+    return parseVar()
   } else if (at('construct')) {
     return parseConstructStatement()
   } else if (at(['fn','proc'])) {
@@ -276,10 +279,9 @@ function parseFn() {
   }
 }
 
-function parseFnCall() {
-  var name = parseName()
-  var params = parseParams()
-  return new FnCall(name, params)
+function parseCall() {
+  var args = new Call(parseArgs())
+  return new Call(args)
 }
 
 function parseFnDeclaration() {
@@ -302,21 +304,39 @@ function parseFnDeclaration() {
 function parseParams() {
   match('(')
   var params = []
+  if (at('ID')) {
+    var p = parseVar()
+    if (p.isBasicName()) params.push(p)
+    else error("Illegal parameter specification, try a basic name", tokens[0])
+  }
+  while (at(',')) {
+    match()
+    p = parseVar()
+    if (p.isBasicName()) params.push(p)
+    else error("Illegal parameter specification, try a basic name", tokens[0])
+  }
+  match(')')
+  return new Params(params)
+}
+
+function parseArgs() {
+  match('(')
+  var args = []
   if (at(['{','['])) {
-    params.push(parseValue())
+    args.push(parseValue())
   } else if (!at(')')) {
-    params.push(parseExpression())
+    args.push(parseExpression())
   }
   while (at(',')) {
     match()
     if (at(['{','['])) {
-      params.push(parseValue())
+      args.push(parseValue())
     } else {
-      params.push(parseExpression())
+      args.push(parseExpression())
     }
   }
   match(')')
-  return new Params(params)
+  return new Arguments(args)
 }
 
 function parseConstructParams() {
@@ -424,9 +444,9 @@ function parseIncrementStatement() {
     post = false
     increments = at('++')
     match()
-    name = parseName()
+    name = parseVar()
   } else {
-    name = parseName()
+    name = parseVar()
     increments = at('++')
     match()
   }
@@ -440,7 +460,7 @@ function parseReturnStatement() {
 
 function parseConstructStatement() {
   match('construct')
-  var name = parseName()
+  var name = parseVar()
   var params = parseConstructParams()
   return new ConstructStatement(name, params)
 }
@@ -575,7 +595,7 @@ function parseExp8() {
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('ID')) {
-    return parseNameOrFnCall()
+    return parseVar()
   } else if (at('(')) {
     match()
     var expression = parseExpression()

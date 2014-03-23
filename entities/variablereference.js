@@ -1,15 +1,24 @@
-function VariableReference(token, dereferences) {
+function VariableReference(token, suffixes) {
   this.token = token
-  this.dereferences = dereferences || []
+  this.suffixes = suffixes || []
+}
+
+function isBasicName() {
+  return this.suffixes.length === 0
 }
 
 VariableReference.prototype.toString = function () {
-  var result = this.token.lexeme
-  if (this.dereferences.length > 0) {
-  	result = result.concat('.[')
-  	result = result.concat(this.dereferences.toString())
-  	result = result.concat(']')
+  var result = '(Var ' + this.token.lexeme
+  if (this.suffixes.length >= 1) {
+    result = result.concat('[ ' + this.suffixes[0].toString)
   }
+  for (var i = 1; i < this.suffixes.length; i++) {
+    result = result.concat(', ' + this.suffixes[0].toString)
+    if (i === this.suffixes.length - 1) {
+      result = result.concat(']')
+    }
+  }
+  result = result.concat(')')
   return result
 }
 
