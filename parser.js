@@ -131,7 +131,7 @@ function parseStatement() {
   } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
     return parseIncrementStatement()
   } else if (at('ID')) {
-    return parseCallOrAssignment()
+    return parseUseOfVar()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -146,14 +146,15 @@ function parseStatement() {
 }
 
 function parseVariableDeclaration() {
-  var declarations = []
-  var gather = function () {
+  function gather () {
     if (next('=')) {
       declarations.push(parseAssignmentStatement())
     } else if (next(',')) {
       declarations.push(new AssignmentStatement(new VariableReference(match('ID')), new UndefinedLiteral()))
     }
   }
+
+  var declarations = []
   match('$')
   gather()
   while (at(',')) {
@@ -178,8 +179,8 @@ function parseAssignmentStatement(assignmentToken) {
   return new AssignmentStatement(target, value)
 }
 
-function parseCallOrAssignment() {
-  var name = parseName()
+function parseUseOfVar() {
+  var name = parseVar()
   if (at(':=:')) {
     match()
     var right = parseValue()
@@ -189,22 +190,10 @@ function parseCallOrAssignment() {
     var value = parseValue()
     return new AssignmentStatement(name, value)
   } else {
-    error('Non-assigning token found in variable-related statement', tokens[0])
+    return name
   }
 }
 
-/* DEPRICATED */
-// function parseNameOrFnCall() {
-//   var name = parseName()
-//   if (at('(')) {
-//     var params = parseParams()
-//     return new FnCall(name, params)
-//   } else {
-//     return name
-//   }
-// }
-
-/* change to parse var, collect suffixes (including calls) */
 function parseVar() {
   function gather () {
     if (at('STRLIT')) {
@@ -214,13 +203,13 @@ function parseVar() {
     } else if (at('ID')) {
       suffixes.push(new VariableReference(match())) //add convert to strlit (if suff = 0)
     } else if (at('(')) {
-      suffixes.push(parseCall())
+      suffixes.push(new Call(parseArgs()))
     } else {
       error('Illegal dereference', tokens[0])
     }
   }
 
-  var name = match()
+  var name = match('ID')
   var suffixes = []
   while (at(['[','.'])) {
     if (at['[']) {
@@ -279,11 +268,6 @@ function parseFn() {
   }
 }
 
-function parseCall() {
-  var args = new Call(parseArgs())
-  return new Call(args)
-}
-
 function parseFnDeclaration() {
   var fntype = match()
   var name
@@ -322,18 +306,12 @@ function parseParams() {
 function parseArgs() {
   match('(')
   var args = []
-  if (at(['{','['])) {
-    args.push(parseValue())
-  } else if (!at(')')) {
+  if (!at(')')) {
     args.push(parseExpression())
   }
   while (at(',')) {
     match()
-    if (at(['{','['])) {
-      args.push(parseValue())
-    } else {
-      args.push(parseExpression())
-    }
+    args.push(parseExpression())
   }
   match(')')
   return new Arguments(args)
