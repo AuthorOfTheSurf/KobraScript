@@ -9,14 +9,8 @@ function isBasicName() {
 
 VariableReference.prototype.toString = function () {
   var result = '(Var ' + this.token.lexeme
-  if (this.suffixes.length >= 1) {
-    result = result.concat('[ ' + this.suffixes[0].toString)
-  }
-  for (var i = 1; i < this.suffixes.length; i++) {
-    result = result.concat(', ' + this.suffixes[0].toString)
-    if (i === this.suffixes.length - 1) {
-      result = result.concat(']')
-    }
+  for (var i = 0; i < this.suffixes.length; i++) {
+    result = result.concat('>' + this.suffixes[i].toString())
   }
   result = result.concat(')')
   return result

@@ -196,12 +196,15 @@ function parseUseOfVar() {
 
 function parseVar() {
   function gather () {
-    if (at('STRLIT')) {
+    if (at('.')) {
+      match()
       suffixes.push(new StringLiteral(match()))
-    } else if (at('NUMLIT')) {
-      suffixes.push(new NumericLiteral(match())) //add convert to strlit to numlit
+    } else if (at('[')) {
+      match()
+      suffixes.push(new StringLiteral(match())) //numlit lexeme will -> strlit lexeme
+      match(']')
     } else if (at('ID')) {
-      suffixes.push(new VariableReference(match())) //add convert to strlit (if suff = 0)
+      suffixes.push(parseVar())
     } else if (at('(')) {
       suffixes.push(new Call(parseArgs()))
     } else {
@@ -211,19 +214,8 @@ function parseVar() {
 
   var name = match('ID')
   var suffixes = []
-  while (at(['[','.'])) {
-    if (at['[']) {
-      match()
-      gather()
-      match(']')
-    }
-    else if (at('.')) {
-      match()
-      gather()
-    }
-    else if (at('(')) {
-      gather()
-    }
+  while (at(['[','.','('])) {
+    gather()
   }
   return new VariableReference(name, suffixes)
 }
@@ -314,7 +306,7 @@ function parseArgs() {
     args.push(parseExpression())
   }
   match(')')
-  return new Arguments(args)
+  return args
 }
 
 function parseConstructParams() {

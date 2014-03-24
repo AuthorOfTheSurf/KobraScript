@@ -5,7 +5,14 @@ function Call(args) {
 }
 
 Call.prototype.toString = function () {
-  return '(Call ' + this.args.toString() + ')'
+  var result = '(Call:(' 
+	for (var i = 0; i < this.args.length; i++) {
+		if (i >= 1) result = result.concat(', ')
+		result = result.concat(this.args[i].toString())
+	}
+	result = result.concat(')')
+  return result
 }
+
 
 module.exports = Call
