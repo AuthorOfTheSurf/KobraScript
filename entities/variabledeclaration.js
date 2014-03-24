@@ -3,7 +3,7 @@ function VariableDeclaration(declarations) {
 }
 
 VariableDeclaration.prototype.toString = function () {
-  var result = '($ '
+  var result = '(Declare '
   for (var i = 0; i < this.declarations.length; i++) {
     result = result.concat(this.declarations[i].toString() + ', ')
   }
