@@ -21,7 +21,7 @@ var ConditionalStatement = require('./entities/conditionalstatement')
 var ForStatement = require('./entities/forstatement')
 var WhileStatement = require('./entities/whilestatement')
 var ReturnStatement = require('./entities/returnstatement')
-var ConstructStatement = require('./entities/constructstatement')
+var Construction = require('./entities/construction')
 var ExchangeStatement = require('./entities/exchangestatement')
 var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
@@ -237,7 +237,7 @@ function parseValue() {
   } else if (at('ID')) {
     return parseVar()
   } else if (at('construct')) {
-    return parseConstructStatement()
+    return parseConstructValue()
   } else if (at(['fn','proc'])) {
     return parseFn()
   } else {
@@ -307,28 +307,24 @@ function parseArgs() {
   return args
 }
 
-function parseConstructParams() {
+function parseConstructArgs() {
   match('(')
-  var params = []
-  if (at(['{','['])) {
-    params.push(parseValue())
-  } else if (at('ID') && next('=')) {
-    params.push(parseAssignmentStatement())
-  } else {
-    params.push(parseExpression())
+  var args = [] //of values and assignment instructions
+  if (at('ID') && next('=') || at(['fn','proc'])) {
+    args.push(parseAssignmentStatement('='))
+  } else if (!at(')')) {
+    args.push(parseExpression())
   }
   while (at(',')) {
     match()
-    if (at(['{','['])) {
-      params.push(parseValue())
-    } else if (at('ID') && next('=')) {
-      params.push(parseAssignmentStatement())
-    } else {
-      params.push(parseExpression())
+    if (at('ID') && next('=') || at(['fn','proc'])) {
+      args.push(parseAssignmentStatement('='))
+    } else if (!at(')')) {
+      args.push(parseExpression())
     }
   }
   match(')')
-  return new Params(params) //figure this out
+  return args
 }
 
 function parseArrayLiteral() {
@@ -426,11 +422,11 @@ function parseReturnStatement() {
   return new ReturnStatement(parseExpression())
 }
 
-function parseConstructStatement() {
+function parseConstructValue() {
   match('construct')
-  var name = parseVar()
-  var params = parseConstructParams()
-  return new ConstructStatement(name, params)
+  var name = parseVar(true)
+  var args = parseConstructArgs()
+  return new Construction(name, args)
 }
 
 function parseConditionalExpression() {
