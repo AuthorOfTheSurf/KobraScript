@@ -6,7 +6,7 @@ function ForStatement(assignments, condition, after, body) {
 }
 
 ForStatement.prototype.toString = function () {
-  return '(For ' + this.assignments + ' ' + this.condition + ' ' + this.after + ' ' + this.body + ')'
+  return '(For ' + this.assignments + ';' + this.condition + ';' + this.after + ' ' + this.body + ')'
 }
 
 ForStatement.prototype.analyze = function (context) {

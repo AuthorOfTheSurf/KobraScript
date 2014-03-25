@@ -194,17 +194,15 @@ function parseUseOfVar() {
   }
 }
 
-function parseVar() {
+function parseVar(limitToId) {
   function gather () {
     if (at('.')) {
       match()
       suffixes.push(new StringLiteral(match()))
     } else if (at('[')) {
       match()
-      suffixes.push(new StringLiteral(match())) //numlit lexeme will -> strlit lexeme
+      suffixes.push(new StringLiteral(match()))
       match(']')
-    } else if (at('ID')) {
-      suffixes.push(parseVar())
     } else if (at('(')) {
       suffixes.push(new Call(parseArgs()))
     } else {
@@ -214,7 +212,7 @@ function parseVar() {
 
   var name = match('ID')
   var suffixes = []
-  while (at(['[','.','('])) {
+  while (!limitToId && at(['[','.','('])) {
     gather()
   }
   return new VariableReference(name, suffixes)
@@ -264,14 +262,14 @@ function parseFnDeclaration() {
   var fntype = match()
   var name
   if (at('ID')) {
-    name = match()
+    name = parseVar(true)
   }
   var params = parseParams()
   match(':')
   var body = parseBlock()
   if (at(['..','end'])) {
     match()
-    return new AssignmentStatement(name, new Fn(fntype, params, body))
+    return new VariableDeclaration([new AssignmentStatement(name, new Fn(fntype, params, body))])
   } else {
     error('Illegal end of function token', tokens[0])
   }
