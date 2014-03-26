@@ -15,18 +15,18 @@ In KobraScript, variable declarations are simplified to one character: `$`.
     $ name = "Samson"                                       var name = "Samson";
 
     $ likesMusic = true,                                    var likesMusic = true,
-      likesJazz = true                                          likesJazz;
+      likesJazz                                                 likesJazz;
 
     $ isRed = true,                                         var isRed = true,
-      isFood = false,                                          isFood = false,
-      isMine = true                                            isMine = true;
+      isFood = false,                                           isFood = false,
+      isMine = true                                             isMine = true;
 
 Variables with uninitialized values are set to undefined.
 
     $ total                                                 var total = undefined;
 
 #### Functions
-Functions in KobraScript are declared with `fn`, with open with `:` and close with `end`, or `..` if declared consecutively.
+Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`. 
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
@@ -44,27 +44,27 @@ Functions in KobraScript are declared with `fn`, with open with `:` and close wi
           return true                                               return true
       end                                                       };
 
-A subroutine that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and are expected to have a return statement.
+A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and are expected to have a return statement.
 
     proc print_intake (y):                                  function printIntake (y) {
         say(average_intake(y))                                  console.log(averageIntake(y))
     end                                                     }
 
-#### `if`-`else` Conditions
-In KobraScript the `if`-`else` statement is written with a '..' between conditions and 'end' after the final block to signal the conclusion of the statement. Marvel in the beauty of the KobraScript.
+#### Conditional Statement
+In KobraScript an `if` statement is written with a `..` between conditions and an `end` after the final block to signal the conclusion of the statement. Very nice Kobra.
 
     if (is_red && is_food):                                 if (is_red && is_food) {
-        eat ()                                                  eat ();
+        eat()                                                   eat ();
     .. else if (is_food && is_mine):                        } else if (is_food && is_mine) {
-        add_butter ()                                           add_butter ();
+        add_butter()                                            add_butter ();
     .. else:                                                } else {
-        keep ()                                                 keep();
+        keep()                                                  keep();
     end                                                     }
 
 #### `for` and `while` loops
-For and while loops look as expected, using the `:` and `end` blocking syntax.
+For and while loops follow a similar pattern to other statements, using the `:` and `end` blocking syntax.
 
-    $ a = 0 -- A test variable for loops.                   var a = 0; // A test variable for loops.
+    $ a = 0 >> A test variable for loops.                    var a = 0; // A test variable for loops.
 
     for ($ i = 0; i < 4; i++):                              for (var i = 0; i < 4; i++) {
         a++                                                     a++;
@@ -76,7 +76,7 @@ For and while loops look as expected, using the `:` and `end` blocking syntax.
 
 
 #### Objects
-Objects are very similar in KobraScript to JavaScript. Braces are used specifically for objects, and nothing else. Properties in objects are assigned using the `:` with `,` delimiting declarations.
+Objects are easily specified and finely readable in KobraScript. Braces are used specifically for objects in this language, empty braces is an object (one with no properties).
 
     $ bicycle = {                                           var bicycle = {
         frame: "aluminum",                                          frame: "aluminum",
