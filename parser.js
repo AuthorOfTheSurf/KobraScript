@@ -188,7 +188,7 @@ function parseUseOfVar() {
     return new ExchangeStatement(name, right)
   } else if (at('=')) {
     match()
-    var value = parseValue()
+    var value = parseExpression()
     return new AssignmentStatement(name, value)
   } else {
     return name
@@ -435,12 +435,12 @@ function parseConditionalStatement() {
       defaultAct,
       elseEncountered = false
 
-  conditionals.push(parseStatement())
+  conditionals.push(parseIfThen())
   while(at('..') && !elseEncountered) {
     match()
     match('else')
     if (at('if')) {
-      conditionals.push(parseStatement())
+      conditionals.push(parseIfThen())
     } else if (at(':')) {
       match()
       defaultAct = parseBlock()

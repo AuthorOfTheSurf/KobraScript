@@ -1,10 +1,10 @@
 function Conditional(condition, block) {
-  this.conditionals = condition
+  this.condition = condition
   this.block = block
 }
 
 Conditional.prototype.toString = function () {
-  return "if" + condition.toString() + "->" + block.toString
+  return '(if' + this.condition.toString() + ' -> ' + this.block.toString()
 }
 
 Conditional.prototype.analyze = function (context) {
