@@ -18,6 +18,7 @@ var Fn = require('./entities/function')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
+var Conditional = require('./entities/conditional')
 var ForStatement = require('./entities/forstatement')
 var WhileStatement = require('./entities/whilestatement')
 var ReturnStatement = require('./entities/returnstatement')
@@ -429,17 +430,17 @@ function parseConstructValue() {
   return new Construction(name, args)
 }
 
-function parseConditionalExpression() {
+function parseConditionalStatement() {
   var conditionals = [],
       defaultAct,
       elseEncountered = false
 
-  conditionals.push(parseIfThen())
+  conditionals.push(parseStatement())
   while(at('..') && !elseEncountered) {
     match()
     match('else')
     if (at('if')) {
-      conditionals.push(parseIfThen())
+      conditionals.push(parseStatement())
     } else if (at(':')) {
       match()
       defaultAct = parseBlock()
@@ -509,7 +510,7 @@ function parseExp3() {
 
 function parseExp4() {
   var left = parseExp5()
-  while (at(['*','/', '%'])) {
+  while (at(['*','/','%'])) {
     op = match()
     right = parseExp5()
     left = new BinaryExpression(op, left, right)
@@ -532,9 +533,8 @@ function parseExp6() {
     op = match()
     operand = parseExp7()
     return new UnaryExpression(op, operand)
-  } else {
-    return parseExp7()
   }
+  return parseExp7()
 }
 
 function parseExp7() {
@@ -542,9 +542,8 @@ function parseExp7() {
     op = match()
     operand = parseExp8()
     return new UnaryExpression(op, operand)
-  } else {
-    return parseExp8()
   }
+  return parseExp8()
 }
 
 function parseExp8() {

@@ -1,10 +1,14 @@
 function ConditionalStatement(conditionals, defaultAct) {
-  this.conditionals = target
-  this.defaultAct = source
+  this.conditionals = conditionals
+  this.defaultAct = defaultAct
 }
 
 ConditionalStatement.prototype.toString = function () {
-  return '(= ' + this.target + ' ' + this.source + ')'
+  var result = '(Conditional '
+  for (var c in this.conditionals) {
+  	result = result.concat(c.toString())
+  }
+  return result + 'else' + defaultAct.toString() + ')'
 }
 
 ConditionalStatement.prototype.analyze = function (context) {

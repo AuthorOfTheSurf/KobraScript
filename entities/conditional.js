@@ -1,11 +1,10 @@
-function Conditional(conditionals, defaultAct) {
-  this.conditionals = target
-  this.defaultAct = source
+function Conditional(condition, block) {
+  this.conditionals = condition
+  this.block = block
 }
 
 Conditional.prototype.toString = function () {
-  // needs work...
-  // return '(= ' + this.target + ' ' + this.source + ')'
+  return "if" + condition.toString() + "->" + block.toString
 }
 
 Conditional.prototype.analyze = function (context) {
