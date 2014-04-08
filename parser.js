@@ -215,7 +215,7 @@ function parseIndexVar (array) {
 }
 
 function parseFunctionCall (fn) {
-  return new FunctionCall(fn, parseArgs())
+  return new Call(fn, parseArgs())
 }
 
 function parseVar() {
@@ -297,15 +297,11 @@ function parseParams() {
   match('(')
   var params = []
   if (at('ID')) {
-    var p = parseVar()
-    if (p.isBasicName()) params.push(p)
-    else error("Illegal parameter specification, try a basic name", tokens[0])
+    params.push(parseBasicVar())
   }
   while (at(',')) {
     match()
-    p = parseVar()
-    if (p.isBasicName()) params.push(p)
-    else error("Illegal parameter specification, try a basic name", tokens[0])
+    params.push(parseBasicVar())
   }
   match(')')
   return new Params(params)
