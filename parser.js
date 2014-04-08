@@ -28,6 +28,9 @@ var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
 var BinaryExpression = require('./entities/binaryexpression')
 var VariableReference = require('./entities/variablereference')
+var BasicVar = require('./entities/basicvar')
+var IndexVar = require('./entities/indexvar')
+var DottedVar = require('./entities/dottedvar')
 var Call = require('./entities/call')
 var ArrayLiteral = require('./entities/arrayliteral')
 var ObjectLiteral = require('./entities/objectliteral')
@@ -196,46 +199,41 @@ function parseUseOfVar() {
 }
 
 function parseBasicVar () {
-  return new BasicVar(match('id'))
+  return new BasicVar(match('ID'))
 }
 
-function parseDottedVar () {
+function parseDottedVar (struct) {
   match('.')
-  return new DottedVar(match('id'))
+  return new DottedVar(struct, match('ID').lexeme)
 }
 
-function parseIndexVar () {
+function parseIndexVar (array) {
   match('[')
-  var index_var = new IndexVar(match('id'))
+  var indexVar = new IndexVar(array, parseExpression())
   match(']')
-  return index_var
+  return indexVar
 }
 
-function parseFunctionCall () {
-  var name = match('id')
-  var args = parseArgs()
-  return new FunctionCall(name, args)
+function parseFunctionCall (fn) {
+  return new FunctionCall(fn, parseArgs())
 }
 
 function parseVar() {
-  function gather () {
+  function gather (base) {
     if (at('.')) {
-      suffixes.push(parseDottedVar())
+      return parseDottedVar(base)
     } else if (at('[')) {
-      suffixes.push(parseIndexVar())
+      return parseIndexVar(base)
     } else if (at('(')) {
-      suffixes.push(new Call(parseArgs()))
-    } else {
-      error('Illegal dereference', tokens[0])
+      return parseFunctionCall(base)
     }
   }
 
-  var name = parseBasicVar()
-  var next = 
+  var result = parseBasicVar()
   while (at(['[','.','('])) {
-    gather()
+    result = gather(result)
   }
-  return new VariableReference(name, suffixes)
+  return result
 }
 
 /*  This is anything that can be assigned to an id; RHS values */

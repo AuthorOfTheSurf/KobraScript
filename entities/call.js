@@ -1,18 +1,17 @@
-/* Very similar to arguments at this time, this is ok. */
-
-function Call(args) {
+function Call(fn, args) {
+  this.fn = fn
   this.args = args
 }
 
 Call.prototype.toString = function () {
-  var result = '(Call~(' 
-	for (var i = 0; i < this.args.length; i++) {
-		if (i >= 1) result = result.concat(', ')
-		result = result.concat(this.args[i].toString())
-	}
-	result = result.concat(')')
-  return result
+  return '(Call' + this.fn + ' ' + this.args.join(' ') + ')'
 }
 
+Call.prototype.analyze = function (context) {
+  this.fn.analyze(context)
+  this.args.forEach(function (arg) {
+    arg.analyze(context)
+  })
+}
 
 module.exports = Call
