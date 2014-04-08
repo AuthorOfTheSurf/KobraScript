@@ -195,15 +195,34 @@ function parseUseOfVar() {
   }
 }
 
-function parseVar(limitToId) {
+function parseBasicVar () {
+  return new BasicVar(match('id'))
+}
+
+function parseDottedVar () {
+  match('.')
+  return new DottedVar(match('id'))
+}
+
+function parseIndexVar () {
+  match('[')
+  var index_var = new IndexVar(match('id'))
+  match(']')
+  return index_var
+}
+
+function parseFunctionCall () {
+  var name = match('id')
+  var args = parseArgs()
+  return new FunctionCall(name, args)
+}
+
+function parseVar() {
   function gather () {
     if (at('.')) {
-      match()
-      suffixes.push(new StringLiteral(match()))
+      suffixes.push(parseDottedVar())
     } else if (at('[')) {
-      match()
-      suffixes.push(new StringLiteral(match()))
-      match(']')
+      suffixes.push(parseIndexVar())
     } else if (at('(')) {
       suffixes.push(new Call(parseArgs()))
     } else {
@@ -211,9 +230,9 @@ function parseVar(limitToId) {
     }
   }
 
-  var name = match('ID')
-  var suffixes = []
-  while (!limitToId && at(['[','.','('])) {
+  var name = parseBasicVar()
+  var next = 
+  while (at(['[','.','('])) {
     gather()
   }
   return new VariableReference(name, suffixes)
