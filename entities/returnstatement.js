@@ -6,7 +6,7 @@ ReturnStatement.prototype.toString = function () {
   return '(Return ' + this.expression.toString() + ')'
 }
 
-ReturnStatement.protoype.isReturnStatement = function() {
+ReturnStatement.prototype.isReturnStatement = function() {
   return true
 }
 

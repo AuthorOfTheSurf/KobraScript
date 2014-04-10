@@ -13,7 +13,6 @@ var Program = require('./entities/program')
 var Blueprint = require('./entities/blueprint')
 var Block = require('./entities/block')
 var Type = require('./entities/type')
-var VariableDeclaration = require('./entities/variabledeclaration')
 var Fn = require('./entities/function')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var IncrementStatement = require('./entities/incrementstatement')
@@ -208,23 +207,23 @@ function parseUseOfVar() {
 }
 
 function parseBasicVar () {
-  return new BasicVar(match('ID'))
+  return new BasicVar(match('ID').lexeme)
 }
 
 function parseDottedVar (struct) {
   match('.')
-  return new DottedVar(struct, match('ID').lexeme)
+  return new DottedVar(struct.name, match('ID').lexeme)
 }
 
 function parseIndexVar (array) {
   match('[')
-  var indexVar = new IndexVar(array, parseExpression())
+  var indexVar = new IndexVar(array.name, parseExpression())
   match(']')
   return indexVar
 }
 
-function parseFunctionCall (fn) {
-  return new Call(fn, parseArgs())
+function parseFnCall (fn) {
+  return new Call(fn.name, parseArgs())
 }
 
 function parseVar() {
@@ -234,7 +233,7 @@ function parseVar() {
     } else if (at('[')) {
       return parseIndexVar(base)
     } else if (at('(')) {
-      return parseFunctionCall(base)
+      return parseFnCall(base)
     }
   }
 
@@ -296,7 +295,7 @@ function parseFnDeclaration() {
   var body = parseBlock()
   if (at(['..','end'])) {
     match()
-    return new VariableDeclaration([new AssignmentStatement(name, new Fn(fntype, params, body))])
+    return new Declaration(name, new Fn(fntype, params, body))
   } else {
     error('Illegal end of function token', tokens[0])
   }

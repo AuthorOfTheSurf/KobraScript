@@ -4,7 +4,11 @@ function Call(fn, args) {
 }
 
 Call.prototype.toString = function () {
-  return '(Call' + this.fn + ' ' + this.args.join(' ') + ')'
+  var argResult = [];
+  for (var i = 0; i < this.args.length; i++) {
+    argResult.push(this.args[i].toString())
+  }
+  return '(Call ' + this.fn + ' ' + argResult.join(' ') + ')'
 }
 
 Call.prototype.analyze = function (context) {
