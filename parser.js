@@ -39,6 +39,7 @@ var BooleanLiteral = require('./entities/booleanliteral')
 var StringLiteral = require('./entities/stringliteral')
 var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
+var Declaration = require('./entities/declaration')
 
 var tokens
 
@@ -151,21 +152,29 @@ function parseStatement() {
 
 function parseVariableDeclaration() {
   function gather () {
-    if (next('=')) {
-      declarations.push(parseAssignmentStatement())
-    } else if (next(',')) {
-      declarations.push(new AssignmentStatement(new VariableReference(match('ID')), new UndefinedLiteral()))
+    var name = match('ID')
+    if (at('=')) {
+      match()
+      var initializer
+      if (at(['fn','proc'])) {
+        initializer = parseFn()
+      } else if (at(['{','[','construct'])) {
+        initializer = parseValue()
+      } else {
+        initializer = parseExpression()
+      }
+      return new Declaration(name.lexeme, initializer)
+    } else if (at(',')) {
+      return new Declaration(name.lexeme, new UndefinedLiteral())
     }
   }
 
-  var declarations = []
   match('$')
   gather()
   while (at(',')) {
     match()
     gather()
   }
-  return new VariableDeclaration(declarations)
 }
 
 /* assignment token is '=' (general) or ':' (property declaration) */

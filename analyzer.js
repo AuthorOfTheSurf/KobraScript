@@ -13,14 +13,18 @@ AnalysisContext.prototype.createChildContext = function () {
   return new AnalysisContext(this)
 }
 
-AnalysisContext.prototype.variableMustNotBeAlreadyDeclared = function (token) {
-  if (this.symbolTable[token.lexeme]) {
-    error('Variable ' + token.lexeme + ' already declared', token)
-  }
-}
-
 AnalysisContext.prototype.addVariable = function (name, entity) {
   this.symbolTable[name] = entity
+}
+
+AnalysisContext.prototype.hasReturnStatement = function(block) {
+  // TODO: Does not detect returns in conditionals.
+  this.block.forEach(function(entity) {
+    if (entity.isReturnStatement()) {
+      return true
+    }
+  })
+  return false
 }
 
 AnalysisContext.prototype.lookupVariable = function (token) {
