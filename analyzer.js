@@ -18,12 +18,9 @@ AnalysisContext.prototype.addVariable = function (name, entity) {
 }
 
 AnalysisContext.prototype.hasReturnStatement = function(block) {
-  // TODO: Does not detect returns in conditionals.
-  this.block.forEach(function(entity) {
-    if (entity.isReturnStatement()) {
-      return true
-    }
-  })
+  for (stmt in block) {
+    if (stmt.hasOwnProperty('isReturnStatement')) return true
+  }
   return false
 }
 
