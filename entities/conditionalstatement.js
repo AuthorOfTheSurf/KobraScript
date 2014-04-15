@@ -17,9 +17,10 @@ ConditionalStatement.prototype.toString = function () {
 }
 
 ConditionalStatement.prototype.analyze = function (context) {
-  this.target.analyze(context)
-  this.source.analyze(context)
-  this.source.type.mustBeCompatibleWith(this.target.type, 'Type mismatch in conditional')
+  for (c in this.conditionals) {
+    c.analyze(context)
+  }
+  this.defaultAct.analyze(context)
 }
 
 module.exports = ConditionalStatement

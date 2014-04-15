@@ -42,7 +42,6 @@ var Declaration = require('./entities/declaration')
 
 var tokens
 
-
 module.exports = function (scanner_output) {
   tokens = scanner_output
   var program = at('blueprint') ? parseBlueprint() : parseProgram()
@@ -399,7 +398,7 @@ function parseForStatement() {
   assignments.push(parseVariableDeclaration())
   while (at(',')) {
     match()
-    assignments.push(parseAssignmentStatement())    
+    assignments.push(parseAssignmentStatement('='))    
   }
   match(';')
   var condition = parseExpression()
@@ -446,7 +445,7 @@ function parseReturnStatement() {
 
 function parseConstructValue() {
   match('construct')
-  var name = parseVar(true)
+  var name = match('ID').lexeme
   var args = parseConstructArgs()
   return new Construction(name, args)
 }

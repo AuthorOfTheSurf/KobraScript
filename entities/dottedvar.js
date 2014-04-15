@@ -8,7 +8,7 @@ DottedVar.prototype.toString = function () {
 }
 
 DottedVar.prototype.analyze = function (context) {
-  this.struct.analyze(context)
+  this.struct.lookUpVariable(property)
 }
 
 module.exports = DottedVar

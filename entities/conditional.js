@@ -8,9 +8,8 @@ Conditional.prototype.toString = function () {
 }
 
 Conditional.prototype.analyze = function (context) {
-  this.target.analyze(context)
-  this.source.analyze(context)
-  this.source.type.mustBeCompatibleWith(this.target.type, 'Type mismatch in conditional')
+  this.condition.analyze(context)
+  this.block.analyze(context)
 }
 
 module.exports = Conditional

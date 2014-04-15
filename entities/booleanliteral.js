@@ -5,7 +5,7 @@ function BooleanLiteral(token) {
 }
 
 BooleanLiteral.prototype.toString = function () {
-  return this.token.lexeme;
+  return this.token.lexeme
 }
 
 BooleanLiteral.prototype.analyze = function (context) {

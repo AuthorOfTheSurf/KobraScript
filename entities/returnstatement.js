@@ -1,6 +1,6 @@
 function ReturnStatement(expression) {
   this.expression = expression
-  this.isReturn = "I sure am!"
+  this.isReturn = true
 }
 
 ReturnStatement.prototype.toString = function () {
