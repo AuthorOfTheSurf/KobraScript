@@ -1,6 +1,6 @@
-/**
+**/
 * This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.4b
+* KobraScript Syntax v.1.5
 * 
 */
 
@@ -64,18 +64,17 @@ OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
 PRPRTY  ::=  ID  ':'  EXP
 
 BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-BLUBLK  ::=  ':'  HASBLK  DOESBLK  ((SYNGET?  SYNSET?) | (SYNSET?  SYNGET?))
+BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
 HASBLK  ::=  'has'  ':'  VARDEC?
 DOESBLK ::=  'does'  ':'  FNDEC?
-SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
-SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
+SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
 
 
 ### Microsyntax
 
-NUMLIT  ->  -?[\d]*
-STR     ->  '\w+'
-BOOL    ->  'true' | 'false'
-ID      ->  [_a-zA-Z]\w*
-COMMENT ->  '>>'  TEXT
-        |   '>|'  TEXT  '|<'
+NUMLIT  ::=  -?[\d]*
+STR     ::=  '\w+'
+BOOL    ::=  'true' | 'false'
+ID      ::=  [_a-zA-Z]\w*
+COMMENT ::=  '>>'  TEXT  '\n'
+        |    '>|'  TEXT  '|<'
