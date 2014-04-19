@@ -62,14 +62,16 @@ function parseBlock() {
 }
 
 function parseBlueprint() {
+  var has = [],
+      does = [],
+      syn = [];
+
   match('blueprint')
   var blueid = new VariableReference(match('ID'))
   var params = new Params(parseParams())
   match(':')
 
-  match('has')
-  match(':')
-  var has = []
+  match(['@','has'])
   if (at('ID')) {
     has.push(parseAssignmentStatement(':'))
     while (at(',')) {
@@ -78,9 +80,7 @@ function parseBlueprint() {
     }
   }
 
-  match('does')
-  match(':')
-  var does = []
+  match(['@','does'])
   if (at('ID')) {
     does.push(parseAssignmentStatement(':'))
     while (at(',')) {
@@ -89,41 +89,25 @@ function parseBlueprint() {
     }
   }
   
-  var synget = synset = []
-  if (at('synget')) {
-    loadSynget()
-    loadSynset()
-  }
-  else if (at('synset')) {
-    loadSynset()
-    loadSynget()
-  }
+  while(at('@')) synergize()
+  
   match('defcc')
 
-  function loadSynget () {
-    match('synget')
+  function synergize () {
+    match('@')
+    match('syn')
     match(':')
+    var child = match('ID').lexeme
     if (at('ID')) {
-      synget.push(new VariableReference(match('ID')))
+      does.push(parseAssignmentStatement(':'))
       while (at(',')) {
         match()
-        synget.push(new VariableReference(match('ID')))
+        does.push(parseAssignmentStatement(':'))
       }
     }
   }
 
-  function loadSynset () {
-    match('synset')
-    match(':')
-    if (at('ID')) {
-      synget.push(new VariableReference(match('ID')))
-      while (at(',')) {
-        match()
-        synget.push(new VariableReference(match('ID')))
-      }
-    }
-  }
-  return new Blueprint(blueid, has, does, synget, synset)
+  return new Blueprint(blueid, params, has, does, syn)
 }
 
 function parseStatement() {
@@ -304,11 +288,11 @@ function parseParams() {
   match('(')
   var params = []
   if (at('ID')) {
-    params.push(parseBasicVar())
+    params.push(parseBasicVar().toString())
   }
   while (at(',')) {
     match()
-    params.push(parseBasicVar())
+    params.push(parseBasicVar().toString())
   }
   match(')')
   return new Params(params)
@@ -612,6 +596,10 @@ function next(symbol) {
 function match(symbol) {
   if (tokens.length === 0) {
     error('Unexpected end of input')
+  } else if (Array.isArray(symbol)) {
+    symbol.forEach(function (token) {
+      match(token)
+    })
   } else if (symbol === undefined || symbol === tokens[0].kind) {
     return tokens.shift()
   } else {

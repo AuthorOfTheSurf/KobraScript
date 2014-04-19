@@ -1,6 +1,6 @@
 **/
 * This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.5
+* KobraScript Syntax v.1.5b
 * 
 */
 
@@ -65,8 +65,8 @@ PRPRTY  ::=  ID  ':'  EXP
 
 BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
 BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
-HASBLK  ::=  'has'  ':'  VARDEC?
-DOESBLK ::=  'does'  ':'  FNDEC?
+HASBLK  ::=  '@'  'has'  (PRPRTY  (','  PRPRTY)*)?
+DOESBLK ::=  '@'  'does'  (PRPRTY  (','  PRPRTY)*)?
 SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
 
 

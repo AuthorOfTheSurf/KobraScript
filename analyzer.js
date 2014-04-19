@@ -17,7 +17,7 @@ AnalysisContext.prototype.addVariable = function (name, entity) {
   this.symbolTable[name] = entity
 }
 
-AnalysisContext.prototype.hasReturnStatement = function(block) {
+AnalysisContext.prototype.hasReturnStatement = function (block) {
   for (stmt in block) {
     if (stmt.hasOwnProperty('isReturnStatement')) return true
   }
