@@ -10,7 +10,7 @@ Say my name...
     say("Kobra!")                                           console.log("Kobra!");
 
 #### Variable Declarations
-In KobraScript, variable declarations are simplified to one character: `$`.
+In KobraScript, variable declarations are simplified to one character: `$`. Also: no semicolons, ever.
 
     $ name = "Samson"                                       var name = "Samson";
 
@@ -44,7 +44,7 @@ Declare a function easily with `fn`. Open the block with `:` and close using `en
           return true                                               return true
       end                                                       };
 
-A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and are expected to have a return statement.
+A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression--return `null` if you have nothing better to return.
 
     proc print_intake (y):                                  function printIntake (y) {
         say(average_intake(y))                                  console.log(averageIntake(y))
@@ -76,7 +76,7 @@ For and while loops follow a similar pattern to other statements, using the `:` 
 
 
 #### Objects
-Objects are easily specified and finely readable in KobraScript. Braces are used specifically for objects in this language, empty braces is an object (one with no properties).
+Objects are easily specified and finely readable in KobraScript. Braces are used specifically for objects in this language, `{}` is an object (the one with no properties).
 
     $ bicycle = {                                           var bicycle = {
         frame: "aluminum",                                          frame: "aluminum",
@@ -102,7 +102,7 @@ To utilize a blueprint in KobraScript, you "construct" the blueprint in a variab
     $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
     $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
 
-Blueprints consists of 4 parts:
+A Blueprint consists of 3 parts:
 
 1. `has`
        * Specify Blueprint properties.
@@ -112,28 +112,31 @@ Blueprints consists of 4 parts:
        * Specify Blueprint methods (functions).
        * Methods can be defined from parameters
             `do_exercise = exercise # running()`
-3. `synget`, which allows `get_property()` functions to be created.
-4. `synset`, which allows `set_property()` functions to be created.
+3. `syn` `:` `<branch_name>`
+       * Allows for flexible and organized creation of branches from the main object
 
 Here is an example of a blueprint of a Person.  
 
     $ blueprint Person (name, age, hairColor, exercise)
-    has:
+    
+    @has
         name: name,
         age: age,
         hairColor: hairColor # "black"
     
-    does:
+    @does
         do_exercise: exercise # running,
         running: proc ():
             say("26.2 miles")
         end
     
-    synget:
-        name, age, hairColor
+    @syn:get
+        name = fn (): return name.., 
+        age = fn (): return age .., 
+        hairColor = fn (): return hairColor ..
     
-    synset:
-        hairColor
+    @syn:set:
+        newHairColor = proc (color): hairColor = color ..
 
     defcc
 
@@ -142,85 +145,83 @@ Here is an example of a blueprint of a Person.
     $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false]
 
 ### Macrosyntax
+    **/
+* This is regarded as the the most up to date specification of KS
+* KobraScript Syntax v.1.5b
+* 
+*/
 
-    /**
-    * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.4b
-    * 
-    */
+UNIT    ::=  PROGRAM
+        |    BLUPRNT
 
-    UNIT    ::=  PROGRAM
-            |    BLUPRNT
+PROGRAM ::=  BLOCK
 
-    PROGRAM ::=  BLOCK
+BLOCK   ::=  STMT+
+OPENBLK ::=  ':'  BLOCK
 
-    BLOCK   ::=  STMT+
-    OPENBLK ::=  ':'  BLOCK
+STMT    ::=  VARDEC
+        |    FNDEC
+        |    ASSIGN
+        |    INCR
+        |    'if'  '('  EXP  ')'  OPENBLK
+             ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
+             ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+        |    'while'  '('  EXP  ')'  OPENBLK  'end'
+        |    'return'  EXP  OPENBLK  'end'
 
-    STMT    ::=  VARDEC
-            |    FNDEC
-            |    ASSIGN
-            |    INCR
-            |    'if'  '('  EXP  ')'  OPENBLK
-                 ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
-                 ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
-            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
-            |    'while'  '('  EXP  ')'  OPENBLK  'end'
-            |    'return'  EXP  OPENBLK  'end'
+VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
+FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
+FNTYPE  ::=  'proc' | 'fn'
+PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
-    VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
-    FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
-    FNTYPE  ::=  'proc' | 'fn'
-    PARAMS  ::=  '('  ID  (','  ID)*  ')'
+ASSIGN  ::=  VAR  '=' EXP
+        |    VAR  ':=:'  VAR
+    
+INCR    ::=  VAR  "++" | "++"  VAR
+        |    VAR  "--" | "--"  VAR
+        |    VAR  "+="  INTLIT
+        |    VAR  "-="  INTLIT
+        |    VAR  "*="  INTLIT
+        |    VAR  "%="  INTLIT
 
-    ASSIGN  ::=  VAR  '=' EXP
-            |    VAR  ':=:'  VAR
-        
-    INCR    ::=  VAR  "++" | "++"  VAR
-            |    VAR  "--" | "--"  VAR
-            |    VAR  "+="  INTLIT
-            |    VAR  "-="  INTLIT
-            |    VAR  "*="  INTLIT
-            |    VAR  "%="  INTLIT
+EXP     ::=  EXP1 (('||' | '#') EXP1)*
+EXP1    ::=  EXP2 ('&&' EXP2)*
+EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
+EXP3    ::=  EXP4 ([+-] EXP4)*
+EXP4    ::=  EXP5 ([%*/] EXP5)*
+EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
+EXP6    ::=  ('~!' | '~?')?  EXP7
+EXP7    ::=  ('!')?  EXP8
+EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
+        |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
 
-    EXP     ::=  EXP1 (('||' | '#') EXP1)*
-    EXP1    ::=  EXP2 ('&&' EXP2)*
-    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
-    EXP3    ::=  EXP4 ([+-] EXP4)*
-    EXP4    ::=  EXP5 ([%*/] EXP5)*
-    EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
-    EXP6    ::=  ('~!' | '~?')?  EXP7
-    EXP7    ::=  ('!')?  EXP8
-    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-            |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
+VAR     ::=  ID SUFFIX*
+SUFFIX  ::=  '[' EXP ']'
+        |    '.' ID
+        |    '(' ARGS ')'
 
-    VAR     ::=  ID SUFFIX*
-    SUFFIX  ::=  '[' EXP ']'
-            |    '.' ID
-            |    '(' ARGS ')'
+MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+FNCALL  ::=  VAR  ARGS
+ARGS    ::=  '('  EXP  (','  EXP)*  ')'
 
-    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-    FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
-    FNCALL  ::=  VAR  ARGS
-    ARGS    ::=  '('  EXP  (','  EXP)*  ')'
+ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
+OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
+PRPRTY  ::=  ID  ':'  EXP
 
-    ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
-    OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
-    PRPRTY  ::=  ID  ':'  EXP
-
-    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  ((SYNGET?  SYNSET?) | (SYNSET?  SYNGET?))
-    HASBLK  ::=  'has'  ':'  VARDEC?
-    DOESBLK ::=  'does'  ':'  FNDEC?
-    SYNGET  ::=  'synget'  ':'  (ID  ',')*  ID
-    SYNSET  ::=  'synset'  ':'  (ID  ',')*  ID
+BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
+HASBLK  ::=  '@'  'has'  (PRPRTY  (','  PRPRTY)*)?
+DOESBLK ::=  '@'  'does'  (PRPRTY  (','  PRPRTY)*)?
+SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
 
 
-    ### Microsyntax
+### Microsyntax
 
-    NUMLIT  ->  -?[\d]*
-    STR     ->  '\w+'
-    BOOL    ->  'true' | 'false'
-    ID      ->  [_a-zA-Z]\w*
-    COMMENT ->  '>>'  TEXT
-            |   '>|'  TEXT  '|<'
+NUMLIT  ::=  -?[\d]*
+STR     ::=  '\w+'
+BOOL    ::=  'true' | 'false'
+ID      ::=  [_a-zA-Z]\w*
+COMMENT ::=  '>>'  TEXT  '\n'
+        |    '>|'  TEXT  '|<'
