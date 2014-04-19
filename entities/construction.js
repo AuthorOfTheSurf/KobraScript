@@ -6,6 +6,7 @@ var blueargparser = require('../blueargparser')
 function Construction(blueID, complexargs) {
   this.blueID = blueID
   this.complexargs = complexargs
+  this.targetBlueprint = this.blueID + '.ksb'
 }
 
 Construction.prototype.toString = function () {
@@ -13,12 +14,11 @@ Construction.prototype.toString = function () {
 }
 
 Construction.prototype.analyze = function () {
-	var targetBlueprint = this.blueID + '.ksb'
   fs.readdir('./', function (err, files) {
   	for (file in files) {
-  		if (targetBlueprint === file) return
+  		if (this.targetBlueprint === file) return
   	}
-    error('could not find ' + targetBlueprint + 'in local directory')
+    error('could not find ' + this.targetBlueprint + 'in local directory')
   })
 
   if (complexargs.length === 0) return
@@ -36,16 +36,18 @@ Construction.prototype.analyze = function () {
   else if (!isSpecificConstruction && this.complexargs.length > 1) {
   	for (var i = 1; i < this.complexargs.length; i++) {
   		if (this.complexargs[i].hasOwnProperty('isAssignment')) {
-  			error('see arg ' + i + ' , no parameter to a dynamic construction may be an assigment')
+  			error('see arg ' + i + ', no parameter to a dynamic construction may be an assigment')
   		}
   	}
-  	var argObj = argumentify(targetBlueprint)
+  	var argObj = argumentify(this.targetBlueprint)
   	var i = argObj.args.length
   	var simpleargs = []
   	while (i--) simpleargs.push(undefined)
   	for (var i = 0; i < this.complexargs.length; i++) {
   		simpleargs[argObj.map.get(complexargs[i])] = complexargs[i].source
   	}
+    /* Complex arguments now put into proper parameter slots */
+    complexargs = simpleargs
   }
 }
 

@@ -1,9 +1,8 @@
 /*
- * Specialized Parser module
+ *   Specialized Parser module for getting the parameters to a blueprint
  *
- *   var arguments = require('./blueargparser')
- *
- *   var program = parse(tokens)
+ *   var blueargparser = require('./blueargparser')
+ *   var args = blueargparser(blueprint_tokens)
  */
 
 var scanner = require('./scanner')
@@ -11,8 +10,8 @@ var error = require('./error')
 
 var tokens
 
-module.exports = function (scanner_output) {
-  tokens = scanner_output
+module.exports = function (blueprint_tokens) {
+  tokens = blueprint_tokens
   match('blueprint')
   match('ID')
   var params = [];

@@ -146,82 +146,82 @@ Here is an example of a blueprint of a Person.
 
 ### Macrosyntax
     **/
-* This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.5b
-* 
-*/
+    * This is regarded as the the most up to date specification of KS
+    * KobraScript Syntax v.1.5b
+    * 
+    */
 
-UNIT    ::=  PROGRAM
-        |    BLUPRNT
+    UNIT    ::=  PROGRAM
+            |    BLUPRNT
 
-PROGRAM ::=  BLOCK
+    PROGRAM ::=  BLOCK
 
-BLOCK   ::=  STMT+
-OPENBLK ::=  ':'  BLOCK
+    BLOCK   ::=  STMT+
+    OPENBLK ::=  ':'  BLOCK
 
-STMT    ::=  VARDEC
-        |    FNDEC
-        |    ASSIGN
-        |    INCR
-        |    'if'  '('  EXP  ')'  OPENBLK
-             ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
-             ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
-        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
-        |    'while'  '('  EXP  ')'  OPENBLK  'end'
-        |    'return'  EXP  OPENBLK  'end'
+    STMT    ::=  VARDEC
+            |    FNDEC
+            |    ASSIGN
+            |    INCR
+            |    'if'  '('  EXP  ')'  OPENBLK
+                 ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
+                 ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
+            |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+            |    'while'  '('  EXP  ')'  OPENBLK  'end'
+            |    'return'  EXP  OPENBLK  'end'
 
-VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
-FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
-FNTYPE  ::=  'proc' | 'fn'
-PARAMS  ::=  '('  ID  (','  ID)*  ')'
+    VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
+    FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
+    FNTYPE  ::=  'proc' | 'fn'
+    PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
-ASSIGN  ::=  VAR  '=' EXP
-        |    VAR  ':=:'  VAR
-    
-INCR    ::=  VAR  "++" | "++"  VAR
-        |    VAR  "--" | "--"  VAR
-        |    VAR  "+="  INTLIT
-        |    VAR  "-="  INTLIT
-        |    VAR  "*="  INTLIT
-        |    VAR  "%="  INTLIT
+    ASSIGN  ::=  VAR  '=' EXP
+            |    VAR  ':=:'  VAR
+        
+    INCR    ::=  VAR  "++" | "++"  VAR
+            |    VAR  "--" | "--"  VAR
+            |    VAR  "+="  INTLIT
+            |    VAR  "-="  INTLIT
+            |    VAR  "*="  INTLIT
+            |    VAR  "%="  INTLIT
 
-EXP     ::=  EXP1 (('||' | '#') EXP1)*
-EXP1    ::=  EXP2 ('&&' EXP2)*
-EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
-EXP3    ::=  EXP4 ([+-] EXP4)*
-EXP4    ::=  EXP5 ([%*/] EXP5)*
-EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
-EXP6    ::=  ('~!' | '~?')?  EXP7
-EXP7    ::=  ('!')?  EXP8
-EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-        |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
+    EXP     ::=  EXP1 (('||' | '#') EXP1)*
+    EXP1    ::=  EXP2 ('&&' EXP2)*
+    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
+    EXP3    ::=  EXP4 ([+-] EXP4)*
+    EXP4    ::=  EXP5 ([%*/] EXP5)*
+    EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
+    EXP6    ::=  ('~!' | '~?')?  EXP7
+    EXP7    ::=  ('!')?  EXP8
+    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
+            |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
 
-VAR     ::=  ID SUFFIX*
-SUFFIX  ::=  '[' EXP ']'
-        |    '.' ID
-        |    '(' ARGS ')'
+    VAR     ::=  ID SUFFIX*
+    SUFFIX  ::=  '[' EXP ']'
+            |    '.' ID
+            |    '(' ARGS ')'
 
-MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
-FNCALL  ::=  VAR  ARGS
-ARGS    ::=  '('  EXP  (','  EXP)*  ')'
+    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
+    FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+    FNCALL  ::=  VAR  ARGS
+    ARGS    ::=  '('  EXP  (','  EXP)*  ')'
 
-ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
-OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
-PRPRTY  ::=  ID  ':'  EXP
+    ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
+    OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
+    PRPRTY  ::=  ID  ':'  EXP
 
-BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
-HASBLK  ::=  '@'  'has'  (PRPRTY  (','  PRPRTY)*)?
-DOESBLK ::=  '@'  'does'  (PRPRTY  (','  PRPRTY)*)?
-SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
+    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
+    HASBLK  ::=  '@'  'has'  (PRPRTY  (','  PRPRTY)*)?
+    DOESBLK ::=  '@'  'does'  (PRPRTY  (','  PRPRTY)*)?
+    SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
 
 
-### Microsyntax
+    ### Microsyntax
 
-NUMLIT  ::=  -?[\d]*
-STR     ::=  '\w+'
-BOOL    ::=  'true' | 'false'
-ID      ::=  [_a-zA-Z]\w*
-COMMENT ::=  '>>'  TEXT  '\n'
-        |    '>|'  TEXT  '|<'
+    NUMLIT  ::=  -?[\d]*
+    STR     ::=  '\w+'
+    BOOL    ::=  'true' | 'false'
+    ID      ::=  [_a-zA-Z]\w*
+    COMMENT ::=  '>>'  TEXT  '\n'
+            |    '>|'  TEXT  '|<'
