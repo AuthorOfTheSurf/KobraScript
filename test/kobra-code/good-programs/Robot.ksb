@@ -14,10 +14,10 @@ blueprint Robot (id_number, name, model_number):
   login: fn ():
     return id == "3000"
   ..
-  
+
 @syn:get
-  name: proc (): return name ..,
-  model_no: proc (): return model_no ..
+  name: fn (): return name ..,
+  model_no: fn (): return model_no ..
 
 @syn:set
   mana: fn (new_mana):

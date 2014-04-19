@@ -1,12 +1,12 @@
 blueprint Person (name, age, hairColor, exercise, weight):
 
-has:
+@has
     name: name,
     age: age,
     hairColor: hairColor # "black",
     weight: weight # 120
 
-does:
+@does
     do_exercise: exercise # running,
     weight: proc ():
         say("I will weigh less")
@@ -15,10 +15,15 @@ does:
         return x / 2.2
     end
 
-synget:
-    name, age, hairColor
+@syn:get
+    >> Old way -> name, age, hairColor
+    name: fn (): return name ..,
+    age: fn (): return age ..,
+    hairColor: fn (): return hairColor ..
 
-synset:
-    hairColor
+@syn:set
+    hairColor: fn(newColor):
+        color = newColor
+    end
 
 defcc
