@@ -17,10 +17,16 @@ function error(message, location) {
     }
   } else if (location && location.path) {
     message = message.concat(', found ', location.path)
-  } 
-  console.log('Error: ' + message)
+  }
+
+  if (!error.quiet) {
+      console.log('Error: ' + message)
+  }
+
   error.count++
 }
+
+error.quiet = false
 
 error.count = 0
 
