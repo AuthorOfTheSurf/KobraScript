@@ -1,39 +1,40 @@
 blueprint Robot (id_number, name, model_number):
 
-@:has
+@has
   id: id_number.substring(3),
   name: name,
   model_no: model_number,
   hp: 100,
   mana: 80
 
-@:does
+@does
   regen: proc ():
-    @hp++
+    hp++
   ..,
   login: fn ():
-    return @id == "3000"
+    return id == "3000"
   ..
   
-@:syn:get
-  name: proc (): return @name ..,
-  model_no: proc (): return @model_no ..
+@syn:get
+  name: proc (): return name ..,
+  model_no: proc (): return model_no ..
 
-@:syn:set
+@syn:set
   mana: fn (new_mana):
-    @mana = new_mana
+    mana = new_mana
   ..,
   newID: proc ():
-    @id = "3000"
+    id = "3000"
     set.mana(75)
   ..
 
 defcc
 
-==========
-
-$ robot = construct Robot(name="Miles")
-
->>Analyses to:
-
-$ robot = construct Robot(undefined, "Miles", undefined)
+>|  ==========
+ |
+ |  $ robot = construct Robot(name="Miles")
+ |
+ |  Analyses to:
+ |
+ |  $ robot = construct Robot(undefined, "Miles", undefined)
+<|

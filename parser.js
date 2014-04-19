@@ -68,7 +68,7 @@ function parseBlueprint() {
 
   match('blueprint')
   var blueid = new VariableReference(match('ID'))
-  var params = new Params(parseParams())
+  var params = parseParams()
   match(':')
 
   match(['@','has'])
@@ -94,17 +94,18 @@ function parseBlueprint() {
   match('defcc')
 
   function synergize () {
-    match('@')
-    match('syn')
-    match(':')
-    var child = match('ID').lexeme
+    match(['@','syn',':'])
+    var synthesis = {}
+        synthesis.branch = match('ID').lexeme
+        synthesis.leaf = []
     if (at('ID')) {
-      does.push(parseAssignmentStatement(':'))
+      synthesis.leaf.push(parseAssignmentStatement(':'))
       while (at(',')) {
         match()
-        does.push(parseAssignmentStatement(':'))
+        synthesis.leaf.push(parseAssignmentStatement(':'))
       }
     }
+    syn.push(synthesis)
   }
 
   return new Blueprint(blueid, params, has, does, syn)
