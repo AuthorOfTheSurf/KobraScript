@@ -7,8 +7,14 @@ var scan = require('../scanner')
 var error = require('../error')
 var i = require('util').inspect
 
+//  Removes error messages for Mocha testing.
+error.quiet = true
+
 //  Added message for those who may change test files in future.
 console.log("WARNING: CHANGING TEST FILES WILL AFFECT MOCHA SUCCESS.")
+
+// Template for token checking.
+// i(tokens[]).should.equal(i())
 
 describe('The scanner', function () {
     //  hello-world.ks
@@ -31,7 +37,7 @@ describe('The scanner', function () {
     //  Person.ksb
     it('properly processes a Blueprint file', function (done) {
         scan('test/kobra-code/good-programs/Person.ksb', function (tokens) {
-            tokens.length.should.equal(79)
+            tokens.length.should.equal(117)
             //    First line.
             i(tokens[0]).should.equal(i({kind:'blueprint',lexeme:'blueprint',line:1,col:1}))
             i(tokens[1]).should.equal(i({kind:'ID',lexeme:'Person',line:1,col:11}))
@@ -48,8 +54,8 @@ describe('The scanner', function () {
             i(tokens[12]).should.equal(i({kind:')',lexeme:')',line:1,col:57}))
             i(tokens[13]).should.equal(i({kind:':',lexeme:':',line:1, col:58}))
             //    End first line, has time.
-            i(tokens[14]).should.equal(i({kind:'has',lexeme:'has',line:3,col:1}))
-            i(tokens[15]).should.equal(i({kind:':',lexeme:':',line:3,col:4}))
+            i(tokens[14]).should.equal(i({kind:'@',lexeme:'@',line:3,col:1}))
+            i(tokens[15]).should.equal(i({kind:'has',lexeme:'has',line:3,col:2}))
             i(tokens[16]).should.equal(i({kind:'ID',lexeme:'name',line:4,col:5}))
             i(tokens[17]).should.equal(i({kind:':',lexeme:':',line:4,col:9}))
             i(tokens[18]).should.equal(i({kind:'ID',lexeme:'name',line:4,col:11}))
@@ -71,8 +77,8 @@ describe('The scanner', function () {
             i(tokens[34]).should.equal(i({kind:'NUMLIT',lexeme:'120',line:7,col:22}))
 
             //    Has done, Does time.
-            i(tokens[35]).should.equal(i({kind:'does',lexeme:'does',line:9,col:1}))
-            i(tokens[36]).should.equal(i({kind:':',lexeme:':',line:9,col:5}))
+            i(tokens[35]).should.equal(i({kind:'@',lexeme:'@',line:9,col:1}))
+            i(tokens[36]).should.equal(i({kind:'does',lexeme:'does',line:9,col:2}))
             i(tokens[37]).should.equal(i({kind:'ID',lexeme:'do_exercise',line:10,col:5}))
             i(tokens[38]).should.equal(i({kind:':',lexeme:':',line:10,col:16}))
             i(tokens[39]).should.equal(i({kind:'ID',lexeme:'exercise',line:10,col:18}))
@@ -104,20 +110,41 @@ describe('The scanner', function () {
             i(tokens[65]).should.equal(i({kind:'NUMLIT',lexeme:'2.2',line:15,col:20}))
             i(tokens[66]).should.equal(i({kind:'end',lexeme:'end',line:16,col:5}))
             //    Begin synget.
-            i(tokens[67]).should.equal(i({kind:'synget',lexeme:'synget',line:18,col:1}))
-            i(tokens[68]).should.equal(i({kind:':',lexeme:':',line:18,col:7}))
-            i(tokens[69]).should.equal(i({kind:'ID',lexeme:'name',line:19,col:5}))
-            i(tokens[70]).should.equal(i({kind:',',lexeme:',',line:19,col:9}))
-            i(tokens[71]).should.equal(i({kind:'ID',lexeme:'age',line:19,col:11}))
-            i(tokens[72]).should.equal(i({kind:',',lexeme:',',line:19,col:14}))
-            i(tokens[73]).should.equal(i({kind:'ID',lexeme:'hairColor',line:19,col:16}))
+            i(tokens[67]).should.equal(i({kind:'@',lexeme:'@',line:18,col:1}))
+            i(tokens[68]).should.equal(i({kind:'syn',lexeme:'syn',line:18,col:2}))
+            i(tokens[69]).should.equal(i({kind:':',lexeme:':',line:18,col:5}))
+            i(tokens[70]).should.equal(i({kind:'ID',lexeme:'get',line:18,col:6}))
+            i(tokens[71]).should.equal(i({kind:'ID',lexeme:'name',line:19,col:5}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[73]).should.equal(i({kind:',',lexeme:',',line:19,col:9}))
+            i(tokens[74]).should.equal(i({kind:'ID',lexeme:'age',line:19,col:11}))
+            i(tokens[75]).should.equal(i({kind:',',lexeme:',',line:19,col:14}))
+            i(tokens[76]).should.equal(i({kind:'ID',lexeme:'hairColor',line:19,col:16}))
             //    Begin synset.
-            i(tokens[74]).should.equal(i({kind:'synset',lexeme:'synset',line:21,col:1}))
-            i(tokens[75]).should.equal(i({kind:':',lexeme:':',line:21,col:7}))
-            i(tokens[76]).should.equal(i({kind:'ID',lexeme:'hairColor',line:22,col:5}))
+            i(tokens[]).should.equal(i({kind:':',lexeme:':',line:21,col:7}))
+            i(tokens[]).should.equal(i({kind:'syn',lexeme:'syn',line:21,col:2}))
+            i(tokens[]).should.equal(i({kind:'ID',lexeme:'hairColor',line:22,col:5}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
+            i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
             //    GG.
-            i(tokens[77]).should.equal(i({kind:'defcc',lexeme:'defcc',line:24,col:1}))
-            i(tokens[78]).should.equal(i({kind:'EOF',lexeme:'EOF'}))
+            i(tokens[]).should.equal(i({kind:'defcc',lexeme:'defcc',line:29,col:1}))
+            i(tokens[]).should.equal(i({kind:'EOF',lexeme:'EOF'}))
             done()
         })
     })
@@ -256,8 +283,8 @@ describe('The scanner', function () {
             done()
         })
     })
-    
-    // Format for tests: 
+
+    // Format for tests:
     // i(tokens[]).should.equal(i({kind:'',lexeme:'',line:,col:}))
 
 })
