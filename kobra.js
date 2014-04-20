@@ -23,7 +23,12 @@ if (argv._.length === 0) {
     scan(argv._[0], function (tokens) {
       if (error.count > 0) return;
       if (argv.t) {
-        tokens.forEach(function (t) {console.log(t)})
+        tokenIndex = 1
+        tokens.forEach(function (t) {
+            //console.log(t);
+            console.log(tokenIndex + " - " + JSON.stringify(t))
+            tokenIndex++
+        })
         return
       }
       var program = parse(tokens)
