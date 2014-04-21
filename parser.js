@@ -15,7 +15,7 @@ var Block = require('./entities/block')
 var Type = require('./entities/type')
 var Fn = require('./entities/function')
 var Declaration = require('./entities/declaration')
-var Property = require('./entities/property.js')
+var Property = require('./entities/property')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
@@ -57,7 +57,7 @@ function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$','ID','for','while','if','fn','proc','++','--','return']))
+  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return']))
   return new Block(statements)
 }
 
@@ -112,8 +112,8 @@ function parseBlueprint() {
 }
 
 function parseStatement() {
-  if (at('$')) {
-    return parseVariableDeclaration()
+  if (at(['$',','])) {
+    parseVariableDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
   } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
@@ -134,29 +134,21 @@ function parseStatement() {
 }
 
 function parseVariableDeclaration() {
-  function gather () {
-    var name = match('ID')
-    if (at('=')) {
-      match()
-      var initializer
-      if (at(['fn','proc'])) {
-        initializer = parseFn()
-      } else if (at(['{','[','construct'])) {
-        initializer = parseValue()
-      } else {
-        initializer = parseExpression()
-      }
-      return new Declaration(name.lexeme, initializer)
-    } else if (at(',')) {
-      return new Declaration(name.lexeme, new UndefinedLiteral())
-    }
-  }
-
-  match('$')
-  gather()
-  while (at(',')) {
+  if (at(['$',','])) match()
+  var name = parseBasicVar()
+  if (at('=')) {
     match()
-    gather()
+    var initializer
+    if (at(['fn','proc'])) {
+      initializer = parseFn()
+    } else if (at(['{','[','construct'])) {
+      initializer = parseValue()
+    } else {
+      initializer = parseExpression()
+    }
+    return new Declaration(name, initializer)
+  } else if (at(',')) {
+    return new Declaration(name, new UndefinedLiteral())
   }
 }
 
@@ -175,11 +167,11 @@ function parseAssignmentStatement() {
 }
 
 function parsePropertyStatement() {
-  var name = match('ID')
+  var name = parseBasicVar()
   match(':')
   var initializer
   if (at(',')) {
-    return new Declaration(name.lexeme, new UndefinedLiteral())
+    return new Property(name, new UndefinedLiteral())
   } else if (at(['fn','proc'])) {
     initializer = parseFn()
   } else if (at(['{','[','construct'])) {
@@ -187,7 +179,7 @@ function parsePropertyStatement() {
   } else {
     initializer = parseExpression()
   }
-  return new Property(name.lexeme, initializer)
+  return new Property(name, initializer)
   
 }
 

@@ -2,7 +2,6 @@ var util = require('util')
 var HashMap = require('hashmap').HashMap
 
 module.exports = function (program) {
-  // TODO - set up output stream
   gen(program)  
 }
 
@@ -15,7 +14,22 @@ function emit(line) {
 }
 
 function makeOp(op) {
-  return {not: '!', and: '&&', or: '||'}[op] || op
+  //return {not: '!', and: '&&', or: '||'}[op] || op
+  return {'~?': 'typeof'}[op] || op
+}
+
+function factorial(n) {
+  var f = []
+  function factorialHelper (value) {
+    if (value == 0 || value == 1) {
+      return 1
+    }
+    if (f[value] > 0) {
+      return f[value]
+    }
+    return f[value] = factorial(value-1) * value
+  }
+  return factorialHelper(n)
 }
 
 var makeVariable = (function () {
@@ -58,6 +72,12 @@ var generator = {
     emit(util.format('%s = %s;', gen(s.target), gen(s.source)))
   },
 
+  'ExchangeStatement': function (s) {
+    var a = gen(s.left)
+    var b = get(s.right)
+    emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
+  }
+
   'ReadStatement': function (s) {
     s.varrefs.forEach(function (v) {
       emit(util.format('%s = prompt();', makeVariable(v.referent)))
@@ -89,7 +109,11 @@ var generator = {
   },
 
   'UnaryExpression': function (e) {
-    return util.format('(%s %s)', makeOp(e.op.lexeme), gen(e.operand))
+    if (e.op.lexeme == '~!') {
+      //Do factorial here
+    } else {
+      return util.format('(%s %s)', makeOp(e.op.lexeme), gen(e.operand))
+    }
   },
 
   'BinaryExpression': function (e) {
