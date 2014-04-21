@@ -6,6 +6,5 @@ module.exports = function (targetType) {
   } catch (e) {
     error('No such target type: ' + targetType)
   }
-  // TODO needs an output stream
   return generator
 }

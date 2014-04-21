@@ -1,8 +1,9 @@
 function Block(statements) {
-  this.statements = statements;
+  this.statements = statements
 }
 
 Block.prototype.toString = function () {
+  //console.log(this.statements)
   return '(Block ' + this.statements.join(' ') + ')'
 }
 
