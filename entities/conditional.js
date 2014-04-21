@@ -4,7 +4,7 @@ function Conditional(condition, block) {
 }
 
 Conditional.prototype.toString = function () {
-  return '(if' + this.condition.toString() + ' -> ' + this.block.toString()
+  return '(if ' + this.condition.toString() + ' -> ' + this.block.toString()
 }
 
 Conditional.prototype.analyze = function (context) {

@@ -74,14 +74,14 @@ var generator = {
   },
 
   'ForStatement': function (s) {
-    emit(util.format('for (%s; %s; %s) {', gen(s.assignments), gen(s.condition), gen(s.after))
+    emit(util.format('for (%s; %s; %s) {', gen(s.assignments), gen(s.condition), gen(s.after)))
     gen(s.body)
     emit('}')
-  }
+  },
 
   'Construction': function() {
     // TODO
-  }
+  },
 
   'IntegerLiteral': function (literal) {
     return literal.toString()
