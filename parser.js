@@ -22,6 +22,7 @@ var ConditionalStatement = require('./entities/conditionalstatement')
 var Conditional = require('./entities/conditional')
 var ForStatement = require('./entities/forstatement')
 var WhileStatement = require('./entities/whilestatement')
+var SayStatement = require('./entities/saystatement')
 var ReturnStatement = require('./entities/returnstatement')
 var Construction = require('./entities/construction')
 var ExchangeStatement = require('./entities/exchangestatement')
@@ -126,6 +127,8 @@ function parseStatement() {
     return parseConditionalStatement()
   } else if (at('for')) {
     return parseForStatement()
+  } else if(at('say')) {
+    return parseSayStatement()
   } else if (at('return')) {
     return parseReturnStatement()
   } else {
@@ -434,6 +437,11 @@ function parseIncrementStatement() {
 function parseReturnStatement() {
   match('return')
   return new ReturnStatement(parseExpression())
+}
+
+function parseSayStatement() {
+  match('say')
+  return new SayStatement(parseExpression())
 }
 
 function parseConstructValue() {

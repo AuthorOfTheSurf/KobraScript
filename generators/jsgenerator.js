@@ -15,7 +15,7 @@ function emit(line) {
 
 function makeOp(op) {
   //return {not: '!', and: '&&', or: '||'}[op] || op
-  return {'~?': 'typeof'}[op] || op
+  return {'~?': 'typeof', '==': '===', }[op] || op
 }
 
 function factorial(n) {
@@ -64,7 +64,6 @@ var generator = {
   },
 
   'VariableDeclaration': function (v) {
-    var initializer = {'int': '0', 'bool': 'false'}[v.type];
     emit(util.format('var %s = %s;', makeVariable(v), initializer))
   },
 
@@ -84,10 +83,8 @@ var generator = {
     })
   },
 
-  'WriteStatement': function (s) {
-    s.expressions.forEach(function (e) {
-      emit(util.format('alert(%s);', gen(e)))
-    })
+  'SayStatement': function (s) {
+    emit(util.format('console.log(%s);', gen(e)))
   },
 
   'WhileStatement': function (s) {
