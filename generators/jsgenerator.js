@@ -18,20 +18,6 @@ function makeOp(op) {
   return {'~?': 'typeof', '==': '===', }[op] || op
 }
 
-function factorial(n) {
-  var f = []
-  function factorialHelper (value) {
-    if (value == 0 || value == 1) {
-      return 1
-    }
-    if (f[value] > 0) {
-      return f[value]
-    }
-    return f[value] = factorial(value-1) * value
-  }
-  return factorialHelper(n)
-}
-
 var makeVariable = (function () {
   // No need to synchronize because Node is single-threaded
   var lastId = 0;
@@ -75,23 +61,27 @@ var generator = {
     var a = gen(s.left)
     var b = get(s.right)
     emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
-  }
-
-  'ReadStatement': function (s) {
-    s.varrefs.forEach(function (v) {
-      emit(util.format('%s = prompt();', makeVariable(v.referent)))
-    })
   },
 
   'SayStatement': function (s) {
-    emit(util.format('console.log(%s);', gen(e)))
+    emit(util.format('console.log(%s);', gen(s)))
   },
 
   'WhileStatement': function (s) {
     emit('while (' + gen(s.condition) + ') {')
-    gen(s.body);
-    emit('}');
+    gen(s.body)
+    emit('}')
   },
+
+  'ForStatement': function (s) {
+    emit(util.format('for (%s; %s; %s) {', gen(s.assignments), gen(s.condition), gen(s.after))
+    gen(s.body)
+    emit('}')
+  }
+
+  'Construction': function() {
+    // TODO
+  }
 
   'IntegerLiteral': function (literal) {
     return literal.toString()
@@ -106,8 +96,11 @@ var generator = {
   },
 
   'UnaryExpression': function (e) {
+    // So sick. Need to text
     if (e.op.lexeme == '~!') {
-      //Do factorial here
+      var factorialFunction = 'function __factorial(n){var f=[];function factorialHelper(value){if(value==0||value==1){return 1;}if(f[value]>0){return f[value];}return f[value]=factorial(value-1)*value;}return factorialHelper(n);}'
+     emit(util.format('%s', factorialFunction))
+     emit(util.format("__factorial(%s)"), gen(e.operand))
     } else {
       return util.format('(%s %s)', makeOp(e.op.lexeme), gen(e.operand))
     }
