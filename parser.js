@@ -28,7 +28,6 @@ var ExchangeStatement = require('./entities/exchangestatement')
 var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
 var BinaryExpression = require('./entities/binaryexpression')
-var VariableReference = require('./entities/variablereference')
 var BasicVar = require('./entities/basicvar')
 var IndexVar = require('./entities/indexvar')
 var DottedVar = require('./entities/dottedvar')
@@ -68,7 +67,7 @@ function parseBlueprint() {
       syn = [];
 
   match('blueprint')
-  var blueid = new VariableReference(match('ID'))
+  var blueid = parseBasicVar()
   var params = parseParams()
   match(':')
 
