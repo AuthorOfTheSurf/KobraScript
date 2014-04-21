@@ -24,6 +24,8 @@ var ForStatement = require('./entities/forstatement')
 var WhileStatement = require('./entities/whilestatement')
 var SayStatement = require('./entities/saystatement')
 var ReturnStatement = require('./entities/returnstatement')
+var BreakStatement = require('./entities/breakstatement')
+var ContinueStatement = require('./entities/continuestatement')
 var Construction = require('./entities/construction')
 var ExchangeStatement = require('./entities/exchangestatement')
 var Params = require('./entities/params')
@@ -58,7 +60,7 @@ function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say']))
+  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say','break','continue']))
   return new Block(statements)
 }
 
@@ -131,6 +133,10 @@ function parseStatement() {
     return parseSayStatement()
   } else if (at('return')) {
     return parseReturnStatement()
+  } else if (at('break')) {
+    return parseBreakStatement()
+  } else if (at('continue')) {
+    return parseContinueStatement()
   } else {
     error('Statement expected', tokens[0])
   }
@@ -442,6 +448,16 @@ function parseReturnStatement() {
 function parseSayStatement() {
   match('say')
   return new SayStatement(parseExpression())
+}
+
+function parseBreakStatement() {
+  match('break')
+  return new BreakStatement()
+}
+
+function parseContinueStatement() {
+  match('continue')
+  return new ContinueStatement()
 }
 
 function parseConstructValue() {
