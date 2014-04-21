@@ -10,10 +10,10 @@ Params.prototype.toArray = function () {
 	return this.params
 }
 
-/*  No analysis necessary, these are all basicVars.
- *  Could be changed in future (i.e. to disallow certain
- * 	parameter names) 
- */
-Params.prototype.analyze = 1 
+Params.prototype.analyze = function (context) {
+	/* If scanned and parsed successfully to this point
+	   no analysis will be necessary
+	*/
+}
 
 module.exports = Params

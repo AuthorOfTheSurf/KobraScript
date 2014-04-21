@@ -9,7 +9,6 @@ WhileStatement.prototype.toString = function () {
 
 WhileStatement.prototype.analyze = function (context) {
   this.condition.analyze(context)
-  this.condition.type.mustBeBooleanLit('Condition in "while" statement must be boolean')
   this.body.analyze(context)
 }
 

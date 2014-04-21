@@ -7,8 +7,9 @@ ExchangeStatement.prototype.toString = function () {
     return '(Exchange ' + this.left + ' ' + this.right + ')' 
 }
 
-ExchangeStatement.prototype.analyze = function () {
-    // TODO
+ExchangeStatement.prototype.analyze = function (context) {
+    context.lookupVariable(this.left)
+    context.lookupVariable(this.right)
 }
 
 module.exports = ExchangeStatement

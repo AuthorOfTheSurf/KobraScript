@@ -1,24 +1,24 @@
-function IncrementStatement(name, increments, post) {
-  this.name = name
-  this.increments = increments
+function IncrementStatement(target, isIncrement, post) {
+  this.target = target
+  this.isIncrement = isIncrement
   this.post = post
 }
 
 IncrementStatement.prototype.toString = function () {
-  if (this.increments && this.post) {
-    return '(Increment [post] ' +  this.name + ')'
-  } else if (!this.increments && this.post){
-    return '(Decrement [post] ' + this.name + ')'
-  } else if (this.increments && !this.post) {
-    return '(Increment [pre] ' + this.name + ')'
+  if (this.isIncrement && this.post) {
+    return '(Increment [post] ' +  this.target + ')'
+  } else if (!this.isIncrement && this.post){
+    return '(Decrement [post] ' + this.target + ')'
+  } else if (this.isIncrement && !this.post) {
+    return '(Increment [pre] ' + this.target + ')'
   } else {
-    return '(Decrement [pre] ' + this.name + ')'
+    return '(Decrement [pre] ' + this.target + ')'
   }
 
 }
 
 IncrementStatement.prototype.analyze = function (context) {
-  // TODO
+  context.lookupVariable(target)
 }
 
 module.exports = IncrementStatement
