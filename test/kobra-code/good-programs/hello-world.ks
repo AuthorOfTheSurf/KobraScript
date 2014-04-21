@@ -1,2 +1,2 @@
 $ hello = "Hello, world!"
-say(hello)
+say hello

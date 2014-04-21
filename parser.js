@@ -58,7 +58,7 @@ function parseBlock() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return']))
+  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say']))
   return new Block(statements)
 }
 
