@@ -288,7 +288,7 @@ function parseFnDeclaration() {
   var fntype = match()
   var name
   if (at('ID')) {
-    name = parseVar(true)
+    name = parseBasicVar()
   }
   var params = parseParams()
   match(':')
@@ -422,7 +422,7 @@ function parseForStatement() {
 }
 
 function parseIncrementStatement() {
-  var name,
+  var target,
     increments,
     post = true
 
@@ -430,13 +430,13 @@ function parseIncrementStatement() {
     post = false
     increments = at('++')
     match()
-    name = parseVar()
+    target = parseVar()
   } else {
-    name = parseVar()
+    target = parseVar()
     increments = at('++')
     match()
   }
-  return new IncrementStatement(name, increments, post)
+  return new IncrementStatement(target, increments, post)
 }
 
 function parseReturnStatement() {
