@@ -26,7 +26,7 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`. 
+Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`.
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
@@ -36,7 +36,7 @@ Declare a function easily with `fn`. Open the block with `:` and close using `en
         say(total)                                              console.log(total)
         return total / x.length                                 return total / x.length
     end                                                     }
-    
+
     $ getSoup = fn (): return Res.soupOfTheDay() ..,        var getSoup = function () {return Res.soupOfTheDay()},
       getDrink = fn (): return Res.specdrinks ..,               getDrink = function () {return Res.spacdrinks},
       placeOrder = fn (item, quantity):                         placeOrder = function (item, quantity) {
@@ -82,7 +82,7 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         frame: "aluminum",                                          frame: "aluminum",
         year: 2009,                                                 year: 2009,
         gears: 10,                                                  gears: 10,
-        speed: 12.7,                                                speed: 12.7,                           
+        speed: 12.7,                                                speed: 12.7,
         move: proc ():                                              move: function () {
             Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed)
         ..,                                                         },
@@ -93,12 +93,12 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
     }                                                       }
 
 #### Blueprints
-Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expediate the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
+Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expedite the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
-To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically. 
+To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
 - Specific -> `construct Person (hairColor = "black")`
 - Dynamic  -> `construct Person()` or `construct Person("Joe")`
-    
+
     $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
     $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
 
@@ -118,37 +118,37 @@ A Blueprint consists of 3 parts:
 Here is an example of a blueprint of a Person.  
 
     $ blueprint Person (name, age, hairColor, exercise)
-    
+
     @has
         name: name,
         age: age,
         hairColor: hairColor # "black"
-    
+
     @does
         do_exercise: exercise # running,
         running: proc ():
             say("26.2 miles")
         end
-    
+
     @syn:get
-        name = fn (): return name.., 
-        age = fn (): return age .., 
+        name = fn (): return name..,
+        age = fn (): return age ..,
         hairColor = fn (): return hairColor ..
-    
-    @syn:set:
+
+    @syn:set
         newHairColor = proc (color): hairColor = color ..
 
     defcc
 
-#### Arrays    
+#### Arrays
     $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
-    $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false]
+    $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false];
 
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
     * KobraScript Syntax v.1.5b
-    * 
+    *
     */
 
     UNIT    ::=  PROGRAM
@@ -177,7 +177,7 @@ Here is an example of a blueprint of a Person.
 
     ASSIGN  ::=  VAR  '=' EXP
             |    VAR  ':=:'  VAR
-        
+
     INCR    ::=  VAR  "++" | "++"  VAR
             |    VAR  "--" | "--"  VAR
             |    VAR  "+="  INTLIT
