@@ -14,6 +14,8 @@ var Blueprint = require('./entities/blueprint')
 var Block = require('./entities/block')
 var Type = require('./entities/type')
 var Fn = require('./entities/function')
+var Declaration = require('./entities/declaration')
+var Property = require('./entities/property.js')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
@@ -38,7 +40,6 @@ var BooleanLiteral = require('./entities/booleanliteral')
 var StringLiteral = require('./entities/stringliteral')
 var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
-var Declaration = require('./entities/declaration')
 
 var tokens
 
@@ -73,19 +74,19 @@ function parseBlueprint() {
 
   match(['@','has'])
   if (at('ID')) {
-    has.push(parseAssignmentStatement(':'))
+    has.push(parsePropertyStatement())
     while (at(',')) {
       match()
-      has.push(parseAssignmentStatement(':'))
+      has.push(parsePropertyStatement())
     }
   }
 
   match(['@','does'])
   if (at('ID')) {
-    does.push(parseAssignmentStatement(':'))
+    does.push(parsePropertyStatement())
     while (at(',')) {
       match()
-      does.push(parseAssignmentStatement(':'))
+      does.push(parsePropertyStatement())
     }
   }
   
@@ -99,10 +100,10 @@ function parseBlueprint() {
         synthesis.branch = match('ID').lexeme
         synthesis.leaf = []
     if (at('ID')) {
-      synthesis.leaf.push(parseAssignmentStatement(':'))
+      synthesis.leaf.push(parsePropertyStatement())
       while (at(',')) {
         match()
-        synthesis.leaf.push(parseAssignmentStatement(':'))
+        synthesis.leaf.push(parsePropertyStatement())
       }
     }
     syn.push(synthesis)
@@ -160,10 +161,9 @@ function parseVariableDeclaration() {
   }
 }
 
-/* assignment token is '=' (general) or ':' (property declaration) */
-function parseAssignmentStatement(assignmentToken) {
+function parseAssignmentStatement() {
   var target = parseVar()
-  match(assignmentToken)
+  match('=')
   var value
   if (at(['fn','proc'])) {
     value = parseFn()
@@ -173,6 +173,23 @@ function parseAssignmentStatement(assignmentToken) {
     value = parseExpression()
   }
   return new AssignmentStatement(target, value)
+}
+
+function parsePropertyStatement() {
+  var name = match('ID')
+  match(':')
+  var initializer
+  if (at(',')) {
+    return new Declaration(name.lexeme, new UndefinedLiteral())
+  } else if (at(['fn','proc'])) {
+    initializer = parseFn()
+  } else if (at(['{','[','construct'])) {
+    initializer = parseValue()
+  } else {
+    initializer = parseExpression()
+  }
+  return new Property(name.lexeme, initializer)
+  
 }
 
 function parseUseOfVar() {
@@ -351,11 +368,11 @@ function parseObjectLiteral() {
   var properties = []
   match('{')
   if (at('ID')) {
-    properties.push(parseAssignmentStatement(':'))
+    properties.push(parsePropertyStatement())
   }
   while (at(',')) {
     match()
-    properties.push(parseAssignmentStatement(':'))
+    properties.push(parsePropertyStatement())
   }
   match('}')
   return new ObjectLiteral(properties)
