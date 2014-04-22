@@ -16,6 +16,7 @@ blueprint Person (name, age, hairColor, exercise, weight):
     end
 
 @syn:get
+    >> A test of comments.
     name: fn (): return name ..,
     age: fn (): return age ..,
     hairColor: fn (): return hairColor ..

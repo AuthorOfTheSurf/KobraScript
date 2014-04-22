@@ -1,4 +1,4 @@
-var should = require('should')
+/*var should = require('should')
 var scan = require('../scanner')
 var parse = require('../parser')
 var error = require('../error')
@@ -111,4 +111,4 @@ describe('The parser', function () {
     }
   }
 
-})
+})*/
