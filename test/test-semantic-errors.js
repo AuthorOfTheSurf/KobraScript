@@ -1,4 +1,4 @@
-/*var fs = require('fs')
+var fs = require('fs')
 var path = require('path')
 var should = require('should')
 var scan = require('../scanner')
@@ -23,4 +23,4 @@ describe('The analyzer detects an error for', function () {
       })
     })
   })
-}) */
+})
