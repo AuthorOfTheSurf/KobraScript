@@ -14,8 +14,13 @@ function emit(line) {
 }
 
 function makeOp(op) {
-  //return {not: '!', and: '&&', or: '||'}[op] || op
-  return {'~?': 'typeof', '==': '===', }[op] || op
+  return {
+    '~?': 'typeof', 
+    '==': '===',
+    '!=': '!==',
+    '~=': '==',
+    '#': '||'
+  }[op] || op
 }
 
 var makeVariable = (function () {
@@ -28,8 +33,8 @@ var makeVariable = (function () {
   }
 }())
 
-function gen(e) {
-  return generator[e.constructor.name](e)
+function gen(ent) {
+  return generator[ent.constructor.name](ent)
 }
 
 var generator = {
@@ -60,7 +65,7 @@ var generator = {
   },
 
   'Declaration': function (ent) {
-    emit(util.format('var %s = %s;', makeVariable(ent), initializer))
+    emit(util.format('var %s = %s;', makeVariable(ent), ent.initializer))
   },
 
   'AssignmentStatement': function (ent) {
@@ -93,8 +98,7 @@ var generator = {
     }
 
     function conditionalPrint(kind, c) {
-      var result = ''
-      result = result.concat(kind + ' ')
+      var result = result.concat(kind + ' ')
       result = result.concat('(' + gen(c.condition) + ') {\n')
       result = result.concat(gen(c.body))
       result = result.concat('\n}')
@@ -125,12 +129,16 @@ var generator = {
     emit('return ' + gen(ent.expression) + ';')
   },
 
+  'BreakStatement': function (ent) {
+    emit('break;')
+  },
+
   'ContinueStatement': function(ent) {
     emit('continue;')
   },
 
   'Construction': function(ent) {
-    // TODO
+    emit(util.format('var %s = new %s(%s);', makeVariable(ent.blueid), ent.join(', ')))
   },
 
   'ExchangeStatement': function (ent) {
@@ -145,28 +153,36 @@ var generator = {
       emit(util.format('%s', factorialFunction))
       emit(util.format("__factorial(%s)"), gen(ent.operand))
     } else {
-      return util.format('(%s %s)', makeOp(ent.op.lexeme), gen(ent.operand))
+      emit(util.format('(%s %s)', makeOp(ent.op.lexeme), gen(ent.operand)))
     }
   },
 
   'BinaryExpression': function (ent) {
-    return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
+    if (ent.op === '**') {
+      emit(util.format('Math.pow(%s,%s)', ent.left, ent.right))
+    } else if (ent.op === '-**') {
+      emit(util.format('((1.0)/Math.pow(%s,%s))', ent.left, ent.right))
+    } else if (ent.op === 'is') {
+      emit(util.format('(typeof %s === typeof %s)', ent.left, ent.right))
+    } else {
+      emit(util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right)))
+    }
   },
 
   'BasicVar': function (ent) {
-    // TODO
+    emit(util.format('%s', makeVariable(ent.name)))
   },
 
   'IndexVar': function (ent) {
-    // TODO
+    emit(util.format('[%s]', ent.index))
   },
 
   'DottedVar': function (ent) {
-    // TODO
+    emit(util.format('.%s', ent.property))
   },
 
   'Call': function (ent) {
-    // TODO
+    emit('(%s)', ent.args.join(', '))
   },
 
   'ArrayLiteral': function (ent) {
