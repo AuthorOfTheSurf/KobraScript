@@ -68,7 +68,15 @@ var generator = {
   },
 
   'IncrementStatement': function (inc) {
-    // TODO
+    if (inc.isIncrement && inc.post) {
+      return inc.target + '++;'
+    } else if (!inc.isIncrement && inc.post){
+      return inc.target + '--;'
+    } else if (inc.isIncrement && !inc.post) {
+      return '++' + inc.target + ';'
+    } else {
+      return '--' + inc.target + ';'
+    }
   },
 
   'ConditionalStatement': function (conditional) {
