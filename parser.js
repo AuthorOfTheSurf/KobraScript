@@ -116,7 +116,7 @@ function parseBlueprint() {
 
 function parseStatement() {
   if (at(['$',','])) {
-    parseVariableDeclaration()
+    return parseVariableDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
   } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
