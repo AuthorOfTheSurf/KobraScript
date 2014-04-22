@@ -1,5 +1,5 @@
 blueprint NoHas (fail):
-does:
+@does
     toString: proc():
         say("Hello, world!")
     end
