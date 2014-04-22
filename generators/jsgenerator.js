@@ -53,9 +53,9 @@ var generator = {
     indentLevel--
   },
 
-  'Fn': function (function) {
-    emit('function (' + function.params.join(', ') + ') {')
-    gen(function.body)
+  'Fn': function (f) {
+    emit('function (' + f.params.join(', ') + ') {')
+    gen(f.body)
     emit('};')
   },
 
@@ -69,18 +69,37 @@ var generator = {
 
   'IncrementStatement': function (inc) {
     if (inc.isIncrement && inc.post) {
-      return inc.target + '++;'
+      return inc.target + '++'
     } else if (!inc.isIncrement && inc.post){
-      return inc.target + '--;'
+      return inc.target + '--'
     } else if (inc.isIncrement && !inc.post) {
-      return '++' + inc.target + ';'
+      return '++' + inc.target
     } else {
-      return '--' + inc.target + ';'
+      return '--' + inc.target
     }
   },
 
   'ConditionalStatement': function (conditional) {
-    // TODO
+    for (var i = 0; i < conditional.conditionals.length; i++) {
+      if (i === 0) {
+        emit(conditionalPrint('if', conditional.conditionals[0]))
+      }
+      else {
+        emit(conditionalPrint('else if', conditional.conditionals[i]))
+      }
+    }
+    if (conditional.defaultAct) {
+      emit(conditionalPrint('else', condtitional.defaultAct))
+    }
+
+    function conditionalPrint(variant, conditional) {
+      var result = ''
+      result = result.concat(variant + ' ')
+      result = result.concat('(' + gen(conditional.condition) + ') {\n')
+      result = result.concat(gen(conditional.block))
+      result = result.concat('\n}')
+      return result
+    }
   },
 
   'ForStatement': function (s) {
@@ -133,15 +152,15 @@ var generator = {
     return util.format('(%s %s %s)', gen(e.left), makeOp(e.op.lexeme), gen(e.right))
   },
 
-  'BasicVar': function (var) {
+  'BasicVar': function (variable) {
     // TODO
   },
 
-  'IndexVar': function (var) {
+  'IndexVar': function (variable) {
     // TODO
   },
 
-  'DottedVar': function( var) {
+  'DottedVar': function (variable) {
     // TODO
   },
 
@@ -155,7 +174,7 @@ var generator = {
 
   'ObjectLiteral': function (object) {
     var result = '{'
-    var length = object.properties.length;
+    var length = object.properties.length
     if (object.properties) {
       result = result.concat(object.properties[0])
       if (length > 1) {
