@@ -116,7 +116,7 @@ function parseBlueprint() {
 
 function parseStatement() {
   if (at(['$',','])) {
-    return parseVariableDeclaration()
+    return parseDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
   } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
@@ -142,7 +142,7 @@ function parseStatement() {
   }
 }
 
-function parseVariableDeclaration() {
+function parseDeclaration() {
   if (at(['$',','])) match()
   var name = parseBasicVar()
   if (at('=')) {
@@ -398,7 +398,7 @@ function parseForStatement() {
   match('for')
   match('(')
   var assignments = []
-  assignments.push(parseVariableDeclaration())
+  assignments.push(parseDeclaration())
   while (at(',')) {
     match()
     assignments.push(parseAssignmentStatement('='))    
