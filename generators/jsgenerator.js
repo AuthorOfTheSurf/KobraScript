@@ -34,179 +34,180 @@ function gen(e) {
 
 var generator = {
 
-  'Program': function (program) {
+  'Program': function (ent) {
     indentLevel = 0
     emit('(function () {')
-    gen(program.block)
+    gen(ent.block)
     emit('}());')
   },
 
-  'Blueprint': function (blueprint) {
+  'Blueprint': function (ent) {
     // TODO
   },
 
-  'Block': function (block) {
+  'Block': function (ent) {
     indentLevel++
-    block.statements.forEach(function (statement) {
+    ent.statements.forEach(function (statement) {
       gen(statement)
     })
     indentLevel--
   },
 
-  'Fn': function (f) {
-    emit('function (' + f.params.join(', ') + ') {')
-    gen(f.body)
+  'Fn': function (ent) {
+    emit('function (' + ent.params.join(', ') + ') {')
+    gen(ent.body)
     emit('};')
   },
 
-  'VariableDeclaration': function (v) {
-    emit(util.format('var %s = %s;', makeVariable(v), initializer))
+  'Declaration': function (ent) {
+    emit(util.format('var %s = %s;', makeVariable(ent), initializer))
   },
 
-  'AssignmentStatement': function (s) {
-    emit(util.format('%s = %s;', gen(s.target), gen(s.source)))
+  'AssignmentStatement': function (ent) {
+    emit(util.format('%s = %s;', gen(ent.target), gen(ent.source)))
   },
 
-  'IncrementStatement': function (inc) {
-    if (inc.isIncrement && inc.post) {
-      return inc.target + '++'
-    } else if (!inc.isIncrement && inc.post){
-      return inc.target + '--'
-    } else if (inc.isIncrement && !inc.post) {
-      return '++' + inc.target
+  'IncrementStatement': function (ent) {
+    if (ent.isIncrement && ent.post) {
+      return ent.target + '++'
+    } else if (!ent.isIncrement && ent.post){
+      return ent.target + '--'
+    } else if (ent.isIncrement && !ent.post) {
+      return '++' + ent.target
     } else {
-      return '--' + inc.target
+      return '--' + ent.target
     }
   },
 
-  'ConditionalStatement': function (conditional) {
-    for (var i = 0; i < conditional.conditionals.length; i++) {
+  'ConditionalStatement': function (ent) {
+    for (var i = 0; i < ent.conditionals.length; i++) {
       if (i === 0) {
-        emit(conditionalPrint('if', conditional.conditionals[0]))
+        emit(conditionalPrint('if', ent.conditionals[0]))
       }
       else {
-        emit(conditionalPrint('else if', conditional.conditionals[i]))
+        emit(conditionalPrint('else if', ent.conditionals[i]))
       }
     }
-    if (conditional.defaultAct) {
-      emit(conditionalPrint('else', condtitional.defaultAct))
+    if (ent.defaultAct) {
+      emit(conditionalPrint('else', ent.defaultAct))
     }
 
-    function conditionalPrint(variant, conditional) {
+    function conditionalPrint(kind, c) {
       var result = ''
-      result = result.concat(variant + ' ')
-      result = result.concat('(' + gen(conditional.condition) + ') {\n')
-      result = result.concat(gen(conditional.block))
+      result = result.concat(kind + ' ')
+      result = result.concat('(' + gen(c.condition) + ') {\n')
+      result = result.concat(gen(c.block))
       result = result.concat('\n}')
       return result
     }
   },
 
-  'ForStatement': function (s) {
-    emit(util.format('for (%s; %s; %s) {', gen(s.assignments), gen(s.condition), gen(s.after)))
-    gen(s.body)
+  'ForStatement': function (ent) {
+    emit(util.format('for (%s; %s; %s) {',
+      gen(ent.assignments),
+      gen(ent.condition),
+      gen(ent.after)))
+    gen(ent.body)
     emit('}')
   },
 
-  'WhileStatement': function (s) {
-    emit('while (' + gen(s.condition) + ') {')
-    gen(s.body)
+  'WhileStatement': function (ent) {
+    emit('while (' + gen(ent.condition) + ') {')
+    gen(ent.body)
     emit('}')
   },
 
-  'SayStatement': function (s) {
-    emit(util.format('console.log(%s);', gen(s)))
+  'SayStatement': function (ent) {
+    emit(util.format('console.log(%s);', gen(ent)))
   },
 
-  'ReturnStatement': function (s) {
-    // Double check.
-    return "return"
+  'ReturnStatement': function (ent) {
+    emit('return ' + gen(ent.expression) + ';')
   },
 
-  'ContinueStatement': function(s) {
-    return "continue;"
+  'ContinueStatement': function(ent) {
+    emit('continue;')
   },
 
-  'Construction': function() {
+  'Construction': function(ent) {
     // TODO
   },
 
-  'ExchangeStatement': function (s) {
-    var a = gen(s.left)
-    var b = get(s.right)
+  'ExchangeStatement': function (ent) {
+    var a = gen(ent.left)
+    var b = get(ent.right)
     emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
   },
 
-  'UnaryExpression': function (e) {
-    // So sick. Need to text
-    if (e.op.lexeme == '~!') {
+  'UnaryExpression': function (ent) {
+    if (ent.op.lexeme == '~!') {
       var factorialFunction = 'function __factorial(n){var f=[];function factorialHelper(value){if(value==0||value==1){return 1;}if(f[value]>0){return f[value];}return f[value]=factorial(value-1)*value;}return factorialHelper(n);}'
-     emit(util.format('%s', factorialFunction))
-     emit(util.format("__factorial(%s)"), gen(e.operand))
+      emit(util.format('%s', factorialFunction))
+      emit(util.format("__factorial(%s)"), gen(ent.operand))
     } else {
-      return util.format('(%s %s)', makeOp(e.op.lexeme), gen(e.operand))
+      return util.format('(%s %s)', makeOp(ent.op.lexeme), gen(ent.operand))
     }
   },
 
-  'BinaryExpression': function (e) {
-    return util.format('(%s %s %s)', gen(e.left), makeOp(e.op.lexeme), gen(e.right))
+  'BinaryExpression': function (ent) {
+    return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
   },
 
-  'BasicVar': function (variable) {
+  'BasicVar': function (ent) {
     // TODO
   },
 
-  'IndexVar': function (variable) {
+  'IndexVar': function (ent) {
     // TODO
   },
 
-  'DottedVar': function (variable) {
+  'DottedVar': function (ent) {
     // TODO
   },
 
-  'Call': function (call) {
+  'Call': function (ent) {
     // TODO
   },
 
-  'ArrayLiteral': function (array) {
-    emit(util.format('[%s];', array.join(', ')))
+  'ArrayLiteral': function (ent) {
+    emit(util.format('[%s];', ent.join(', ')))
   },
 
-  'ObjectLiteral': function (object) {
+  'ObjectLiteral': function (ent) {
     var result = '{'
-    var length = object.properties.length
-    if (object.properties) {
-      result = result.concat(object.properties[0])
+    var length = ent.properties.length
+    if (ent.properties) {
+      result = result.concat(ent.properties[0])
       if (length > 1) {
         for (var i = 0; i < length; i++) {
-          result = result.concat(',\n' + object.properties[i])
+          result = result.concat(',\n' + ent.properties[i])
         }
       }
     }
     return result + '\n}'
   },
 
-  'NumericLiteral': function (literal) {
-    return literal.toString()
+  'NumericLiteral': function (ent) {
+    return ent.toString()
   },
 
-  'BooleanLiteral': function (literal) {
-    return literal.toString()
+  'BooleanLiteral': function (ent) {
+    return ent.toString()
   },
 
-  'StringLiteral': function (literal) {
-    return literal.toString()
+  'StringLiteral': function (ent) {
+    return ent.toString()
   },
 
-  'UndefinedLiteral': function(literal) {
-    return literal.toString()
+  'UndefinedLiteral': function(ent) {
+    return ent.toString()
   },
 
-  'NullLiteral': function(literal) {
-    return literal.toString()
+  'NullLiteral': function(ent) {
+    return ent.toString()
   },
 
-  'VariableReference': function (v) {
-    return makeVariable(v.referent)
+  'BasicVar': function (ent) {
+    return makeVariable(ent.referent)
   }
 }
