@@ -41,12 +41,22 @@ var generator = {
     emit('}());')
   },
 
+  'Blueprint': function (blueprint) {
+    // TODO
+  },
+
   'Block': function (block) {
     indentLevel++
     block.statements.forEach(function (statement) {
       gen(statement)
     })
     indentLevel--
+  },
+
+  'Fn': function (function) {
+    emit('function (' + function.params.join(', ') + ') {')
+    gen(function.body)
+    emit('};')
   },
 
   'VariableDeclaration': function (v) {
@@ -57,20 +67,12 @@ var generator = {
     emit(util.format('%s = %s;', gen(s.target), gen(s.source)))
   },
 
-  'ExchangeStatement': function (s) {
-    var a = gen(s.left)
-    var b = get(s.right)
-    emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
+  'IncrementStatement': function (inc) {
+    // TODO
   },
 
-  'SayStatement': function (s) {
-    emit(util.format('console.log(%s);', gen(s)))
-  },
-
-  'WhileStatement': function (s) {
-    emit('while (' + gen(s.condition) + ') {')
-    gen(s.body)
-    emit('}')
+  'ConditionalStatement': function (conditional) {
+    // TODO
   },
 
   'ForStatement': function (s) {
@@ -79,47 +81,34 @@ var generator = {
     emit('}')
   },
 
+  'WhileStatement': function (s) {
+    emit('while (' + gen(s.condition) + ') {')
+    gen(s.body)
+    emit('}')
+  },
+
+  'SayStatement': function (s) {
+    emit(util.format('console.log(%s);', gen(s)))
+  },
+
+  'ReturnStatement': function (s) {
+    // Double check.
+    return "return"
+  },
+
+  'ContinueStatement': function(s) {
+    return "continue;"
+  },
+
   'Construction': function() {
     // TODO
   },
 
-  'ArrayLiteral': function (array) {
-    emit(util.format('[%s];', array.join(', ')))
-  }
-
-  'ObjectLiteral': function (object) {
-    var result = '{'
-    var length = object.properties.length;
-    if (object.properties) {
-      result = result.concat(object.properties[0])
-      if (length > 1) {
-        for (var i = 0; i < length; i++) {
-          result = result.concat(',\n' + object.properties[i])
-        }
-      }
-    }
-    return result + '\n}'
-  }
-
-  'NumericLiteral': function (literal) {
-    return literal.toString()
+  'ExchangeStatement': function (s) {
+    var a = gen(s.left)
+    var b = get(s.right)
+    emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
   },
-
-  'BooleanLiteral': function (literal) {
-    return literal.toString()
-  },
-
-  'VariableReference': function (v) {
-    return makeVariable(v.referent)
-  },
-
-  'NullLiteral': function(literal) {
-    return literal.toString()
-  }
-
-  'UndefinedLiteral': function(literal) {
-    return literal.toString()
-  }
 
   'UnaryExpression': function (e) {
     // So sick. Need to text
@@ -134,5 +123,63 @@ var generator = {
 
   'BinaryExpression': function (e) {
     return util.format('(%s %s %s)', gen(e.left), makeOp(e.op.lexeme), gen(e.right))
+  },
+
+  'BasicVar': function (var) {
+    // TODO
+  },
+
+  'IndexVar': function (var) {
+    // TODO
+  },
+
+  'DottedVar': function( var) {
+    // TODO
+  },
+
+  'Call': function (call) {
+    // TODO
+  },
+
+  'ArrayLiteral': function (array) {
+    emit(util.format('[%s];', array.join(', ')))
+  },
+
+  'ObjectLiteral': function (object) {
+    var result = '{'
+    var length = object.properties.length;
+    if (object.properties) {
+      result = result.concat(object.properties[0])
+      if (length > 1) {
+        for (var i = 0; i < length; i++) {
+          result = result.concat(',\n' + object.properties[i])
+        }
+      }
+    }
+    return result + '\n}'
+  },
+
+  'NumericLiteral': function (literal) {
+    return literal.toString()
+  },
+
+  'BooleanLiteral': function (literal) {
+    return literal.toString()
+  },
+
+  'StringLiteral': function (literal) {
+    return literal.toString()
+  },
+
+  'UndefinedLiteral': function(literal) {
+    return literal.toString()
+  },
+
+  'NullLiteral': function(literal) {
+    return literal.toString()
+  },
+
+  'VariableReference': function (v) {
+    return makeVariable(v.referent)
   }
 }
