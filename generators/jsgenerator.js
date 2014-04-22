@@ -83,7 +83,25 @@ var generator = {
     // TODO
   },
 
-  'IntegerLiteral': function (literal) {
+  'ArrayLiteral': function (array) {
+    emit(util.format('[%s];', array.join(', ')))
+  }
+
+  'ObjectLiteral': function (object) {
+    var result = '{'
+    var length = object.properties.length;
+    if (object.properties) {
+      result = result.concat(object.properties[0])
+      if (length > 1) {
+        for (var i = 0; i < length; i++) {
+          result = result.concat(',\n' + object.properties[i])
+        }
+      }
+    }
+    return result + '\n}'
+  }
+
+  'NumericLiteral': function (literal) {
     return literal.toString()
   },
 
@@ -94,6 +112,14 @@ var generator = {
   'VariableReference': function (v) {
     return makeVariable(v.referent)
   },
+
+  'NullLiteral': function(literal) {
+    return literal.toString()
+  }
+
+  'UndefinedLiteral': function(literal) {
+    return literal.toString()
+  }
 
   'UnaryExpression': function (e) {
     // So sick. Need to text

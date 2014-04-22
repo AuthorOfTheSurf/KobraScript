@@ -375,6 +375,7 @@ function parseObjectLiteral() {
     properties.push(parsePropertyStatement())
   }
   match('}')
+  console.log(new ObjectLiteral(properties).toString())
   return new ObjectLiteral(properties)
 }
 
