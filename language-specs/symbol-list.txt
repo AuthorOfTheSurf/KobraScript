@@ -3,7 +3,6 @@ SYM     NEG     DESCRIPTION
 *               multiply
 /               float division
 %               modulo
-//              int division
 +               add
 -               subtract
 **              Exponentiate
@@ -19,7 +18,6 @@ is      !is     type equality
 :=:             swap the values LHS of RHS
 &&              AND
 ||              OR
-in      !in     in-array
 
 ## Unary Operators ##
 SYM     NEG     DESCRIPTION
