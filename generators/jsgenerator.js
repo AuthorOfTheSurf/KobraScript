@@ -96,7 +96,7 @@ var generator = {
       var result = ''
       result = result.concat(kind + ' ')
       result = result.concat('(' + gen(c.condition) + ') {\n')
-      result = result.concat(gen(c.block))
+      result = result.concat(gen(c.body))
       result = result.concat('\n}')
       return result
     }
