@@ -3,7 +3,6 @@ function Block(statements) {
 }
 
 Block.prototype.toString = function () {
-  //console.log(this.statements)
   return '(Block ' + this.statements.join(' ') + ')'
 }
 

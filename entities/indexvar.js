@@ -4,7 +4,7 @@ function IndexVar(array, index) {
 }
 
 IndexVar.prototype.toString = function () {
-  return '([] ' + this.array + ' ' + this.index + ')'
+  return '(lookup ' + this.array + ' ' + this.index + ')'
 }
 
 IndexVar.prototype.analyze = function (context) {

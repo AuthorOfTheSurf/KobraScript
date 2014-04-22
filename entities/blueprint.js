@@ -10,8 +10,7 @@ function Blueprint (blueid, params, has, does, syn) {
 }
 
 Blueprint.prototype.toString = function () {
-  var result = ''
-  result = result.concat(this.blueid.toString())
+  var result = this.blueid.toString()
   result = result.concat(this.params.toString())
   result = result.concat('(Has ')
   for (var i = 0; i < this.has.length; i++) {
@@ -38,7 +37,7 @@ Blueprint.prototype.analyze = function () {
 }
 
 Blueprint.prototype.optimize = function () {
-  console.log('Optimization is not yet implemented')
+  console.log('Optimization for blueprints is not yet implemented')
   return this
 }
 

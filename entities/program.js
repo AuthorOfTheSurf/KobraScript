@@ -14,7 +14,7 @@ Program.prototype.analyze = function () {
 }
 
 Program.prototype.optimize = function () {
-  console.log('Optimization is not yet implemented')
+  console.log('Optimization for Program is not yet implemented')
   return this
 }
 
@@ -22,33 +22,32 @@ Program.prototype.showSemanticGraph = function () {
   var tag = 0
   var seenEntities = new HashMap();
 
-  function dump(e, tag) {
+  function dump(ent, tag) {
     var props = {}
-    for (var p in e) {
-      var value = rep(e[p])
+    for (var p in ent) {
+      var value = rep(ent[p])
       if (value !== undefined) props[p] = value
     }
     console.log("%d %s %j", tag, e.constructor.name, props)
   }
 
-  function rep(e) {
-    if (/undefined|function/.test(typeof e)) {
+  function rep(ent) {
+    if (/undefined|function/.test(typeof ent)) {
       return undefined
-    } else if (/number|string|boolean/.test(typeof e)) {
-      return e
-    } else if (Array.isArray(e)) {
-      return e.map(rep)
-    } else if (e.kind) {
-      return e.lexeme
+    } else if (/number|string|boolean/.test(typeof ent)) {
+      return ent
+    } else if (Array.isArray(ent)) {
+      return ent.map(rep)
+    } else if (ent.kind) {
+      return ent.lexeme
     } else {
-      if (!seenEntities.has(e)) {
-        seenEntities.set(e, ++tag)
-        dump(e, tag)
+      if (!seenEntities.has(ent)) {
+        seenEntities.set(ent, ++tag)
+        dump(ent, tag)
       }
-      return seenEntities.get(e)
+      return seenEntities.get(ent)
     }
   }
-
   dump(this, 0)
 }
 

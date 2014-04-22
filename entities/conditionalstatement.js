@@ -17,9 +17,9 @@ ConditionalStatement.prototype.toString = function () {
 }
 
 ConditionalStatement.prototype.analyze = function (context) {
-  for (c in this.conditionals) {
+  this.conditionals.forEach(function (c) {
     c.analyze(context)
-  }
+  })
   this.defaultAct.analyze(context)
 }
 

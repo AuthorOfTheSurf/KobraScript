@@ -4,11 +4,11 @@ function DottedVar(struct, property) {
 }
 
 DottedVar.prototype.toString = function () {
-  return '(. ' + this.struct + ' ' + this.property + ')'
+  return '(dereference ' + this.struct + ' -> ' + this.property + ')'
 }
 
 DottedVar.prototype.analyze = function (context) {
-  this.struct.lookUpVariable(property)
+  this.struct.lookUpVariable(this.property)
 }
 
 module.exports = DottedVar
