@@ -57,7 +57,7 @@ describe('The parser', function () {
   var checksForFail = {
     'detects error at empty program': 'empty',
     'detects errors at start of statement': 'bad-statement',
-    'detects incorrect variable declarations': 'vardecwithoutcommas',
+    'detects incorrect variable declarations': 'dec-without-commas',
     'detected bad expressions in assignments': 'bad-expr-in-assignment',
     'detects a missing end keyword': 'missing-end',
     'detects missing semicolons in for-loops': 'missing-semicolon-in-for',

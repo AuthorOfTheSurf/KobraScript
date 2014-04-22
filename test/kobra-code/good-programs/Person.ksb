@@ -9,14 +9,13 @@ blueprint Person (name, age, hairColor, exercise, weight):
 @does
     do_exercise: exercise # running,
     weight: proc ():
-        say("I will weigh less")
+        say "I will weigh less"
     ..,
-    kilos: fn(x): >> |kilos| would make it private
+    kilos: fn(x):
         return x / 2.2
     end
 
 @syn:get
-    >> Old way -> name, age, hairColor
     name: fn (): return name ..,
     age: fn (): return age ..,
     hairColor: fn (): return hairColor ..
