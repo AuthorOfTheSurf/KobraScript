@@ -19,7 +19,7 @@ AnalysisContext.prototype.addVariable = function (name, entity) {
 
 AnalysisContext.prototype.hasReturnStatement = function (block) {
   for (stmt in block) {
-    if (stmt.hasOwnProperty('isReturnStatement')) return true
+    if (stmt.hasOwnProperty('isReturn')) return true
   }
   return false
 }

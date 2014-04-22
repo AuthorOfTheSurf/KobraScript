@@ -7,7 +7,7 @@ SayStatement.prototype.toString = function () {
 }
 
 SayStatement.prototype.analyze = function (context) {
-   context.analyze(this.target)
+   this.target.analyze(context)
 }
 
 module.exports = SayStatement
