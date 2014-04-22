@@ -3,14 +3,15 @@ var HashMap = require('hashmap').HashMap
 var scan = require('../scanner')
 var blueargparser = require('../blueargparser')
 
-function Construction(blueID, complexargs) {
+function Construction(blueID, args) {
   this.blueID = blueID
-  this.complexargs = complexargs
+  /* These can be assignments, simplified in .analyze */
+  this.args = args
   this.targetBlueprint = this.blueID + '.ksb'
 }
 
 Construction.prototype.toString = function () {
-  return '(Construct ' + this.blueID.baseid.lexeme + '~(' + this.complexargs.toString() + '))'
+  return '(Construct ' + this.blueID.baseid.lexeme + '~(' + this.args.toString() + '))'
 }
 
 Construction.prototype.analyze = function () {
@@ -21,47 +22,46 @@ Construction.prototype.analyze = function () {
     error('could not find ' + this.targetBlueprint + 'in local directory')
   })
 
-  if (complexargs.length === 0) return
+  if (this.args.length === 0) return
 
   /* First argument sets the precedent for what kind of construction is going on */
-  var isSpecificConstruction = this.complexargs[0].hasOwnProperty('isAssignment')
+  var isSpecificConstruction = this.args[0].hasOwnProperty('isAssignment')
   /* Ensure the following arguments are consistent */
-  if (isSpecificConstruction && this.complexargs.length > 1) {
-  	for (var i = 1; i < this.complexargs.length; i++) {
-  		if (!this.complexargs[i].hasOwnProperty('isAssignment')) {
+  if (isSpecificConstruction && this.args.length > 1) {
+  	for (var i = 1; i < this.args.length; i++) {
+  		if (!this.args[i].hasOwnProperty('isAssignment')) {
   			error('see arg ' + i + ', all parameters to a specific construction must be assignments')
   		}
   	}
-  }
-  else if (!isSpecificConstruction && this.complexargs.length > 1) {
-  	for (var i = 1; i < this.complexargs.length; i++) {
-  		if (this.complexargs[i].hasOwnProperty('isAssignment')) {
+  } else if (!isSpecificConstruction && this.args.length > 1) {
+  	for (var i = 1; i < this.args.length; i++) {
+  		if (this.args[i].hasOwnProperty('isAssignment')) {
   			error('see arg ' + i + ', no parameter to a dynamic construction may be an assigment')
   		}
   	}
   	var argObj = argumentify(this.targetBlueprint)
-  	var i = argObj.args.length
+  	var i = argObj.blargs.length
   	var simpleargs = []
   	while (i--) simpleargs.push(undefined)
-  	for (var i = 0; i < this.complexargs.length; i++) {
-  		simpleargs[argObj.map.get(complexargs[i])] = complexargs[i].source
+  	for (var i = 0; i < this.args.length; i++) {
+  		simpleargs[argObj.map.get(this.args[i])] = this.args[i].source
   	}
-    /* Complex arguments now put into proper parameter slots */
-    complexargs = simpleargs
+    /* Assignment arguments now put into proper parameter slots */
+    this.args = simpleargs
   }
 }
 
 function argumentify(file) {
-	var args
+	var blargs
 	var map = new HashMap()
 	scan(file, function (tokens) {
-	  args = blueargparser(tokens)
+	  blargs = blueargparser(tokens)
 	})
-	analyzeArguments(args)
-	for (var i = 0; i < args.length; i++) {
-		map.set(args[i], i)
+	analyzeArguments(blargs)
+	for (var i = 0; i < blargs.length; i++) {
+		map.set(blargs[i], i)
 	}
-	return {map: map, args: args}
+	return {map: map, blargs: blargs}
 }
 
 function analyzeArguments(arguments) {
