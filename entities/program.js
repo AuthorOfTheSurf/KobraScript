@@ -28,7 +28,7 @@ Program.prototype.showSemanticGraph = function () {
       var value = rep(ent[p])
       if (value !== undefined) props[p] = value
     }
-    console.log("%d %s %j", tag, e.constructor.name, props)
+    console.log("%d %s %j", tag, ent.constructor.name, props)
   }
 
   function rep(ent) {

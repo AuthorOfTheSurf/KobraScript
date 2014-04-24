@@ -7,7 +7,7 @@ BreakStatement.prototype.toString = function () {
 }
 
 BreakStatement.prototype.analyze = function (context) {
-   context.analyze(this.target)
+    // TODO must be inside a loop - this is worth a LOT of your grade
 }
 
 module.exports = BreakStatement

@@ -4,7 +4,7 @@ function Declaration(name, initializer) {
 }
 
 Declaration.prototype.toString = function () {
-  return '(Declare ' + this.name + ' <- ' + this.initializer + ')'
+  return '(Declare ' + this.name + ' ' + this.initializer + ')'
 }
 
 Declaration.prototype.analyze = function (context) {
