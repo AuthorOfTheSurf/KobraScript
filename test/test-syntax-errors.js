@@ -9,12 +9,13 @@ error.quiet = true
 
 var TEST_DIR = 'test/kobra-code/syntax-errors'
 
-describe('The analyzer detects an error for', function () {
+describe('The parser detects an error for', function () {
   fs.readdirSync(TEST_DIR).forEach(function (name) {
     var check = name.replace(/-/g, ' ').replace(/\.ks$|\.ksb$/, '')
     it(check, function (done) {
-      var priorErrorCount = error.count
       scan(path.join(TEST_DIR, name), function (tokens) {
+        var priorErrorCount = error.count
+        parse(tokens)
         error.count.should.be.above(priorErrorCount)
         done()
       })
