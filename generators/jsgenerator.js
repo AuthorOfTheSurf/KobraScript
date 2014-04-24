@@ -98,7 +98,7 @@ var generator = {
     }
 
     function conditionalPrint(kind, c) {
-      var result = result.concat(kind + ' ')
+      var result = kind + ' '
       result = result.concat('(' + gen(c.condition) + ') {\n')
       result = result.concat(gen(c.body))
       result = result.concat('\n}')
@@ -122,7 +122,7 @@ var generator = {
   },
 
   'SayStatement': function (ent) {
-    emit(util.format('console.log(%s);', gen(ent)))
+    emit(util.format('console.log(%s);', gen(ent.target)))
   },
 
   'ReturnStatement': function (ent) {
@@ -143,7 +143,7 @@ var generator = {
 
   'ExchangeStatement': function (ent) {
     var a = gen(ent.left)
-    var b = get(ent.right)
+    var b = gen(ent.right)
     emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
   },
 
