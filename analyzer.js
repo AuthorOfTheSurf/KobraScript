@@ -24,14 +24,14 @@ AnalysisContext.prototype.hasReturnStatement = function (block) {
   return false
 }
 
-AnalysisContext.prototype.lookupVariable = function (token) {
-  var variable = this.symbolTable[token.lexeme]
+AnalysisContext.prototype.lookupVariable = function (name) {
+  var variable = this.symbolTable[name]
   if (variable) {
     return variable
   } else if (!this.parent) {
-    error('Variable ' + token.lexeme + ' not found', token)
+    error('Variable ' + name + ' not found')
   } else {
-    return this.parent.lookupVariable(token)
+    return this.parent.lookupVariable(name)
   }
 }
 
