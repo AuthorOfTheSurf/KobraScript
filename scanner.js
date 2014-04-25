@@ -56,10 +56,6 @@ function scan(line, linenumber, tokens) {
         skipSpaces = function () {
             while (/\s/.test(line[pos])) pos++
             start = pos
-        },
-
-        multiLineComment = function() {
-            while (line[pos] != '<' && line[pos + 1] != '|') pos++
         }
 
 
@@ -78,7 +74,7 @@ function scan(line, linenumber, tokens) {
             multiLine = true
             break
         }
-        if (line.charAt(0) === '<' && line.charAt(1) === '|' && multiLine) {
+        if (line[pos] === '|' && line[pos + 1] === '<' && multiLine) {
             multiLine = false
             break
         } else if (line.charAt(line.length - 2) === '<' && line.charAt(line.length - 1) === '|' && multiLine) {
