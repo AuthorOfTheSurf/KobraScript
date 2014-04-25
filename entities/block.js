@@ -13,4 +13,12 @@ Block.prototype.analyze = function (context) {
   })
 }
 
+Block.prototype.contains = function (Ent) {
+  this.statements.forEach(function (statement) {
+    if (statement.constructor.name === Ent) {
+      return true
+    }
+  })
+  return false
+}
 module.exports = Block
