@@ -8,8 +8,8 @@ ExchangeStatement.prototype.toString = function () {
 }
 
 ExchangeStatement.prototype.analyze = function (context) {
-    context.lookupVariable(this.left)
-    context.lookupVariable(this.right)
+    this.left.analyze(context)
+    this.right.analyze(context)
 }
 
 module.exports = ExchangeStatement
