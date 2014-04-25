@@ -45,9 +45,9 @@ var NullLiteral = require('./entities/nullliteral')
 
 var tokens
 
-module.exports = function (scanner_output) {
+module.exports = function (scanner_output, filename) {
   tokens = scanner_output
-  var program = at('blueprint') ? parseBlueprint() : parseProgram()
+  var program = at('blueprint') ? parseBlueprint(filename) : parseProgram()
   match('EOF')
   return program
 }
@@ -69,7 +69,7 @@ function parseBlock() {
   return new Block(statements)
 }
 
-function parseBlueprint() {
+function parseBlueprint(filename) {
   var has = [],
       does = [],
       syn = [];
@@ -116,7 +116,7 @@ function parseBlueprint() {
     syn.push(synthesis)
   }
 
-  return new Blueprint(blueid, params, has, does, syn)
+  return new Blueprint(blueid, params, has, does, syn, filename)
 }
 
 function parseStatements() {

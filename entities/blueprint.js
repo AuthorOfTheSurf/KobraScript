@@ -1,12 +1,15 @@
 var initialContext = require('../analyzer').initialContext
 var HashMap = require('hashmap').HashMap
+var error = require('../error')
+var util = require('util')
 
-function Blueprint (blueid, params, has, does, syn) {
+function Blueprint (blueid, params, has, does, syn, filename) {
   this.blueid = blueid
   this.params = params
   this.has = has
   this.does = does
   this.syn = syn
+  this.filename = filename
 }
 
 Blueprint.prototype.toString = function () {
@@ -32,8 +35,11 @@ Blueprint.prototype.toString = function () {
   return '(Blueprint ' + result + ')'
 }
 
-Blueprint.prototype.analyze = function () {
-  this.block.analyze(initialContext())
+Blueprint.prototype.analyze = function (context) {
+  if (this.blueid.name !== this.filename) {
+    error(util.format('Blueprint id: %s must match filename: %s', this.blueid, this.filename))
+  }
+  this.params.analyze(context)
 }
 
 Blueprint.prototype.optimize = function () {

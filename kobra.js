@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// var argv = require('minimist')(process.argv.slice(2));
 var parseArgs = require('minimist')
 var path = require('path')
 var argv = parseArgs(process.argv.slice(2), opts={
@@ -11,8 +10,9 @@ var parse = require('./parser')
 var generate = require('./generator')('js')
 var error = require('./error')
 
-//  File extension found using path module
 var fileExtension = path.extname(argv._[0])
+var ksbname = path.basename(argv._[0], '.ksb')
+
 var validExtension = fileExtension === '.ks' || fileExtension === '.ksb'
 
 //  Begin execution.
@@ -25,13 +25,12 @@ if (argv._.length === 0) {
       if (argv.t) {
         tokenIndex = 1
         tokens.forEach(function (t) {
-            //console.log(t);
             console.log(tokenIndex + " - " + JSON.stringify(t))
             tokenIndex++
         })
         return
       }
-      var program = parse(tokens)
+      var program = parse(tokens, ksbname)
       if (error.count > 0) return;
       if (argv.a) {
         console.log(program.toString())
