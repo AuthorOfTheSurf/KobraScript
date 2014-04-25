@@ -397,10 +397,14 @@ function parseForStatement() {
   match('for')
   match('(')
   var assignments = []
-  assignments.push(parseDeclaration())
+  if (at('$')) {
+    assignments.push(parseDeclaration())
+  } else if (!at(';')) {
+    assignments.push(parseAssignmentStatement)
+  }
   while (at(',')) {
     match()
-    assignments.push(parseAssignmentStatement('='))    
+    assignments.push(parseAssignmentStatement())    
   }
   match(';')
   var condition = parseExpression()
