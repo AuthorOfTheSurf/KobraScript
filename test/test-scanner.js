@@ -178,7 +178,7 @@ describe('The scanner', function () {
             i(tokens[10]).should.equal(i({kind:',',lexeme:',',line:6,col:4}))
             i(tokens[11]).should.equal(i({kind:'ID',lexeme:'d',line:7,col:3}))
             i(tokens[12]).should.equal(i({kind:'=',lexeme:'=',line:7,col:5}))
-            i(tokens[13]).should.equal(i({kind:'NUMLIT',lexeme:'20',line:7,col:7}))
+            i(tokens[13]).should.equal(i({kind:'NUMLIT',lexeme:'30',line:7,col:7}))
             i(tokens[14]).should.equal(i({kind:'ID',lexeme:'b',line:9,col:1}))
             i(tokens[15]).should.equal(i({kind:':=:',lexeme:':=:',line:9,col:3}))
             i(tokens[16]).should.equal(i({kind:'ID',lexeme:'d',line:9,col:7}))

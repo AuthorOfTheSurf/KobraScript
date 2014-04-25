@@ -4,6 +4,6 @@
 $ a = 10,
   b = 20,
   c,
-  d = 20
+  d = 30
 
 b :=: d >> Custom exchange statement.
