@@ -153,9 +153,11 @@ var generator = {
   },
 
   'ExchangeStatement': function (ent) {
-    var a = gen(ent.left)
-    var b = gen(ent.right)
-    emit(util.format('(function() {var _ = %s; var %s = %s; var %s = _}())', a, a, b, b))
+    // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
+    var a = makeVariable(ent.left)
+    var b = makeVariable(ent.right)
+    console.log(a + '    ' + b)
+    emit(util.format('%s = [%s, %s = %s][0];', b, a, a, b))
   },
 
   'UnaryExpression': function (ent) {
