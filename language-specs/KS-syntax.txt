@@ -1,30 +1,32 @@
 **/
 * This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.5b
+* KobraScript Syntax v.1.6
 * 
 */
 
 UNIT    ::=  PROGRAM
         |    BLUPRNT
 
-PROGRAM ::=  BLOCK
+PROGRAM ::=  STMT+  (as BLOCK)
 
-BLOCK   ::=  STMT+
-OPENBLK ::=  ':'  BLOCK
+BLOCK   ::=  FREEBLK
+        |    SINGLE
+FREEBLK ::=  ':'  STMT+  ('end' | '..')
+SINGLE  ::=  '->'  STMT
 
 STMT    ::=  VARDEC
         |    FNDEC
         |    ASSIGN
         |    INCR
-        |    'if'  '('  EXP  ')'  OPENBLK
-             ('..'  'else'  'if'  '('  EXP  ')'  OPENBLK)*
-             ('..'  'else'  '('  EXP  ')'  BLOCK)?  'end'
-        |    'for'  '('  (VARDEC)?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
-        |    'while'  '('  EXP  ')'  OPENBLK  'end'
-        |    'return'  EXP  OPENBLK  'end'
+        |    'if'  '('  EXP  ')'  BLOCK
+             ('else'  'if'  '('  EXP  ')'  BLOCK)*
+             ('else'  '('  EXP  ')'  BLOCK)?
+        |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+        |    'while'  '('  EXP  ')'  BLOCK
+        |    'return'  EXP  BLOCK
 
 VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
-FNDEC   ::=  FNTYPE  ID  PARAMS  OPENBLK  ('..' | 'end')
+FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
 FNTYPE  ::=  'proc' | 'fn'
 PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
@@ -55,7 +57,7 @@ SUFFIX  ::=  '[' EXP ']'
         |    '(' ARGS ')'
 
 MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-FNVAL   ::=  FNTYPE  PARAMS  OPENBLK  ('..' | 'end')
+FNVAL   ::=  FNTYPE  PARAMS  BLOCK
 FNCALL  ::=  VAR  ARGS
 ARGS    ::=  '('  EXP  (','  EXP)*  ')'
 
