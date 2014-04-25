@@ -8,9 +8,16 @@ module.exports = function (program) {
 var indentPadding = 4
 var indentLevel = 0
 
-function emit(line) {
-  var pad = indentPadding * indentLevel;
-  console.log(Array(pad+1).join(' ') + line)
+function emit (line) {
+  console.log(pad(line))
+}
+
+function pad (line) {
+  return Array(((indentPadding * indentLevel)+1)).join(' ') + line
+}
+
+function padExtra (line) {
+  return Array(((indentPadding * (indentLevel + 1))+1)).join(' ') + line
 }
 
 function makeOp(op) {
@@ -59,13 +66,17 @@ var generator = {
   },
 
   'Fn': function (ent) {
-    emit('function (' + ent.params.join(', ') + ') {')
+    emit('function (' + ent.params.params.join(', ') + ') {')
     gen(ent.body)
     emit('};')
   },
 
   'Declaration': function (ent) {
-    emit(util.format('var %s = %s;', makeVariable(ent), ent.initializer))
+    emit(util.format('var %s = %s;', makeVariable(ent), gen(ent.initializer)))
+  },
+
+  'Property': function (ent) {
+    return util.format('%s: %s', makeVariable(ent), gen(ent.initializer))
   },
 
   'AssignmentStatement': function (ent) {
@@ -186,21 +197,21 @@ var generator = {
   },
 
   'ArrayLiteral': function (ent) {
-    emit(util.format('[%s];', ent.join(', ')))
+    emit(util.format('[%s];', ent.elements.join(', ')))
   },
 
   'ObjectLiteral': function (ent) {
-    var result = '{'
+    var result = '{\n'
     var length = ent.properties.length
     if (ent.properties) {
-      result = result.concat(ent.properties[0])
+      result = result.concat(padExtra(gen(ent.properties[0])))
       if (length > 1) {
-        for (var i = 0; i < length; i++) {
-          result = result.concat(',\n' + ent.properties[i])
+        for (var i = 1; i < length; i++) {
+          result = result.concat(',\n' + padExtra(gen(ent.properties[i])))
         }
       }
     }
-    return result + '\n}'
+    return result + '\n    }'
   },
 
   'NumericLiteral': function (ent) {
