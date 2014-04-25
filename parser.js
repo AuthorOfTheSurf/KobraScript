@@ -53,14 +53,19 @@ module.exports = function (scanner_output) {
 }
 
 function parseProgram() {
-  return new Program(parseBlock())
+  return new Program(new Block(parseStatements()))
 }
 
 function parseBlock() {
   var statements = []
-  do {
+  if (at('->')) {
+    match()
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say','break','continue']))
+  } else {
+    match(':')
+    statements = parseStatements()
+    if (at(['end','..'])) match()
+  }
   return new Block(statements)
 }
 
@@ -112,6 +117,14 @@ function parseBlueprint() {
   }
 
   return new Blueprint(blueid, params, has, does, syn)
+}
+
+function parseStatements() {
+  var statements = []
+  do {
+    statements.push(parseStatement())
+  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say','break','continue']))
+  return statements
 }
 
 function parseStatement() {
@@ -275,14 +288,9 @@ function parseValue() {
 function parseFn() {
   var fntype = match()
   var params = parseParams()
-  match(':')
   var body = parseBlock()
-  if (at(['..','end'])) {
-    match()
-    return new Fn(fntype, params, body)
-  } else {
-    error('Illegal end of function token', tokens[0])
-  }
+  return new Fn(fntype, params, body)
+  
 }
 
 function parseFnDeclaration() {
@@ -292,14 +300,8 @@ function parseFnDeclaration() {
     name = parseBasicVar()
   }
   var params = parseParams()
-  match(':')
   var body = parseBlock()
-  if (at(['..','end'])) {
-    match()
-    return new Declaration(name, new Fn(fntype, params, body))
-  } else {
-    error('Illegal end of function token', tokens[0])
-  }
+  return new Declaration(name, new Fn(fntype, params, body))
 }
 
 function parseParams() {
@@ -383,13 +385,7 @@ function parseWhileStatement() {
   match('(')
   var condition = parseExpression()
   match(')')
-  match(':')
   var body = parseBlock()
-  if (at('..')) {
-    match('..')
-  } else {
-    match('end')
-  }
   return new WhileStatement(condition, body)
 }  
 
@@ -413,16 +409,10 @@ function parseForStatement() {
   after.push(parseStatement())
   while (at(',')) {
     match()
-    assignments.push(parseStatement()) 
+    after.push(parseStatement()) 
   }
   match(')')
-  match(':')
   var body = parseBlock()
-  if (at('..')) {
-    match('..')
-  } else {
-    match('end')
-  }
   return new ForStatement(assignments, condition, after, body)
 }
 
@@ -473,35 +463,26 @@ function parseConstructValue() {
 
 function parseConditionalStatement() {
   var conditionals = [],
-      defaultAct,
-      elseEncountered = false
-
-  conditionals.push(parseIfThen())
-  while(at('..') && !elseEncountered) {
-    match()
-    match('else')
-    if (at('if')) {
-      conditionals.push(parseIfThen())
-    } else if (at(':')) {
-      match()
-      defaultAct = parseBlock()
-      elseEncountered = true
-    } else {
-      error('Illegal token in conditional statement', tokens[0])
-    }
+      defaultAct
+  match('if')
+  conditionals.push(parseConditional())
+  while(at('else') && next('if')) {
+    match(['else','if'])
+    conditionals.push(parseConditional())
   }
-  match('end')
-  return new ConditionalStatement(conditionals, defaultAct)
+  if (at('else')) {
+    defaultAct = parseBlock()
+  }
 
-  function parseIfThen() {
-    match('if')
+  function parseConditional() {
     match('(')
     var condition = parseExpression()
     match(')')
-    match(':')
     var action = parseBlock()
     return new Conditional(condition, action)
   }
+
+  return new ConditionalStatement(conditionals, defaultAct)
 }
 
 function parseExpression() {
