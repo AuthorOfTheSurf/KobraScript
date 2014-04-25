@@ -1,6 +1,7 @@
 function WhileStatement(condition, body) {
   this.condition = condition
   this.body = body
+  this.body.looped = true
 }
 
 WhileStatement.prototype.toString = function () {

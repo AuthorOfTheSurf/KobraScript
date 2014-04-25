@@ -9,6 +9,7 @@ Declaration.prototype.toString = function () {
 
 Declaration.prototype.analyze = function (context) {
   context.addVariable(this.name, this)
+  this.initializer.analyze(context)
 }
 
 module.exports = Declaration

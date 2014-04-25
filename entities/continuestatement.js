@@ -1,3 +1,5 @@
+var error = require('../error')
+
 function ContinueStatement(target) {
   // Construct continue statement.
 }
@@ -7,7 +9,9 @@ ContinueStatement.prototype.toString = function () {
 }
 
 ContinueStatement.prototype.analyze = function (context) {
-    // TODO must be inside a loop - this is worth a LOT of your grade
+  if (!context.looped) {
+    error('illegal continue in non-looping context')
+  }
 }
 
 module.exports = ContinueStatement

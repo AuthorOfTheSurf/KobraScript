@@ -1,3 +1,5 @@
+var error = require('../error')
+
 function BreakStatement(target) {
   // Construct Break statement.
 }
@@ -7,7 +9,9 @@ BreakStatement.prototype.toString = function () {
 }
 
 BreakStatement.prototype.analyze = function (context) {
-    // TODO must be inside a loop - this is worth a LOT of your grade
+  if (!context.looped) {
+    error('illegal break in non-looping context')
+  }
 }
 
 module.exports = BreakStatement
