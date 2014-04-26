@@ -74,10 +74,10 @@ function scan(line, linenumber, tokens) {
             multiLine = true
             break
         }
-        if (line[pos] === '|' && line[pos + 1] === '<' && multiLine) {
+        if (line[pos] === '|' && line[pos+1] === '<' && multiLine) {
             multiLine = false
             break
-        } else if (line.charAt(line.length - 2) === '<' && line.charAt(line.length - 1) === '|' && multiLine) {
+        } else if (line[line.length-2] === '|' && line[line.length-1] === '<' && multiLine) {
             multiLine = false
             break
         }
