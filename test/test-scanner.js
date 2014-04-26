@@ -309,7 +309,7 @@ describe('The scanner', function () {
             i(tokens[4]).should.equal(i({kind:'$',lexeme:'$',line:2,col:1}))
             i(tokens[5]).should.equal(i({kind:'ID',lexeme:'b',line:2,col:3}))
             i(tokens[6]).should.equal(i({kind:'=',lexeme:'=',line:2,col:5}))
-            i(tokens[7]).should.equal(i({kind:'STRLIT',lexeme:'derp \\cA herp',line:2,col:7}))
+            i(tokens[7]).should.equal(i({kind:'STRLIT',lexeme:'derp \\x01 herp',line:2,col:7}))
             i(tokens[8]).should.equal(i({kind:'$',lexeme:'$',line:3,col:1}))
             i(tokens[9]).should.equal(i({kind:'ID',lexeme:'c',line:3,col:3}))
             i(tokens[10]).should.equal(i({kind:'=',lexeme:'=',line:3,col:5}))
