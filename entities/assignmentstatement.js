@@ -5,7 +5,7 @@ function AssignmentStatement(target, source) {
 }
 
 AssignmentStatement.prototype.toString = function () {
-  return '(' + this.target.toString() + ' <- ' + this.source.toString() + ')'
+  return '(Assign ' + this.target + ' ' + this.source + ')'
 }
 
 AssignmentStatement.prototype.analyze = function (context) {
