@@ -12,11 +12,7 @@ Fn.prototype.toString = function () {
 Fn.prototype.analyze = function (context) {
   this.params.analyze(context)
   var localContext = context.createChildContext()
-  this.body.statements.forEach(function (statement) {
-  	statement.analyze(localContext)
-  })
-  if (this.fntype.lexeme === 'proc' && this.body.contains('ReturnStatement')) {
-  }
+  this.body.analyze(localContext)
 }
 
 module.exports = Fn

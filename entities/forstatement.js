@@ -13,14 +13,18 @@ ForStatement.prototype.toString = function () {
 }
 
 ForStatement.prototype.analyze = function (context) {
-  var a = this.assignment.constructor.name
-  if (a === 'Declaration' || a === 'AssignmentStatement') {
-    this.assignment.analyze(context)
-  } else {
-    error('expected declaration or assignment in for statement')
-  }
+  this.assignments.forEach(function (assignment) {
+    var a = assignment.constructor.name
+    if (a === 'Declaration' || a === 'AssignmentStatement') {
+      assignment.analyze(context)
+    } else {
+      error('expected declaration or assignment in for statement')
+    }
+  })
   this.condition.analyze(context)
-  this.after.analyze(context)
+  this.after.forEach(function (after) {
+    after.analyze(context)
+  })
   this.body.analyze(context)
 }
 

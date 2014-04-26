@@ -147,7 +147,7 @@ function parseStatement() {
     return parseConditionalStatement()
   } else if (at('for')) {
     return parseForStatement()
-  } else if(at('say')) {
+  } else if (at('say')) {
     return parseSayStatement()
   } else if (at('return')) {
     return parseReturnStatement()
