@@ -64,7 +64,11 @@ function parseBlock() {
   } else {
     match(':')
     statements = parseStatements()
-    if (at(['end','..'])) match()
+    if (at(['end','..'])) { 
+      match()
+    } else {
+      error('expected end or ..')
+    }
   }
   return new Block(statements)
 }
