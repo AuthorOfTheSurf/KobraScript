@@ -124,8 +124,17 @@ function scan(line, linenumber, tokens) {
                         s = s.concat(line.substring(pos+1, pos+2))
                         pos++
                     } else if (controlEscapeChars.test(line.substring(pos+1, pos+3))) {
-                        s = s.concat(line.substring(pos+1, pos+3))
-                        pos += 2
+                        // Convert control characters to Unicode for successful compilation.
+                        var controlChar = line.substring(pos+1, pos+3)
+                        // This next line will determine unicode index we need for equivalent Unicode character.
+                        var unicodeIndex = controlChar.charAt(1).toLowerCase().charCodeAt(0) - 96
+                        var hexIndex = unicodeIndex.toString(16)
+                        if (unicodeIndex < 16) {
+                            s = s.concat('x0' + hexIndex)
+                        } else {
+                            s = s.concat('x' + hexIndex)
+                        }
+                        pos += 2 // this remains same even though we are adding extra char in target lang.
                     } else if (hexEscapeCharacters.test(line.substring(pos+1, pos+4))) {
                         s = s.concat(line.substring(pos+1, pos+4))
                         pos += 3
@@ -149,10 +158,18 @@ function scan(line, linenumber, tokens) {
 
         // Numeric literals
         else if (/[\d\-]/.test(line[pos])) {
-            var number = [];
+            var number = []
             if (/\-/.test(line[pos])) number.push(line[pos++])
             while (/[\deE\.]/.test(line[pos]) && pos < line.length) {
-                number.push(line[pos++])
+                if (/[eE\.]/.test(line[pos])) {
+                    number.push(line[pos++])
+                    while (/[\d]/.test(line[pos]) && pos < line.length) {
+                        number.push(line[pos++])
+                    }
+                    break
+                } else {
+                    number.push(line[pos++])
+                }
             }
             number = number.join('')
             if (numericLit.test(number)) {
