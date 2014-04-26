@@ -17,6 +17,7 @@ var Fn = require('./entities/function')
 var Declaration = require('./entities/declaration')
 var Property = require('./entities/property')
 var AssignmentStatement = require('./entities/assignmentstatement')
+var MathChangeAssignment = require('./entities/mathchangeassignment')
 var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var Conditional = require('./entities/conditional')
@@ -219,6 +220,10 @@ function parseUseOfVar() {
     match()
     var value = parseExpression()
     return new AssignmentStatement(name, value)
+  } else if (at(['*=','/=','+=','-='])) {
+    var op = match()
+    var magnitude = match('NUMLIT')
+    return new MathChangeAssignment(name, op, magnitude)
   } else {
     return name
   }

@@ -83,6 +83,10 @@ var generator = {
     emit(util.format('%s = %s;', gen(ent.target), gen(ent.source)))
   },
 
+  'MathChangeAssignment': function (ent) {
+    emit(util.format('%s %s %s', gen(ent.target), ent.op.lexeme, ent.magnitude.lexeme))
+  },
+
   'IncrementStatement': function (ent) {
     if (ent.isIncrement && ent.post) {
       return ent.target + '++'
