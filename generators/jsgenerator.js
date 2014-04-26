@@ -65,14 +65,14 @@ var generator = {
     indentLevel--
   },
 
-  'Fn': function (ent) {
-    emit('function (' + ent.params.params.join(', ') + ') {')
-    gen(ent.body)
-    emit('};')
-  },
-
   'Declaration': function (ent) {
-    emit(util.format('var %s = %s;', makeVariable(ent), gen(ent.initializer)))
+    if (ent.initializer.constructor.name !== 'Fn') {
+      emit(util.format('var %s = %s;', makeVariable(ent), gen(ent.initializer)))
+    } else {
+      emit(util.format('var %s = function (%s) {', makeVariable(ent), ent.initializer.params.params.join(', ')))
+      gen(ent.initializer.body)
+      emit('};')
+    }
   },
 
   'Property': function (ent) {
@@ -174,14 +174,14 @@ var generator = {
   },
 
   'BinaryExpression': function (ent) {
-    if (ent.op === '**') {
-      emit(util.format('Math.pow(%s,%s)', ent.left, ent.right))
-    } else if (ent.op === '-**') {
-      emit(util.format('((1.0)/Math.pow(%s,%s))', ent.left, ent.right))
-    } else if (ent.op === 'is') {
-      emit(util.format('(typeof %s === typeof %s)', ent.left, ent.right))
+    if (ent.op.lexeme === '**') {
+      return util.format('Math.pow(%s,%s)', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
+    } else if (ent.op.lexeme === '-**') {
+      return util.format('((1.0)/Math.pow(%s,%s))', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
+    } else if (ent.op.lexeme === 'is') {
+      return util.format('(typeof %s === typeof %s)', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
     } else {
-      emit(util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right)))
+      return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
     }
   },
 
