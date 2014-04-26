@@ -13,7 +13,7 @@ describe('The compiler', function () {
       scan(path.join(TEST_DIR, name), function (tokens) {
         var priorErrorCount = error.count
         parse(tokens).analyze()
-        error.count.should.eql(priorErrorCount)
+        error.count.should.equal(priorErrorCount)
         done()
       })
     })
