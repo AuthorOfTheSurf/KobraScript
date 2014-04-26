@@ -11,7 +11,7 @@ ObjectLiteral.prototype.toString = function () {
 ObjectLiteral.prototype.analyze = function (context) {
   var localContext = context.createChildContext()
   this.type = Type.OBJLIT
-  properties.forEach(function (p) {
+  this.properties.forEach(function (p) {
   	p.analyze(localContext)
   })
 }

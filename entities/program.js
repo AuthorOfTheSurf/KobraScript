@@ -1,4 +1,4 @@
-var initialContext = require('../analyzer').initialContext
+var initialContext = require('../analyzer').initialContext()
 var HashMap = require('hashmap').HashMap
 
 function Program(block) {
@@ -10,7 +10,7 @@ Program.prototype.toString = function () {
 }
 
 Program.prototype.analyze = function () {
-  this.block.analyze(initialContext())
+  this.block.analyze(initialContext)
 }
 
 Program.prototype.optimize = function () {
