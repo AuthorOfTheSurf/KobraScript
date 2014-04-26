@@ -230,7 +230,12 @@ function parseUseOfVar() {
 }
 
 function parseBasicVar () {
-  return new BasicVar(match('ID').lexeme)
+  var name = match('ID')
+  if (name) {
+    return new BasicVar(name.lexeme)
+  } else {
+    error('invalid token')
+  }
 }
 
 function parseDottedVar (struct) {
@@ -405,7 +410,7 @@ function parseForStatement() {
   if (at('$')) {
     assignments.push(parseDeclaration())
   } else if (!at(';')) {
-    assignments.push(parseAssignmentStatement)
+    assignments.push(parseAssignmentStatement())
   }
   while (at(',')) {
     match()
