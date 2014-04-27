@@ -190,23 +190,23 @@ var generator = {
   },
 
   'BasicVar': function (ent) {
-    emit(util.format('%s', makeVariable(ent.name)))
+    return util.format('%s', makeVariable(ent.name))
   },
 
   'IndexVar': function (ent) {
-    emit(util.format('[%s]', ent.index))
+    return util.format('[%s]', ent.index)
   },
 
   'DottedVar': function (ent) {
-    emit(util.format('.%s', ent.property))
+    return util.format('.%s', ent.property)
   },
 
   'Call': function (ent) {
-    emit('(%s)', ent.args.join(', '))
+    return util.format('(%s)', ent.args.join(', '))
   },
 
   'ArrayLiteral': function (ent) {
-    emit(util.format('[%s];', ent.elements.join(', ')))
+    return util.format('[%s]', ent.elements.join(', '))
   },
 
   'ObjectLiteral': function (ent) {
