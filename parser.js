@@ -147,7 +147,7 @@ function parseStatement() {
     return parseConditionalStatement()
   } else if (at('for')) {
     return parseForStatement()
-  } else if (at('say')) {
+  } else if (at(['say','loge'])) {
     return parseSayStatement()
   } else if (at('return')) {
     return parseReturnStatement()
@@ -454,7 +454,7 @@ function parseReturnStatement() {
 }
 
 function parseSayStatement() {
-  match('say')
+  match()
   return new SayStatement(parseExpression())
 }
 
