@@ -160,23 +160,28 @@ function scan(line, linenumber, tokens) {
         else if (/[\d\-]/.test(line[pos])) {
             var number = []
             if (/\-/.test(line[pos])) number.push(line[pos++])
-            while (/[\deE\.]/.test(line[pos]) && pos < line.length) {
-                if (/[eE\.]/.test(line[pos])) {
-                    number.push(line[pos++])
-                    while (/[\d]/.test(line[pos]) && pos < line.length) {
-                        number.push(line[pos++])
-                    }
-                    break
-                } else {
+            while (/[\d]/.test(line[pos])) {
+                number.push(line[pos++])
+            }
+            if (/\./.test(line[pos]) && /[\d]/.test(line[pos+1])) {
+                number.push(line[pos++])
+                while (/[\d]/.test(line[pos])) {
                     number.push(line[pos++])
                 }
             }
+            if (/[eE]/.test(line[pos]) && /[\d\-]/.test(line[pos+1])) {
+                number.push(line[pos++])
+                if (/\-/.test(line[pos])) number.push(line[pos++])
+                while (/[\d]/.test(line[pos])) {
+                    number.push(line[pos++])
+                }
+            }
+
             number = number.join('')
             if (numericLit.test(number)) {
                 emit('NUMLIT', number)
             }
             //  Check for '-' if not used as part of NUMLITS.
-            //  TODO move this to unary operators.
             if (/\-/.test(number) && !numericLit.test(number)) emit(number, number)
         }
 
