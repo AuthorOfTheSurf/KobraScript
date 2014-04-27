@@ -7,13 +7,14 @@ Params.prototype.toString = function () {
 }
 
 Params.prototype.toArray = function () {
-	return this.params
+  return this.params
 }
 
 Params.prototype.analyze = function (context) {
-	/* If scanned and parsed successfully to this point
-	   no analysis will be necessary
-	*/
+  this.params.forEach(function (parameter) {
+    context.addVariable(parameter.name, parameter)
+    parameter.analyze(context)
+  })
 }
 
 module.exports = Params

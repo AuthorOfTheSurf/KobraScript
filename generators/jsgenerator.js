@@ -69,7 +69,11 @@ var generator = {
     if (ent.initializer.constructor.name !== 'Fn') {
       emit(util.format('var %s = %s;', makeVariable(ent), gen(ent.initializer)))
     } else {
-      emit(util.format('var %s = function (%s) {', makeVariable(ent), ent.initializer.params.params.join(', ')))
+      var parameterList = []
+      ent.initializer.params.params.forEach(function (parameter) {
+        parameterList.push(makeVariable(parameter))
+      })
+      emit(util.format('var %s = function (%s) {', makeVariable(ent), parameterList.join(', ')))
       gen(ent.initializer.body)
       emit('};')
     }

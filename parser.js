@@ -322,11 +322,11 @@ function parseParams() {
   match('(')
   var params = []
   if (at('ID')) {
-    params.push(parseBasicVar().toString())
+    params.push(parseBasicVar())
   }
   while (at(',')) {
     match()
-    params.push(parseBasicVar().toString())
+    params.push(parseBasicVar())
   }
   match(')')
   return new Params(params)
