@@ -10,6 +10,9 @@ ArrayLiteral.prototype.toString = function () {
 
 ArrayLiteral.prototype.analyze = function (context) {
   this.type = Type.ARRAYLIT
+  this.elements.forEach(function (element) {
+    element.analyze(context)
+  })
 }
 
 module.exports = ArrayLiteral
