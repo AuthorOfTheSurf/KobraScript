@@ -202,7 +202,7 @@ var generator = {
   },
 
   'Call': function (ent) {
-    return util.format('(%s)', ent.args.join(', '))
+    return util.format('%s(%s)', makeVariable(ent.fn.referent), ent.args.join(', '))
   },
 
   'ArrayLiteral': function (ent) {

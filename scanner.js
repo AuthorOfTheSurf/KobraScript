@@ -35,7 +35,7 @@ function scan(line, linenumber, tokens) {
     var start, 
         pos = 0,
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
-        twoCharTokens = /<=|==|>=|\!=|\*\*|~=|is|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|-=|\+=/,
+        twoCharTokens = /<=|==|>=|\!=|\*\*|~=|is|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|-=|\+=|\->/,
         oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/,
         definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|construct|blueprint|has|does|syn|defcc|if|else|do|while|for|switch|break|continue|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say|loge)$/,
         numericLit = /(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?/,
