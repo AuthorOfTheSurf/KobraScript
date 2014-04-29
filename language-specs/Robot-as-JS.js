@@ -4,8 +4,8 @@ var Robot = function (id_number, name, model_number) {
   var Robot = {};
   var _hidden = {};
     _hidden.id = id_number.substring(3);
-    _hidden.name;
-    _hidden.model_no;
+    _hidden.name = undefined;
+    _hidden.model_no = undefined;
     _hidden.hp = 100;
     _hidden.mana = 80;
   
