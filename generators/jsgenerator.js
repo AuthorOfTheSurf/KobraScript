@@ -54,7 +54,12 @@ var generator = {
   },
 
   'Blueprint': function (ent) {
-    // TODO
+    /*var parameterList = []
+      ent.initializer.params.params.forEach(function (parameter) {
+        parameterList.push(makeVariable(parameter))
+    })
+    var blueprint = util.format('var %s = function(%s) {', makeVariable(ent.blueid), parameterList.join(', '))
+    return blueprint*/
   },
 
   'Block': function (ent) {

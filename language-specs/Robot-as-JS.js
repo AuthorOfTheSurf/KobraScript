@@ -1,6 +1,5 @@
-var robot = new Robot(undefined, "Miles", undefined);
-
 /* Code gen trans-imports this from Robot.ksb */
+// Should be hoisted.
 var Robot = function (id_number, name, model_number) {
   var Robot = {};
   var _hidden = {};
@@ -39,4 +38,6 @@ var Robot = function (id_number, name, model_number) {
 
   return Robot;
 }
+
+var robot = new Robot(undefined, "Miles", undefined);
 
