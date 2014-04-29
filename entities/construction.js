@@ -2,24 +2,32 @@ var fs = require('fs')
 var HashMap = require('hashmap').HashMap
 var scan = require('../scanner')
 var blueargparser = require('../blueargparser')
+var error = require('../error')
 
-function Construction(blueID, args) {
-  this.blueID = blueID
+function Construction(blueid, args, dir) {
+  this.blueid = blueid
   /* These can be assignments, simplified in .analyze */
   this.args = args
-  this.targetBlueprint = this.blueID + '.ksb'
+  this.targetBlueprint = this.blueid + '.ksb'
+  this.currentDir = dir
 }
 
 Construction.prototype.toString = function () {
-  return '(Construct ' + this.blueID.baseid.lexeme + '~(' + this.args.toString() + '))'
+  return '(Construct ' + this.blueid + '~(' + this.args.toString() + '))'
 }
 
-Construction.prototype.analyze = function () {
-  fs.readdir('./', function (err, files) {
-  	for (file in files) {
-  		if (this.targetBlueprint === file) return
-  	}
-    error('could not find ' + this.targetBlueprint + 'in local directory')
+Construction.prototype.analyze = function (context) {
+  var filename = this.targetBlueprint
+  fs.readdir(this.currentDir, function (err, files) {
+    var found = false
+    files.forEach(function (file) {
+  		if (filename === file) {
+        found = true
+      }
+  	})
+    if (!found) {
+      error('could not find ' + filename + ' in local directory')
+    }
   })
 
   if (this.args.length === 0) return

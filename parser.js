@@ -45,8 +45,10 @@ var UndefinedLiteral = require('./entities/undefinedliteral')
 var NullLiteral = require('./entities/nullliteral')
 
 var tokens
+var dirname
 
-module.exports = function (scanner_output, filename) {
+module.exports = function (scanner_output, filename, dir) {
+  dirname = dir
   tokens = scanner_output
   var program = at('blueprint') ? parseBlueprint(filename) : parseProgram()
   match('EOF')
@@ -240,7 +242,7 @@ function parseBasicVar () {
 
 function parseDottedVar (struct) {
   match('.')
-  return new DottedVar(struct, match('ID').lexeme)
+  return new DottedVar(struct, parseBasicVar())
 }
 
 function parseIndexVar (array) {
@@ -470,9 +472,9 @@ function parseContinueStatement() {
 
 function parseConstructValue() {
   match('construct')
-  var name = match('ID').lexeme
+  var name = parseBasicVar()
   var args = parseConstructArgs()
-  return new Construction(name, args)
+  return new Construction(name, args, dirname)
 }
 
 function parseConditionalStatement() {

@@ -12,6 +12,7 @@ var error = require('./error')
 
 var fileExtension = path.extname(argv._[0])
 var ksbname = path.basename(argv._[0], '.ksb')
+var currentDir = path.dirname(argv._[0])
 
 var validExtension = fileExtension === '.ks' || fileExtension === '.ksb'
 
@@ -30,7 +31,7 @@ if (argv._.length === 0) {
         })
         return
       }
-      var program = parse(tokens, ksbname)
+      var program = parse(tokens, ksbname, currentDir)
       if (error.count > 0) return;
       if (argv.a) {
         console.log(program.toString())
