@@ -69,7 +69,7 @@ Blueprint.prototype.showSemanticGraph = function () {
 
   //  Commented out for now, needed for semantic analyzer.
 
-  /*var tag = 0
+  var tag = 0
   var seenEntities = new HashMap();
 
   function dump(e, tag) {
@@ -99,7 +99,7 @@ Blueprint.prototype.showSemanticGraph = function () {
     }
   }
 
-  dump(this, 0)*/
+  dump(this, 0)
 }
 
 module.exports = Blueprint

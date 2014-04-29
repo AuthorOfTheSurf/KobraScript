@@ -7,6 +7,7 @@
 
 var scanner = require('./scanner')
 var error = require('./error')
+var BasicVar = require('./entities/basicvar')
 
 var tokens
 
@@ -16,14 +17,23 @@ module.exports = function (blueprint_tokens) {
   match('ID')
   var params = [];
   match('(')
-  if (at('ID')) params.push(match('ID').lexeme)
+  if (at('ID')) params.push(parseBasicVar())
   while (at(',')) {
     match()
-    params.push(match('ID').lexeme)
+    params.push(parseBasicVar())
   }
   match(')')
   match(':')
   return params
+}
+
+function parseBasicVar () {
+  var name = match('ID')
+  if (name) {
+    return new BasicVar(name.lexeme)
+  } else {
+    error('invalid token')
+  }
 }
 
 function at(symbol) {
