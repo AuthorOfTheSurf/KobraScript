@@ -54,12 +54,30 @@ var generator = {
   },
 
   'Blueprint': function (ent) {
+
     /*var parameterList = []
       ent.initializer.params.params.forEach(function (parameter) {
         parameterList.push(makeVariable(parameter))
     })
     var blueprint = util.format('var %s = function(%s) {', makeVariable(ent.blueid), parameterList.join(', '))
-    return blueprint*/
+    blueprint = blueprint.concat(util.format('var %s = {};', makeVariable(ent.blueid)))
+    blueprint = blueprint.concat(util.format('var %s = {};', makeVariable(hasVar)))
+    ent.has.forEach(function (property) {
+      blueprint = blueprint.concat(util.format('%s.%s = %s;', makeVariable(property.name), gen(ent.initializer)))
+    })
+    ent.does.forEach(function (property) {
+      blueprint = blueprint.concat(util.format('%s.%s = function () {', makeVariable(ent.blueid), makeVariable(property.name)))
+      blueprint = blueprint.concat(gen(property.initializer.body))
+      blueprint = blueprint.concat('};')
+    }
+    ent.syn.forEach(function (synGroup) {
+      blueprint = blueprint.concat(util.format('%s.%s = {', makeVariable(blueid), makeVariable(synGroup.branch)))
+      synGroup.forEach(function (property) {
+        blueprint = blueprint.concat(gen(property))
+      })
+      blueprint = blueprint.concat('};')
+    })
+    return blueprint */
   },
 
   'Block': function (ent) {
