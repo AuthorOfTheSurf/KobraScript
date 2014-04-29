@@ -4,11 +4,6 @@ function Property(name, initializer) {
 }
 
 Property.prototype.toString = function () {
-  //return '(Property ' + this.name + ' : ' + this.initializer + ')'
-  return this.name + ': ' + this.initializer 
-}
-
-Property.prototype.toProp = function() {
   return this.name + ': ' + this.initializer 
 }
 

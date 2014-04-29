@@ -39,7 +39,25 @@ Blueprint.prototype.analyze = function (context) {
   if (this.blueid.name !== this.filename) {
     error(util.format('Blueprint id: %s must match filename: %s', this.blueid, this.filename))
   }
-  this.params.analyze(context)
+  this.blueid.analyze(context)
+  var blueprintContext = context.createChildContext()
+  this.params.analyze(blueprintContext)
+  var hasContext = blueprintContext.createChildContext()
+  this.has.forEach(function (property) {
+    property.analyze(hasContext)
+  })
+  var doesContext = hasContext.createChildContext()
+  this.does.forEach(function (property) {
+    property.analyze(doesContext)
+  })
+  var synContexts = []
+  this.syn.forEach(function (synGroup) {
+    var synContext = hasContext.createChildContext()
+    synGroup.forEach(function (property) {
+      property.analyze(synContext)
+    })
+    synContexts.push(synContext)
+  })
 }
 
 Blueprint.prototype.optimize = function () {

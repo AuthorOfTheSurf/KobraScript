@@ -37,4 +37,4 @@ defcc
  |  Analyses to:
  |
  |  $ robot = construct Robot(undefined, "Miles", undefined)
-<|
+ |<
