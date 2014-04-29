@@ -109,7 +109,7 @@ function parseBlueprint(filename) {
   function synergize () {
     match(['@','syn',':'])
     var synthesis = {}
-        synthesis.branch = match('ID').lexeme
+        synthesis.branch = parseBasicVar()
         synthesis.leaf = []
     if (at('ID')) {
       synthesis.leaf.push(parsePropertyStatement())
