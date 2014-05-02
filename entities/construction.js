@@ -33,17 +33,17 @@ Construction.prototype.analyze = function (context) {
   if (this.args.length === 0) return
 
   /* First argument sets the precedent for what kind of construction is going on */
-  var isSpecificConstruction = this.args[0].hasOwnProperty('isAssignment')
+  var isSpecificConstruction = this.args[0].constructor.name === 'Assignment'
   /* Ensure the following arguments are consistent */
   if (isSpecificConstruction && this.args.length > 1) {
   	for (var i = 1; i < this.args.length; i++) {
-  		if (!this.args[i].hasOwnProperty('isAssignment')) {
+  		if (this.args[i].constructor.name !== 'Assignment') {
   			error('see arg ' + i + ', all parameters to a specific construction must be assignments')
   		}
   	}
   } else if (!isSpecificConstruction && this.args.length > 1) {
   	for (var i = 1; i < this.args.length; i++) {
-  		if (this.args[i].hasOwnProperty('isAssignment')) {
+  		if (this.args[i].constructor.name === 'Assignment') {
   			error('see arg ' + i + ', no parameter to a dynamic construction may be an assigment')
   		}
   	}
