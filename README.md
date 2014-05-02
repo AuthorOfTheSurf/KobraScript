@@ -7,7 +7,7 @@ KobraScript is a language that harvests the power of JavaScript with an incredib
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
 
-    say("Kobra!")                                           console.log("Kobra!");
+    say "Kobra!"                                           console.log("Kobra!");
 
 #### Variable Declarations
 In KobraScript, variable declarations are simplified to one character: `$`. Also: no semicolons, ever.
@@ -15,7 +15,7 @@ In KobraScript, variable declarations are simplified to one character: `$`. Also
     $ name = "Samson"                                       var name = "Samson";
 
     $ likesMusic = true,                                    var likesMusic = true,
-      likesJazz                                                 likesJazz;
+      likesJazz                                                 likesJazz = undefined;
 
     $ isRed = true,                                         var isRed = true,
       isFood = false,                                           isFood = false,
@@ -33,7 +33,7 @@ Declare a function easily with `fn`. Open the block with `:` and close using `en
         for ($ i = 0; i < x.length; i++):                       for (var i = 0; i < x.length; i++) {
             total = total + x[i]                                    total = total + x[i]
         end                                                     }
-        say(total)                                              console.log(total)
+        say total                                               console.log(total)
         return total / x.length                                 return total / x.length
     end                                                     }
 
@@ -47,7 +47,7 @@ Declare a function easily with `fn`. Open the block with `:` and close using `en
 A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression--return `null` if you have nothing better to return.
 
     proc print_intake (y):                                  function printIntake (y) {
-        say(average_intake(y))                                  console.log(averageIntake(y))
+        say average_intake(y)                                   console.log(averageIntake(y))
     end                                                     }
 
 #### Conditional Statement
