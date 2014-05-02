@@ -14,6 +14,7 @@ var Blueprint = require('./entities/blueprint')
 var Block = require('./entities/block')
 var Type = require('./entities/type')
 var Fn = require('./entities/function')
+var AnonRunFn = require('./entities/anonrunfn')
 var Declaration = require('./entities/declaration')
 var Property = require('./entities/property')
 var AssignmentStatement = require('./entities/assignmentstatement')
@@ -133,7 +134,7 @@ function parseStatements() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','++','--','return','say','break','continue']))
+  } while (at(['$',',','ID','for','while','if','fn','proc','anon','++','--','return','say','break','continue']))
   return statements
 }
 
@@ -144,6 +145,8 @@ function parseStatement() {
     return parseDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
+  } else if (at('anon')) {
+    return parseAnonRunFn()
   } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
     return parseIncrementStatement()
   } else if (at('ID')) {
@@ -317,18 +320,21 @@ function parseFn() {
   var params = parseParams()
   var body = parseBlock()
   return new Fn(fntype, params, body)
-  
 }
 
 function parseFnDeclaration() {
   var fntype = match()
-  var name
-  if (at('ID')) {
-    name = parseBasicVar()
-  }
+  var name = parseBasicVar()
   var params = parseParams()
   var body = parseBlock()
   return new Declaration(name, new Fn(fntype, params, body))
+}
+
+function parseAnonRunFn() {
+  match('anon')
+  var params = parseParams()
+  var body = parseBlock()
+  return new AnonRunFn(params, body)
 }
 
 function parseParams() {

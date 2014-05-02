@@ -106,6 +106,12 @@ var generator = {
     return util.format('%s: %s', makeVariable(ent), gen(ent.initializer))
   },
 
+  'AnonRunFn': function (ent) {
+    emit('(function () {')
+    gen(ent.body)
+    emit('}());')
+  },
+
   'AssignmentStatement': function (ent) {
     emit(util.format('%s = %s;', gen(ent.target), gen(ent.source)))
   },

@@ -1,7 +1,7 @@
-fn ():
+anon ():
   $ x = 10
 end
 
-proc ():
+anon ():
   $ y = 20
 end
