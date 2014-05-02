@@ -46,6 +46,9 @@ var NullLiteral = require('./entities/nullliteral')
 
 var tokens
 var dirname
+/* Used by parse statement to parse and continuing
+   variable declaration */
+var continuing = false
 
 module.exports = function (scanner_output, filename, dir) {
   dirname = dir
@@ -135,7 +138,9 @@ function parseStatements() {
 }
 
 function parseStatement() {
-  if (at(['$',','])) {
+  if (at('$')) {
+    return parseDeclaration()
+  } else if (at(',') && continuing) {
     return parseDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
@@ -163,7 +168,7 @@ function parseStatement() {
 }
 
 function parseDeclaration() {
-  if (at(['$',','])) match()
+  !continuing ? match('$') : match(',')
   var name = parseBasicVar()
   if (at('=')) {
     match()
@@ -175,8 +180,15 @@ function parseDeclaration() {
     } else {
       initializer = parseExpression()
     }
+
+    continuing = at(',')
     return new Declaration(name, initializer)
+
   } else if (at(',')) {
+    continuing = true
+    return new Declaration(name, new UndefinedLiteral())
+  } else {
+    continuing = false
     return new Declaration(name, new UndefinedLiteral())
   }
 }
@@ -209,7 +221,6 @@ function parsePropertyStatement() {
     initializer = parseExpression()
   }
   return new Property(name, initializer)
-  
 }
 
 function parseUseOfVar() {
