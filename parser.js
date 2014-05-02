@@ -487,6 +487,7 @@ function parseConditionalStatement() {
     conditionals.push(parseConditional())
   }
   if (at('else')) {
+    match()
     defaultAct = parseBlock()
   }
 
