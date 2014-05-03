@@ -122,13 +122,13 @@ var generator = {
 
   'IncrementStatement': function (ent) {
     if (ent.isIncrement && ent.post) {
-      return ent.target + '++'
+      return gen(ent.target) + '++'
     } else if (!ent.isIncrement && ent.post){
-      return ent.target + '--'
+      return gen(ent.target) + '--'
     } else if (ent.isIncrement && !ent.post) {
-      return '++' + ent.target
+      return '++' + gen(ent.target)
     } else {
-      return '--' + ent.target
+      return '--' + gen(ent.target)
     }
   },
 
@@ -155,10 +155,36 @@ var generator = {
   },
 
   'ForStatement': function (ent) {
+    var assignments = ent.assignments[0].constructor.name === 'Declaration' ? 'var ' : '' 
+    for (var i = 0; i < ent.assignments.length; i++) {
+      if (!i) {
+        if (ent.assignments[i].constructor.name === 'Declaration') {
+          assignments = assignments.concat(util.format('%s = %s', gen(ent.assignments[i].name), gen(ent.assignments[i].initializer)))
+        } else {
+          assignments = assignments.concat(util.format('%s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
+        }
+      } else {
+        if (ent.assignments[i].constructor.name === 'Declaration') {
+          assignments = assignments.concat(util.format(', %s = %s', gen(ent.assignments[i].name), gen(ent.assignments[i].initializer)))
+        } else {
+          assignments = assignments.concat(util.format(', %s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
+        }
+      }
+    }
+
+    var after = ''
+    for (var i = 0; i < ent.after.length; i++) {
+      if (!i) {
+        after = after.concat(gen(ent.after[i]))
+      } else {
+        after = after.concat(', ' + gen(ent.after[i]))
+      }
+    }
     emit(util.format('for (%s; %s; %s) {',
-      gen(ent.assignments),
+      assignments,
       gen(ent.condition),
-      gen(ent.after)))
+      after)
+    )
     gen(ent.body)
     emit('}')
   },
@@ -207,6 +233,7 @@ var generator = {
   },
 
   'BinaryExpression': function (ent) {
+    console.log(JSON.stringify(ent))
     if (ent.op.lexeme === '**') {
       return util.format('Math.pow(%s,%s)', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
     } else if (ent.op.lexeme === '-**') {
@@ -219,7 +246,7 @@ var generator = {
   },
 
   'BasicVar': function (ent) {
-    return util.format('%s', makeVariable(ent.name))
+    return util.format('%s', makeVariable(ent.name.name))
   },
 
   'IndexVar': function (ent) {
