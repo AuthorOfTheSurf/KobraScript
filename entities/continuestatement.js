@@ -9,7 +9,7 @@ ContinueStatement.prototype.toString = function () {
 }
 
 ContinueStatement.prototype.analyze = function (context) {
-  if (!context.looped) {
+  if (!context.looped && !context.parent.looped) {
     error('illegal continue in non-looping context')
   }
 }

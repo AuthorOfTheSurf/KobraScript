@@ -11,7 +11,7 @@ ReturnStatement.prototype.toString = function () {
 
 ReturnStatement.prototype.analyze = function (context) {
   this.expression.analyze(context)
-  if (!context.subroutine) {
+  if (!context.subroutine && !context.parent.subroutine) {
     error('illegal return from non-function context')
   }
 }

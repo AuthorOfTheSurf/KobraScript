@@ -1,4 +1,4 @@
-fn ():
+fn tester():
   $ x = 10
 end
 
