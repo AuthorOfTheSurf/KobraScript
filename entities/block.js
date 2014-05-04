@@ -19,11 +19,11 @@ Block.prototype.analyze = function (context) {
 }
 
 Block.prototype.contains = function (Ent) {
-  this.statements.forEach(function (statement) {
-    if (statement.constructor.name === Ent) {
+  for (var i = 0; i < this.statements.length; i++) {
+    if (this.statements[i].constructor.name === Ent) {
       return true
     }
-  })
+  }
   return false
 }
 module.exports = Block
