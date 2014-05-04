@@ -30,12 +30,15 @@ function makeOp(op) {
   }[op] || op
 }
 
-var makeVariable = (function () {
+var makeIntoVariable = (function () {
   // No need to synchronize because Node is single-threaded
   var lastId = 0;
   var map = new HashMap()
   return function (v) {
-    if (!map.has(v)) map.set(v, ++lastId)
+    /* v: Declaration entity */
+    if (!map.has(v)) {
+      map.set(v, ++lastId)
+    }
     return '_v' + map.get(v)
   }
 }())
@@ -57,21 +60,21 @@ var generator = {
 
     /*var parameterList = []
       ent.initializer.params.params.forEach(function (parameter) {
-        parameterList.push(makeVariable(parameter))
+        parameterList.push(makeIntoVariable(parameter))
     })
-    var blueprint = util.format('var %s = function(%s) {', makeVariable(ent.blueid), parameterList.join(', '))
-    blueprint = blueprint.concat(util.format('var %s = {};', makeVariable(ent.blueid)))
-    blueprint = blueprint.concat(util.format('var %s = {};', makeVariable(hasVar)))
+    var blueprint = util.format('var %s = function(%s) {', makeIntoVariable(ent.blueid), parameterList.join(', '))
+    blueprint = blueprint.concat(util.format('var %s = {};', makeIntoVariable(ent.blueid)))
+    blueprint = blueprint.concat(util.format('var %s = {};', makeIntoVariable(hasVar)))
     ent.has.forEach(function (property) {
-      blueprint = blueprint.concat(util.format('%s.%s = %s;', makeVariable(property.name), gen(ent.initializer)))
+      blueprint = blueprint.concat(util.format('%s.%s = %s;', makeIntoVariable(property.name), gen(ent.initializer)))
     })
     ent.does.forEach(function (property) {
-      blueprint = blueprint.concat(util.format('%s.%s = function () {', makeVariable(ent.blueid), makeVariable(property.name)))
+      blueprint = blueprint.concat(util.format('%s.%s = function () {', makeIntoVariable(ent.blueid), makeIntoVariable(property.name)))
       blueprint = blueprint.concat(gen(property.initializer.body))
       blueprint = blueprint.concat('};')
     }
     ent.syn.forEach(function (synGroup) {
-      blueprint = blueprint.concat(util.format('%s.%s = {', makeVariable(blueid), makeVariable(synGroup.branch)))
+      blueprint = blueprint.concat(util.format('%s.%s = {', makeIntoVariable(blueid), makeIntoVariable(synGroup.branch)))
       synGroup.forEach(function (property) {
         blueprint = blueprint.concat(gen(property))
       })
@@ -90,20 +93,20 @@ var generator = {
 
   'Declaration': function (ent) {
     if (ent.initializer.constructor.name !== 'Fn') {
-      emit(util.format('var %s = %s;', makeVariable(ent), gen(ent.initializer)))
+      emit(util.format('var %s = %s;', makeIntoVariable(ent), gen(ent.initializer)))
     } else {
       var parameterList = []
       ent.initializer.params.params.forEach(function (parameter) {
-        parameterList.push(makeVariable(parameter))
+        parameterList.push(makeIntoVariable(parameter))
       })
-      emit(util.format('var %s = function (%s) {', makeVariable(ent), parameterList.join(', ')))
+      emit(util.format('var %s = function (%s) {', makeIntoVariable(ent), parameterList.join(', ')))
       gen(ent.initializer.body)
       emit('};')
     }
   },
 
   'Property': function (ent) {
-    return util.format('%s: %s', makeVariable(ent), gen(ent.initializer))
+    return util.format('%s: %s', makeIntoVariable(ent), gen(ent.initializer))
   },
 
   'AnonRunFn': function (ent) {
@@ -155,17 +158,18 @@ var generator = {
   },
 
   'ForStatement': function (ent) {
-    var assignments = ent.assignments[0].constructor.name === 'Declaration' ? 'var ' : '' 
+    var assignments = (ent.assignments[0].constructor.name === 'Declaration') ? 'var ' : '' 
     for (var i = 0; i < ent.assignments.length; i++) {
       if (!i) {
+        /* If Declaration, makeIntoVariable(ent) to add it to the name map */
         if (ent.assignments[i].constructor.name === 'Declaration') {
-          assignments = assignments.concat(util.format('%s = %s', gen(ent.assignments[i].name), gen(ent.assignments[i].initializer)))
+          assignments = assignments.concat(util.format('%s = %s', makeIntoVariable(ent.assignments[i]), gen(ent.assignments[i].initializer)))
         } else {
           assignments = assignments.concat(util.format('%s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
         }
       } else {
         if (ent.assignments[i].constructor.name === 'Declaration') {
-          assignments = assignments.concat(util.format(', %s = %s', gen(ent.assignments[i].name), gen(ent.assignments[i].initializer)))
+          assignments = assignments.concat(util.format(', %s = %s', makeIntoVariable(ent.assignments[i]), gen(ent.assignments[i].initializer)))
         } else {
           assignments = assignments.concat(util.format(', %s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
         }
@@ -212,13 +216,13 @@ var generator = {
   },
 
   'Construction': function(ent) {
-    emit(util.format('var %s = new %s(%s);', makeVariable(ent.blueid), ent.join(', ')))
+    emit(util.format('var %s = new %s(%s);', makeIntoVariable(ent.blueid), ent.join(', ')))
   },
 
   'ExchangeStatement': function (ent) {
     // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
-    var a = makeVariable(ent.left.referent)
-    var b = makeVariable(ent.right.referent)
+    var a = makeIntoVariable(ent.left.referent)
+    var b = makeIntoVariable(ent.right.referent)
     emit(util.format('%s = [%s, %s = %s][0];', b, a, a, b))
   },
 
@@ -233,20 +237,19 @@ var generator = {
   },
 
   'BinaryExpression': function (ent) {
-    console.log(JSON.stringify(ent))
     if (ent.op.lexeme === '**') {
-      return util.format('Math.pow(%s,%s)', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
+      return util.format('Math.pow(%s,%s)', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
     } else if (ent.op.lexeme === '-**') {
-      return util.format('((1.0)/Math.pow(%s,%s))', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
+      return util.format('((1.0)/Math.pow(%s,%s))', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
     } else if (ent.op.lexeme === 'is') {
-      return util.format('(typeof %s === typeof %s)', makeVariable(ent.left.referent), makeVariable(ent.right.referent))
+      return util.format('(typeof %s === typeof %s)', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
     } else {
       return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
     }
   },
 
   'BasicVar': function (ent) {
-    return util.format('%s', makeVariable(ent.name.name))
+    return makeIntoVariable(ent.referent)
   },
 
   'IndexVar': function (ent) {
@@ -258,7 +261,7 @@ var generator = {
   },
 
   'Call': function (ent) {
-    return util.format('%s(%s)', makeVariable(ent.fn.referent), ent.args.join(', '))
+    return util.format('%s(%s)', makeIntoVariable(ent.fn.referent), ent.args.join(', '))
   },
 
   'ArrayLiteral': function (ent) {
@@ -297,9 +300,6 @@ var generator = {
 
   'NullLiteral': function(ent) {
     return ent.toString()
-  },
-
-  'BasicVar': function (ent) {
-    return makeVariable(ent.referent)
   }
+  
 }
