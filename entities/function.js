@@ -1,3 +1,5 @@
+var error = require('../error')
+
 function Fn(fntype, params, body) {
   this.fntype = fntype
   this.params = params
@@ -12,6 +14,9 @@ Fn.prototype.toString = function () {
 Fn.prototype.analyze = function (context) {
   this.params.analyze(context)
   var localContext = context.createChildContext()
+  if (this.fntype.lexeme === 'proc' && this.body.contains('ReturnStatement')) {
+    error('proceedure calls cannot return')
+  }
   this.body.analyze(localContext)
 }
 
