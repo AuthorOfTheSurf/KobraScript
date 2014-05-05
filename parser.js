@@ -134,7 +134,7 @@ function parseStatements() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','anon','++','--','return','say','break','continue']))
+  } while (at(['$',',','ID','for','while','if','fn','proc','anon','++','--','return','say','loge','break','continue']))
   return statements
 }
 
