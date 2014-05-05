@@ -30,6 +30,22 @@ function makeOp(op) {
   }[op] || op
 }
 
+function incrementHelper(ent) {
+  if (ent.constructor.name === 'MathChangeAssignment') {
+    return util.format('%s %s %s', gen(ent.target), ent.op.lexeme, ent.magnitude.lexeme)
+  } else {
+    if (ent.isIncrement && ent.post) {
+      return gen(ent.target) + '++'
+    } else if (!ent.isIncrement && ent.post){
+      return gen(ent.target) + '--'
+    } else if (ent.isIncrement && !ent.post) {
+      return '++' + gen(ent.target)
+    } else {
+      return '--' + gen(ent.target)
+    }
+  }
+}
+
 var makeIntoVariable = (function () {
   // No need to synchronize because Node is single-threaded
   var lastId = 0;
@@ -125,13 +141,13 @@ var generator = {
 
   'IncrementStatement': function (ent) {
     if (ent.isIncrement && ent.post) {
-      return gen(ent.target) + '++'
+      emit(gen(ent.target) + '++')
     } else if (!ent.isIncrement && ent.post){
-      return gen(ent.target) + '--'
+      emit(gen(ent.target) + '--')
     } else if (ent.isIncrement && !ent.post) {
-      return '++' + gen(ent.target)
+      emit('++' + gen(ent.target))
     } else {
-      return '--' + gen(ent.target)
+      emit('--' + gen(ent.target))
     }
   },
 
@@ -156,9 +172,6 @@ var generator = {
 
     function conditionalPrint(kind, c) {
       var result = kind + ' '
-      result = result.concat('(' + gen(c.condition) + ') {\n')
-      result = result.concat(gen(c.body))
-      result = result.concat('\n}')
       result = result.concat('(' + gen(c.condition) + ') {')
       return result
     }
@@ -186,9 +199,9 @@ var generator = {
     var after = ''
     for (var i = 0; i < ent.after.length; i++) {
       if (!i) {
-        after = after.concat(gen(ent.after[i]))
+        after = after.concat(incrementHelper(ent.after[i]))
       } else {
-        after = after.concat(', ' + gen(ent.after[i]))
+        after = after.concat(', ' + incrementHelper(ent.after[i]))
       }
     }
     emit(util.format('for (%s; %s; %s) {',
