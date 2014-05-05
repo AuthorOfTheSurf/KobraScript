@@ -139,13 +139,19 @@ var generator = {
     for (var i = 0; i < ent.conditionals.length; i++) {
       if (i === 0) {
         emit(conditionalPrint('if', ent.conditionals[0]))
+        gen(ent.conditionals[0].body)
+        emit('}')
       }
       else {
         emit(conditionalPrint('else if', ent.conditionals[i]))
+        gen(ent.conditionals[i].body)
+        emit('}')
       }
     }
     if (ent.defaultAct) {
       emit(conditionalPrint('else', ent.defaultAct))
+      gen(ent.defaultAct)
+      emit('}')
     }
 
     function conditionalPrint(kind, c) {
@@ -153,6 +159,7 @@ var generator = {
       result = result.concat('(' + gen(c.condition) + ') {\n')
       result = result.concat(gen(c.body))
       result = result.concat('\n}')
+      result = result.concat('(' + gen(c.condition) + ') {')
       return result
     }
   },

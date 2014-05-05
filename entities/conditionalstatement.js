@@ -20,7 +20,9 @@ ConditionalStatement.prototype.analyze = function (context) {
   this.conditionals.forEach(function (c) {
     c.analyze(context)
   })
-  this.defaultAct.analyze(context)
+  if (this.defaultAct) {
+    this.defaultAct.analyze(context)
+  }
 }
 
 module.exports = ConditionalStatement
