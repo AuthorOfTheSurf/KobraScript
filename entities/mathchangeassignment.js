@@ -6,7 +6,7 @@ function MathChangeAssignment(target, op, magnitude) {
 }
 
 MathChangeAssignment.prototype.toString = function () {
-  return '(' + this.op + ' ' + this.target + ' ' + this.magnitude + ')'
+  return '(' + this.op.lexeme + ' ' + this.target + ' ' + this.magnitude.lexeme + ')'
 }
 
 MathChangeAssignment.prototype.analyze = function (context) {
