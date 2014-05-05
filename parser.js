@@ -428,12 +428,17 @@ function parseForStatement() {
   var assignments = []
   if (at('$')) {
     assignments.push(parseDeclaration())
+    while (at(',')) {
+      continuing = true
+      assignments.push(parseDeclaration())    
+    }
+    continuing = false
   } else if (!at(';')) {
     assignments.push(parseAssignmentStatement())
-  }
-  while (at(',')) {
-    match()
-    assignments.push(parseAssignmentStatement())    
+    while (at(',')) {
+      match()
+      assignments.push(parseAssignmentStatement())    
+    }
   }
   match(';')
   var condition = parseExpression()
