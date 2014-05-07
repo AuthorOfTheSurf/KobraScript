@@ -236,7 +236,8 @@ var generator = {
   },
 
   'Construction': function(ent) {
-    emit(util.format('var %s = new %s(%s);', makeIntoVariable(ent.blueid), ent.join(', ')))
+    var a = ent.args.map(function (arg) {gen(arg)})
+    emit(util.format('var %s = new %s(%s);', gen(ent.blueid), a.join(', ')))
   },
 
   'ExchangeStatement': function (ent) {
