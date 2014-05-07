@@ -273,15 +273,16 @@ var generator = {
   },
 
   'IndexVar': function (ent) {
-    return util.format('[%s]', ent.index)
+    return util.format('%s[%s]', gen(ent.array), gen(ent.index))
   },
 
   'DottedVar': function (ent) {
-    return util.format('.%s', ent.property)
+    return util.format('%s.%s', gen(ent.struct), gen(ent.property))
   },
 
   'Call': function (ent) {
-    return util.format('%s(%s)', makeIntoVariable(ent.fn.referent), ent.args.join(', '))
+    var a = ent.args.map(function (arg) {gen(arg)})
+    return util.format('%s(%s)', gen(ent.fn), a.join(', '))
   },
 
   'ArrayLiteral': function (ent) {
@@ -291,7 +292,7 @@ var generator = {
   'ObjectLiteral': function (ent) {
     var result = '{\n'
     var length = ent.properties.length
-    if (ent.properties) {
+    if (length) {
       result = result.concat(padExtra(gen(ent.properties[0])))
       if (length > 1) {
         for (var i = 1; i < length; i++) {
