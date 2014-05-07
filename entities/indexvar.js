@@ -9,7 +9,6 @@ IndexVar.prototype.toString = function () {
 
 IndexVar.prototype.analyze = function (context) {
   this.array.analyze(context)
-  this.index.analyze(context)
 }
 
 module.exports = IndexVar
