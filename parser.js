@@ -234,7 +234,13 @@ function parseUseOfVar() {
     return new ExchangeStatement(name, right)
   } else if (at('=')) {
     match()
-    var value = parseExpression()
+    if (at(['fn','proc'])) {
+      value = parseFn()
+    } else if (at(['{','[','construct'])) {
+      value = parseValue()
+    } else {
+      value = parseExpression()
+    }    
     return new AssignmentStatement(name, value)
   } else if (at(['*=','/=','+=','-='])) {
     var op = match()
