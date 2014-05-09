@@ -44,11 +44,19 @@ Declare a function easily with `fn`. Open the block with `:` and close using `en
           return true                                               return true
       end                                                       };
 
-A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression--return `null` if you have nothing better to return.
+A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression -- return `null` if you have no value to return.
 
     proc print_intake (y):                                  function printIntake (y) {
         say average_intake(y)                                   console.log(averageIntake(y))
     end                                                     }
+
+Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`.
+
+    anon ():                                                (function() {
+      $ x = 10                                                  var x = 10;
+      say x                                                     console.log(x);
+    end                                                     }())
+
 
 #### Conditional Statement
 In KobraScript an `if` statement is written with a `..` between conditions and an `end` after the final block to signal the conclusion of the statement. Very nice Kobra.
@@ -61,10 +69,19 @@ In KobraScript an `if` statement is written with a `..` between conditions and a
         keep()                                                  keep();
     end                                                     }
 
+#### Exchange Statement
+KobraScript utilizes a Go/Python-inspired statement in order to swap, or "exchange", the values of two variables.
+    
+    $ a = 2,                                                var a = 2,
+      b = 3                                                     b = 3;
+    a :=: b                                                 var swap = a; a = b; b = swap; // Awful.
+    say a   >> 3                                            console.log(a);  // 3
+    say b   >> 2                                            console.log(b);  // 2
+
 #### `for` and `while` loops
 For and while loops follow a similar pattern to other statements, using the `:` and `end` blocking syntax.
 
-    $ a = 0 >> A test variable for loops.                    var a = 0; // A test variable for loops.
+    $ a = 0 >> A test variable for loops.                   var a = 0; // A test variable for loops.
 
     for ($ i = 0; i < 4; i++):                              for (var i = 0; i < 4; i++) {
         a++                                                     a++;
@@ -144,13 +161,12 @@ Here is an example of a blueprint of a Person.
     $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
     $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false];
 
-**/
-* This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.6b
-* 
-*/
-
 ### Macrosyntax
+    **/
+    * This is regarded as the the most up to date specification of KS
+    * KobraScript Syntax v.1.6b
+    * 
+    */
 
     UNIT    ::=  PROGRAM
             |    BLUPRNT
