@@ -144,12 +144,13 @@ Here is an example of a blueprint of a Person.
     $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
     $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false];
 
+**/
+* This is regarded as the the most up to date specification of KS
+* KobraScript Syntax v.1.6b
+* 
+*/
+
 ### Macrosyntax
-    **/
-    * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.6
-    *
-    */
 
     UNIT    ::=  PROGRAM
             |    BLUPRNT
@@ -219,10 +220,10 @@ Here is an example of a blueprint of a Person.
     SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
 
 
-    ### Microsyntax
+### Microsyntax
 
-    NUMLIT  ::=  -?[\d]*
-    STR     ::=  '\w+'
+    NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
+    STR     ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
     BOOL    ::=  'true' | 'false'
     ID      ::=  [_a-zA-Z]\w*
     COMMENT ::=  '>>'  TEXT  '\n'
