@@ -22,28 +22,12 @@ function padExtra (line) {
 
 function makeOp(op) {
   return {
-    '~?': 'typeof', 
+    '~?': 'typeof',
     '==': '===',
     '!=': '!==',
     '~=': '==',
     '#': '||'
   }[op] || op
-}
-
-function incrementHelper(ent) {
-  if (ent.constructor.name === 'MathChangeAssignment') {
-    return util.format('%s %s %s', gen(ent.target), ent.op.lexeme, ent.magnitude.lexeme)
-  } else {
-    if (ent.isIncrement && ent.post) {
-      return gen(ent.target) + '++'
-    } else if (!ent.isIncrement && ent.post){
-      return gen(ent.target) + '--'
-    } else if (ent.isIncrement && !ent.post) {
-      return '++' + gen(ent.target)
-    } else {
-      return '--' + gen(ent.target)
-    }
-  }
 }
 
 var makeIntoVariable = (function () {
@@ -137,18 +121,6 @@ var generator = {
 
   'MathChangeAssignment': function (ent) {
     emit(util.format('%s %s %s', gen(ent.target), ent.op.lexeme, ent.magnitude.lexeme))
-  },
-
-  'IncrementStatement': function (ent) {
-    if (ent.isIncrement && ent.post) {
-      emit(gen(ent.target) + '++')
-    } else if (!ent.isIncrement && ent.post){
-      emit(gen(ent.target) + '--')
-    } else if (ent.isIncrement && !ent.post) {
-      emit('++' + gen(ent.target))
-    } else {
-      emit('--' + gen(ent.target))
-    }
   },
 
   'ConditionalStatement': function (ent) {
@@ -253,7 +225,7 @@ var generator = {
       emit(util.format('%s', factorialFunction))
       emit(util.format("__factorial(%s)"), gen(ent.operand))
     } else {
-      emit(util.format('(%s %s)', makeOp(ent.op.lexeme), gen(ent.operand)))
+      return util.format('%s%s', makeOp(ent.op.lexeme), gen(ent.operand))
     }
   },
 

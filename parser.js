@@ -147,8 +147,6 @@ function parseStatement() {
     return parseFnDeclaration()
   } else if (at('anon')) {
     return parseAnonRunFn()
-  } else if (at(['++','--']) || (at('ID') && next(['++','--']))) {
-    return parseIncrementStatement()
   } else if (at('ID')) {
     return parseUseOfVar()
   } else if (at('while')) {
@@ -599,21 +597,39 @@ function parseExp6() {
   if (at(['~!','~?'])) {
     op = match()
     operand = parseExp7()
-    return new UnaryExpression(op, operand)
+    var left = new UnaryExpression(op, operand)
+  } else {
+    left = parseExp7()
   }
-  return parseExp7()
+  return left
 }
 
+/* Prefix unary expressions */
 function parseExp7() {
-  if (at(['!'])) {
-    op = match()
-    operand = parseExp8()
-    return new UnaryExpression(op, operand)
+  console.log('in exp 7')
+  if (at(['!','++','--'])) {
+    console.log('attached a unary expression.. ' + tokens[0].lexeme)
+    var op = match()
+    var operand = parseExp8()
+    var left = new UnaryExpression(op, operand)
+  } else {
+    left = parseExp8()
   }
-  return parseExp8()
+  return left
 }
 
+/* Postfix unary expressions */
 function parseExp8() {
+  console.log('in exp 8')
+  var left = parseExp9()
+  // if (at(['++','--'])) {
+  //   var op = match
+  //   return new PostUnaryExpression(op, left)
+  // }
+  return left
+}
+
+function parseExp9() {
   if (at('undefined')) {
     return new UndefinedLiteral(match())
   } else if (at('null')) {
