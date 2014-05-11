@@ -195,19 +195,20 @@ function parseDeclaration() {
   }
 }
 
-function parseAssignmentStatement() {
-  var target = parseVar()
-  match('=')
-  var value
-  if (at(['fn','proc'])) {
-    value = parseFn()
-  } else if (at(['{','[','construct'])) {
-    value = parseValue()
-  } else {
-    value = parseExpression()
-  }
-  return new AssignmentStatement(target, value)
-}
+// Should-be artifact code
+// function parseAssignmentStatement() {
+//   var target = parseVar()
+//   match('=')
+//   var value
+//   if (at(['fn','proc'])) {
+//     value = parseFn()
+//   } else if (at(['{','[','construct'])) {
+//     value = parseValue()
+//   } else {
+//     value = parseExpression()
+//   }
+//   return new AssignmentStatement(target, value)
+// }
 
 function parsePropertyStatement() {
   var name = parseBasicVar()
@@ -225,30 +226,31 @@ function parsePropertyStatement() {
   return new Property(name, initializer)
 }
 
-function parseUseOfVar() {
-  var name = parseVar()
-  if (at(':=:')) {
-    match()
-    var right = parseValue()
-    return new ExchangeStatement(name, right)
-  } else if (at('=')) {
-    match()
-    if (at(['fn','proc'])) {
-      value = parseFn()
-    } else if (at(['{','[','construct'])) {
-      value = parseValue()
-    } else {
-      value = parseExpression()
-    }    
-    return new AssignmentStatement(name, value)
-  } else if (at(['*=','/=','+=','-='])) {
-    var op = match()
-    var magnitude = match('NUMLIT')
-    return new MathChangeAssignment(name, op, magnitude)
-  } else {
-    return name
-  }
-}
+// Should-be artifact code.
+// function parseUseOfVar() {
+//   var name = parseBasicVar()
+//   if (at(':=:')) {
+//     match()
+//     var right = parseValue()
+//     return new ExchangeStatement(name, right)
+//   } else if (at('=')) {
+//     match()
+//     if (at(['fn','proc'])) {
+//       value = parseFn()
+//     } else if (at(['{','[','construct'])) {
+//       value = parseValue()
+//     } else {
+//       value = parseExpression()
+//     }    
+//     return new AssignmentStatement(name, value)
+//   } else if (at(['*=','/=','+=','-='])) {
+//     var op = match()
+//     var magnitude = match('NUMLIT')
+//     return new MathChangeAssignment(name, op, magnitude)
+//   } else {
+//     return name
+//   }
+// }
 
 function parseBasicVar () {
   var name = match('ID')
@@ -257,40 +259,6 @@ function parseBasicVar () {
   } else {
     error('invalid token')
   }
-}
-
-function parseDottedVar (struct) {
-  match('.')
-  return new DottedVar(struct, parseBasicVar())
-}
-
-function parseIndexVar (array) {
-  match('[')
-  var indexVar = new IndexVar(array, parseExpression())
-  match(']')
-  return indexVar
-}
-
-function parseFnCall (fn) {
-  return new Call(fn, parseArgs())
-}
-
-function parseVar() {
-  function gather (base) {
-    if (at('.')) {
-      return parseDottedVar(base)
-    } else if (at('[')) {
-      return parseIndexVar(base)
-    } else if (at('(')) {
-      return parseFnCall(base)
-    }
-  }
-
-  var result = parseBasicVar()
-  while (at(['[','.','('])) {
-    result = gather(result)
-  }
-  return result
 }
 
 /*  This is anything that can be assigned to an id; RHS values */
@@ -310,7 +278,7 @@ function parseValue() {
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
   } else if (at('ID')) {
-    return parseVar()
+    return parseExpression()
   } else if (at('construct')) {
     return parseConstructValue()
   } else if (at(['fn','proc'])) {
@@ -606,11 +574,22 @@ function parseExp7() {
 /* Postfix unary expressions */
 function parseExp8() {
   var left = parseExp9()
-  if (at(['++','--']) && left.constructor.name !== 'NumericLiteral') {
+  while (at(['.','[','('])) {
+    if (at('.')) {
+      match()
+      left = new DottedVar(left, parseBasicVar())
+    } else if (at('[')) {
+      match('[')
+      left = new IndexVar(left, parseExpression())
+      match(']')
+    } else {
+      left = new Call(left, parseArgs())
+    }
+  }
+  if (at(['++','--'])) {
     var op = match()
     left = new PostUnaryExpression(op, left)
   }
-  console.log('2')
   return left
 }
 
@@ -624,10 +603,9 @@ function parseExp9() {
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
   } else if (at('NUMLIT')) {
-    console.log('1')
     return new NumericLiteral(match())
   } else if (at('ID')) {
-    return parseVar()
+    return parseBasicVar()
   } else if (at('(')) {
     match()
     var expression = parseExpression()
