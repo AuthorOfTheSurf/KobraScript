@@ -19,7 +19,6 @@ var Declaration = require('./entities/declaration')
 var Property = require('./entities/property')
 var AssignmentStatement = require('./entities/assignmentstatement')
 var MathChangeAssignment = require('./entities/mathchangeassignment')
-var IncrementStatement = require('./entities/incrementstatement')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var Conditional = require('./entities/conditional')
 var ForStatement = require('./entities/forstatement')
@@ -32,6 +31,7 @@ var Construction = require('./entities/construction')
 var ExchangeStatement = require('./entities/exchangestatement')
 var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
+var PostUnaryExpression = require('./entities/postunaryexpression')
 var BinaryExpression = require('./entities/binaryexpression')
 var BasicVar = require('./entities/basicvar')
 var IndexVar = require('./entities/indexvar')
@@ -458,24 +458,6 @@ function parseForStatement() {
   return new ForStatement(assignments, condition, after, body)
 }
 
-function parseIncrementStatement() {
-  var target,
-    increments,
-    post = true
-
-  if (at(['++', '--'])) {
-    post = false
-    increments = at('++')
-    match()
-    target = parseVar()
-  } else {
-    target = parseVar()
-    increments = at('++')
-    match()
-  }
-  return new IncrementStatement(target, increments, post)
-}
-
 function parseReturnStatement() {
   match('return')
   return new ReturnStatement(parseExpression())
@@ -622,10 +604,10 @@ function parseExp7() {
 function parseExp8() {
   console.log('in exp 8')
   var left = parseExp9()
-  // if (at(['++','--'])) {
-  //   var op = match
-  //   return new PostUnaryExpression(op, left)
-  // }
+  if (at(['++','--'])) {
+    var op = match()
+    left = new PostUnaryExpression(op, left)
+  }
   return left
 }
 

@@ -229,6 +229,10 @@ var generator = {
     }
   },
 
+  'PostUnaryExpression': function (ent) {
+    return util.format('%s%s', gen(ent.operand), makeOp(ent.op.lexeme))
+  },
+
   'BinaryExpression': function (ent) {
     if (ent.op.lexeme === '**') {
       return util.format('Math.pow(%s,%s)', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
