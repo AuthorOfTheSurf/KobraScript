@@ -164,7 +164,8 @@ function parseStatement() {
   } else if (at('continue')) {
     return parseContinueStatement()
   } else {
-    error('Statement expected', tokens[0])
+    return parseExpression()
+    //error('Statement expected', tokens[0])
   }
 }
 
@@ -511,7 +512,11 @@ function parseConditionalStatement() {
 }
 
 function parseExpression() {
-  var left = parseExp1()
+  if (at(['!','++','--'])) {
+    var left = parseExp7()
+  } else {
+    var left = parseExp1()
+  }
   while (at('||')) {
     var op = match()
     var right = parseExp1()
@@ -588,9 +593,7 @@ function parseExp6() {
 
 /* Prefix unary expressions */
 function parseExp7() {
-  console.log('in exp 7')
   if (at(['!','++','--'])) {
-    console.log('attached a unary expression.. ' + tokens[0].lexeme)
     var op = match()
     var operand = parseExp8()
     var left = new UnaryExpression(op, operand)
@@ -602,12 +605,12 @@ function parseExp7() {
 
 /* Postfix unary expressions */
 function parseExp8() {
-  console.log('in exp 8')
   var left = parseExp9()
-  if (at(['++','--'])) {
+  if (at(['++','--']) && left.constructor.name !== 'NumericLiteral') {
     var op = match()
     left = new PostUnaryExpression(op, left)
   }
+  console.log('2')
   return left
 }
 
@@ -621,6 +624,7 @@ function parseExp9() {
   } else if (at('STRLIT')) {
     return new StringLiteral(match())
   } else if (at('NUMLIT')) {
+    console.log('1')
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseVar()
@@ -629,8 +633,10 @@ function parseExp9() {
     var expression = parseExpression()
     match(')')
     return expression
+  } else if (at('EOF')) {
+    return
   } else {
-    error('Illegal start of expression', tokens[0])
+    error('Expected expression start but found ' + JSON.stringify(tokens[0]))
   }
 }
 
