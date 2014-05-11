@@ -23,12 +23,7 @@ ForStatement.prototype.analyze = function (context) {
   })
   this.condition.analyze(context)
   this.after.forEach(function (after) {
-    var Ent = after.constructor.name
-    if (Ent === 'MathChangeAssignment' || Ent === 'IncrementStatement') {
-      after.analyze(context)
-    } else {
-      error('expected after to be Increment or MathChangeAssignment')
-    }
+    after.analyze(context)
   })
   this.body.analyze(context)
 }

@@ -434,24 +434,24 @@ function parseForStatement() {
     assignments.push(parseDeclaration())
     while (at(',')) {
       continuing = true
-      assignments.push(parseDeclaration())    
+      assignments.push(parseDeclaration())
     }
     continuing = false
   } else if (!at(';')) {
     assignments.push(parseAssignmentStatement())
     while (at(',')) {
       match()
-      assignments.push(parseAssignmentStatement())    
+      assignments.push(parseAssignmentStatement())
     }
   }
   match(';')
   var condition = parseExpression()
   match(';')
   var after = []
-  after.push(parseStatement())
+  after.push(parseExpression())
   while (at(',')) {
     match()
-    after.push(parseStatement()) 
+    after.push(parseExpression())
   }
   match(')')
   var body = parseBlock()

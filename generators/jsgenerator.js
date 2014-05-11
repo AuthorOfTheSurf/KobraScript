@@ -171,9 +171,9 @@ var generator = {
     var after = ''
     for (var i = 0; i < ent.after.length; i++) {
       if (!i) {
-        after = after.concat(incrementHelper(ent.after[i]))
+        after = after.concat(gen(ent.after[i]))
       } else {
-        after = after.concat(', ' + incrementHelper(ent.after[i]))
+        after = after.concat(', ' + gen(ent.after[i]))
       }
     }
     emit(util.format('for (%s; %s; %s) {',
