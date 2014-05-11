@@ -57,9 +57,18 @@ Similar to Javascript, anonymous self-calling functions are in KobraScript, writ
       say x                                                     console.log(x);
     end                                                     }())
 
+#### Blocks
+Blocks in KobraScript are beautiful. Start a multiline block with `:` and terminate it with the clear `end` or the elegantly-flowing `..`. Fearlessly create a single-statement block by pointing `->` to it. Nice.
+
+    while (i--):
+        say "Countdown ..." + i
+    end
+
+
+
 
 #### Conditional Statement
-In KobraScript an `if` statement is written with a `..` between conditions and an `end` after the final block to signal the conclusion of the statement. Very nice Kobra.
+In KobraScript an `if` statement is written with a preference to `..` between conditional blocks and an `end` after the final block to signal the conclusion of the statement. Kobra is cold as ice.
 
     if (is_red && is_food):                                 if (is_red && is_food) {
         eat()                                                   eat ();
@@ -79,7 +88,7 @@ KobraScript utilizes a Go/Python-inspired statement in order to swap, or "exchan
     say b   >> 2                                            console.log(b);  // 2
 
 #### `for` and `while` loops
-For and while loops follow a similar pattern to other statements, using the `:` and `end` blocking syntax.
+For and while loops look beautiful as expected, keyword, condition, block, nice.
 
     $ a = 0 >> A test variable for loops.                   var a = 0; // A test variable for loops.
 
