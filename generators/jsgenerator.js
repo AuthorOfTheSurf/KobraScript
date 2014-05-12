@@ -158,13 +158,13 @@ var generator = {
         if (ent.assignments[i].constructor.name === 'Declaration') {
           assignments = assignments.concat(util.format('%s = %s', makeIntoVariable(ent.assignments[i]), gen(ent.assignments[i].initializer)))
         } else {
-          assignments = assignments.concat(util.format('%s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
+          assignments = assignments.concat(gen(ent.assignments[i]))
         }
       } else {
         if (ent.assignments[i].constructor.name === 'Declaration') {
           assignments = assignments.concat(util.format(', %s = %s', makeIntoVariable(ent.assignments[i]), gen(ent.assignments[i].initializer)))
         } else {
-          assignments = assignments.concat(util.format(', %s = %s', gen(ent.assignments[i].target), gen(ent.assignments[i].source)))
+          assignments = assignments.concat(', ' + gen(ent.assignments[i]))
         }
       }
     }

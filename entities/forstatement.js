@@ -14,12 +14,7 @@ ForStatement.prototype.toString = function () {
 
 ForStatement.prototype.analyze = function (context) {
   this.assignments.forEach(function (assignment) {
-    var a = assignment.constructor.name
-    if (a === 'Declaration' || a === 'AssignmentStatement') {
-      assignment.analyze(context)
-    } else {
-      error('expected declaration or assignment in for statement')
-    }
+    assignment.analyze(context)
   })
   this.condition.analyze(context)
   this.after.forEach(function (after) {

@@ -360,10 +360,10 @@ function parseForStatement() {
     }
     continuing = false
   } else if (!at(';')) {
-    assignments.push(parseAssignmentStatement())
+    assignments.push(parseExpression())
     while (at(',')) {
       match()
-      assignments.push(parseAssignmentStatement())
+      assignments.push(parseExpression())
     }
   }
   match(';')
