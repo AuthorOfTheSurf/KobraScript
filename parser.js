@@ -26,7 +26,6 @@ var ReturnStatement = require('./entities/returnstatement')
 var BreakStatement = require('./entities/breakstatement')
 var ContinueStatement = require('./entities/continuestatement')
 var Construction = require('./entities/construction')
-var ExchangeStatement = require('./entities/exchangestatement')
 var Params = require('./entities/params')
 var UnaryExpression = require('./entities/unaryexpression')
 var PostUnaryExpression = require('./entities/postunaryexpression')
@@ -526,18 +525,8 @@ function parseExp2() {
 }
 
 function parseExp3() {
-  var left = parseExp3()
-  if (at(['<', '<=', '!=', '>=', '>'])) {
-    var op = match()
-    var right = parseExp3()
-    left = new BinaryExpression(op, left, right)
-  }
-  return left
-}
-
-function parseExp4() {
   var left = parseExp4()
-  while (at(['+','-'])) {
+  if (at(['<', '<=', '!=', '>=', '>'])) {
     var op = match()
     var right = parseExp4()
     left = new BinaryExpression(op, left, right)
@@ -545,21 +534,31 @@ function parseExp4() {
   return left
 }
 
-function parseExp5() {
+function parseExp4() {
   var left = parseExp5()
+  while (at(['+','-'])) {
+    var op = match()
+    var right = parseExp5()
+    left = new BinaryExpression(op, left, right)
+  }
+  return left
+}
+
+function parseExp5() {
+  var left = parseExp6()
   while (at(['*','/','%'])) {
     op = match()
-    right = parseExp5()
+    right = parseExp6()
     left = new BinaryExpression(op, left, right)
   }
   return left
 }
 
 function parseExp6() {
-  var left = parseExp6()
+  var left = parseExp7()
   while (at(['**', '-**'])) {
     op = match()
-    right = parseExp6()
+    right = parseExp7()
     left = new BinaryExpression(op, left, right)
   }
   return left
@@ -568,10 +567,10 @@ function parseExp6() {
 function parseExp7() {
   if (at(['~!','~?'])) {
     op = match()
-    operand = parseExp7()
+    operand = parseExp8()
     var left = new UnaryExpression(op, operand)
   } else {
-    left = parseExp7()
+    left = parseExp8()
   }
   return left
 }
@@ -580,17 +579,17 @@ function parseExp7() {
 function parseExp8() {
   if (at(['!','++','--'])) {
     var op = match()
-    var operand = parseExp8()
+    var operand = parseExp9()
     var left = new UnaryExpression(op, operand)
   } else {
-    left = parseExp8()
+    left = parseExp9()
   }
   return left
 }
 
 /* Postfix unary expressions */
 function parseExp9() {
-  var left = parseExp9()
+  var left = parseExpRoot()
   while (at(['.','[','('])) {
     if (at('.')) {
       match()
