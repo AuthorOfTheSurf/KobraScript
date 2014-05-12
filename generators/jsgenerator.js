@@ -90,7 +90,12 @@ var generator = {
   'Block': function (ent) {
     indentLevel++
     ent.statements.forEach(function (statement) {
-      gen(statement)
+      var kind = statement.constructor.name
+      if (kind === 'UnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar') {
+        genExp(statement)
+      } else {
+        gen(statement)
+      }
     })
     indentLevel--
   },
