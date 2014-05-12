@@ -173,83 +173,71 @@ Here is an example of a blueprint of a Person.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.6b
+    * KobraScript Syntax v.1.7s
     * 
     */
 
-    UNIT    ::=  PROGRAM
-            |    BLUPRNT
+    ### Macrosyntax
 
-    PROGRAM ::=  STMT+  (as BLOCK)
+        UNIT    ::=  PROGRAM
+                |    BLUPRNT
 
-    BLOCK   ::=  FREEBLK
-            |    SINGLE
-    FREEBLK ::=  ':'  STMT+  ('end' | '..')
-    SINGLE  ::=  '->'  STMT
+        PROGRAM ::=  STMT+  (as BLOCK)
 
-    STMT    ::=  VARDEC
-            |    FNDEC
-            |    ASSIGN
-            |    INCR
-            |    'if'  '('  EXP  ')'  BLOCK
-                 ('else'  'if'  '('  EXP  ')'  BLOCK)*
-                 ('else'  '('  EXP  ')'  BLOCK)?
-            |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
-            |    'while'  '('  EXP  ')'  BLOCK
-            |    'return'  EXP  BLOCK
+        BLOCK   ::=  FREEBLK
+                |    SINGLE
+        FREEBLK ::=  ':'  STMT+  ('end' | '..')
+        SINGLE  ::=  '->'  STMT
 
-    VARDEC  ::=  '$'  ASSIGN  (','  ASSIGN)*
-    FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
-    FNTYPE  ::=  'proc' | 'fn'
-    PARAMS  ::=  '('  ID  (','  ID)*  ')'
+        STMT    ::=  VARDEC
+                |    FNDEC
+                |    'if'  '('  EXP  ')'  BLOCK
+                     ('else'  'if'  '('  EXP  ')'  BLOCK)*
+                     ('else'  '('  EXP  ')'  BLOCK)?
+                |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+                |    'while'  '('  EXP  ')'  BLOCK
+                |    'return'  EXP
+                |    EXP
 
-    ASSIGN  ::=  VAR  '=' EXP
-            |    VAR  ':=:'  VAR
-        
-    INCR    ::=  VAR  "++" | "++"  VAR
-            |    VAR  "--" | "--"  VAR
-            |    VAR  "+="  INTLIT
-            |    VAR  "-="  INTLIT
-            |    VAR  "*="  INTLIT
-            |    VAR  "%="  INTLIT
+        VARDEC  ::=  '$'  ID  '='  EXP  (','  ID  '='  EXP)*
+        FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
+        FNTYPE  ::=  'proc' | 'fn'
+        PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
-    EXP     ::=  EXP1 (('||' | '#') EXP1)*
-    EXP1    ::=  EXP2 ('&&' EXP2)*
-    EXP2    ::=  EXP3 (('<' | '<=' | '==' | '~=' '!=' | '>=' | '>' | 'is') EXP3)?
-    EXP3    ::=  EXP4 ([+-] EXP4)*
-    EXP4    ::=  EXP5 ([%*/] EXP5)*
-    EXP5    ::=  EXP6 (('**' | '-**')  EXP6)
-    EXP6    ::=  ('~!' | '~?')?  EXP7
-    EXP7    ::=  ('!')?  EXP8
-    EXP8    ::=  'undefined' | 'null' | BOOLIT | STRLIT | NUMLIT | VAR |
-            |    MAKE | FNVAL | ARRAY | OBJECT | '('  EXP  ')'
+        EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
+        EXP0    ::=  EXP1 (('||' | '#') EXP1)*
+        EXP1    ::=  EXP2 ('&&' EXP2)*
+        EXP2    ::=  EXP3 ('==' | '~=' | '!='  EXP3)?
+        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>'  EXP4)?
+        EXP4    ::=  EXP5 ([+-] EXP5)*
+        EXP5    ::=  EXP6 ([%*/] EXP6)*
+        EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
+        EXP7    ::=  ('~!' | '~?')?  EXP8
+        EXP8    ::=  ('!' | '++' | '--')?  EXP9
+        EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
+        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT | ID | CONST | FNVAL | ARRAY | OBJECT | '(' EXP ')'
 
-    VAR     ::=  ID SUFFIX*
-    SUFFIX  ::=  '[' EXP ']'
-            |    '.' ID
-            |    '(' ARGS ')'
+        CONST   ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)?  ')'
+        FNVAL   ::=  FNTYPE  PARAMS  BLOCK
 
-    MAKE    ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)  ')'
-    FNVAL   ::=  FNTYPE  PARAMS  BLOCK
-    FNCALL  ::=  VAR  ARGS
-    ARGS    ::=  '('  EXP  (','  EXP)*  ')'
+        ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
+        OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
+        PROP    ::=  ID  ':'  EXP
 
-    ARRAY   ::=  '['  (EXP  (','  EXP)*)?  ']'
-    OBJECT  ::=  '{'  (PRPRTY  (','  PRPTRY)*)?  '}'
-    PRPRTY  ::=  ID  ':'  EXP
-
-    BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-    BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
-    HASBLK  ::=  '@'  'has'  (PRPRTY  (','  PRPRTY)*)?
-    DOESBLK ::=  '@'  'does'  (PRPRTY  (','  PRPRTY)*)?
-    SYNCHLD ::=  '@'  'syn'  ':'  ID  (PRPRTY  (','  PRPRTY)*)?
+        BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
+        BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
+        HASBLK  ::=  '@'  'has'  (PROP  (','  PROP)*)?
+        DOESBLK ::=  '@'  'does'  (PROP  (','  PROP)*)?
+        SYNCHLD ::=  '@'  'syn'  ':'  ID  (PROP  (','  PROP)*)?
 
 
-### Microsyntax
+    ### Microsyntax
 
-    NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
-    STR     ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
-    BOOL    ::=  'true' | 'false'
-    ID      ::=  [_a-zA-Z]\w*
-    COMMENT ::=  '>>'  TEXT  '\n'
-            |    '>|'  TEXT  '|<'
+        NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
+        STRLIT  ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
+        BOOLIT  ::=  'true' | 'false'
+        UNDEFLIT::=  'undefined'
+        NULLLIT ::=  'null'
+        ID      ::=  [_a-zA-Z]\w*
+        COMMENT ::=  '>>'  TEXT  '\n'
+                |    '>|'  TEXT  '|<'
