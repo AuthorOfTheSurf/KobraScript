@@ -189,7 +189,7 @@ describe('The scanner', function () {
 
     it('reads vardecs and increments correctly', function (done) {
         scan('test/kobra-code/good-programs/increments.ks', function (tokens) {
-            tokens.length.should.equal(19)
+            tokens.length.should.equal(17)
             i(tokens[0]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
             i(tokens[1]).should.equal(i({kind:'ID',lexeme:'i',line:1,col:3}))
             i(tokens[2]).should.equal(i({kind:'=',lexeme:'=',line:1,col:5}))
@@ -206,9 +206,7 @@ describe('The scanner', function () {
             i(tokens[13]).should.equal(i({kind:'++',lexeme:'++',line:6,col:2}))
             i(tokens[14]).should.equal(i({kind:'++',lexeme:'++',line:7,col:1}))
             i(tokens[15]).should.equal(i({kind:'ID',lexeme:'j',line:7,col:3}))
-            i(tokens[16]).should.equal(i({kind:'--',lexeme:'--',line:8,col:1}))
-            i(tokens[17]).should.equal(i({kind:'ID',lexeme:'j',line:8,col:3}))
-            i(tokens[18]).should.equal(i({kind:'EOF',lexeme:'EOF'}))
+            i(tokens[16]).should.equal(i({kind:'EOF',lexeme:'EOF'}))
             done()
         })
     })

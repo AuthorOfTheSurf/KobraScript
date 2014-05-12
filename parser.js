@@ -57,7 +57,12 @@ module.exports = function (scanner_output, filename, dir) {
 }
 
 function parseProgram() {
-  return new Program(new Block(parseStatements()))
+  var initialBlock = new Block(parseStatements())
+  if (initialBlock.statements[0] !== undefined) {
+    return new Program(initialBlock)
+  } else {
+    error('expected statement but found EOF')
+  }
 }
 
 function parseBlock() {
