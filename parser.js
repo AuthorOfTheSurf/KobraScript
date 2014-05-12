@@ -475,9 +475,8 @@ function parseConditionalStatement() {
   return new ConditionalStatement(conditionals, defaultAct)
 }
 
-
 function parseExpression() {
-  console.log('beginning to parse expression at: ' + JSON.stringify(tokens[0]))
+  // console.log('beginning to parse expression at: ' + JSON.stringify(tokens[0]))
   var left = parseExp0()
   while (at(['=','+=','-=','*=','/=','%='])) {
     var op = match()
@@ -518,7 +517,7 @@ function parseExp1() {
 
 function parseExp2() {
   var left = parseExp3()
-  if (at(['<', '<=', '==', '~=', '!=', '>=', '>', 'is'])) {
+  if (at(['==', '~=', '!=', 'is'])) {
     var op = match()
     var right = parseExp3()
     left = new BinaryExpression(op, left, right)
@@ -527,6 +526,16 @@ function parseExp2() {
 }
 
 function parseExp3() {
+  var left = parseExp3()
+  if (at(['<', '<=', '!=', '>=', '>'])) {
+    var op = match()
+    var right = parseExp3()
+    left = new BinaryExpression(op, left, right)
+  }
+  return left
+}
+
+function parseExp4() {
   var left = parseExp4()
   while (at(['+','-'])) {
     var op = match()
@@ -536,7 +545,7 @@ function parseExp3() {
   return left
 }
 
-function parseExp4() {
+function parseExp5() {
   var left = parseExp5()
   while (at(['*','/','%'])) {
     op = match()
@@ -546,7 +555,7 @@ function parseExp4() {
   return left
 }
 
-function parseExp5() {
+function parseExp6() {
   var left = parseExp6()
   while (at(['**', '-**'])) {
     op = match()
@@ -556,7 +565,7 @@ function parseExp5() {
   return left
 }
 
-function parseExp6() {
+function parseExp7() {
   if (at(['~!','~?'])) {
     op = match()
     operand = parseExp7()
@@ -568,7 +577,7 @@ function parseExp6() {
 }
 
 /* Prefix unary expressions */
-function parseExp7() {
+function parseExp8() {
   if (at(['!','++','--'])) {
     var op = match()
     var operand = parseExp8()
@@ -580,7 +589,7 @@ function parseExp7() {
 }
 
 /* Postfix unary expressions */
-function parseExp8() {
+function parseExp9() {
   var left = parseExp9()
   while (at(['.','[','('])) {
     if (at('.')) {
@@ -601,7 +610,7 @@ function parseExp8() {
   return left
 }
 
-function parseExp9() {
+function parseExpRoot() {
   if (at('undefined')) {
     return new UndefinedLiteral(match())
   } else if (at('null')) {
