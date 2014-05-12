@@ -2,42 +2,42 @@
 // Should be hoisted.
 var Robot = function (id_number, name, model_number) {
   var Robot = {};
-  var _hidden = {};
-    _hidden.id = id_number.substring(3);
-    _hidden.name = undefined;
-    _hidden.model_no = undefined;
-    _hidden.hp = 100;
-    _hidden.mana = 80;
+  var id = id_number,
+      name = undefined,
+      model_no = undefined,
+      hp = 100,
+      mana = 80;
   
   Robot.regen = function () {
-    _hidden.hp++;
+    hp++;
   };
 
   Robot.login = function () {
-    return _hidden.id === "3000";
+    return id === "3000";
   };
 
   Robot.get = {
     name: function () {
-      return _hidden.name;
+      return name;
     },
     model_no: function () {
-      return _hidden.model_no ;
+      return model_no ;
     }
   };
 
   Robot.set = {
     mana: function (new_mana) {
-      _hidden.mana = new_mana;
+      mana = new_mana;
     },
     newID: function () {
-      _hidden.id = "3000";
-      this.set.mana(75);
+      id = "3000";
+      Robot.set.mana(75);
     }
   };
 
   return Robot;
 }
 
-var robot = new Robot(undefined, "Miles", undefined);
-
+/**
+ * var robot = new Robot(undefined, "Miles", undefined);
+ */

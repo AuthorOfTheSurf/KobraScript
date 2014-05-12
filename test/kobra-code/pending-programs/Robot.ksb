@@ -1,7 +1,7 @@
 blueprint Robot (id_number, name, model_number):
 
 @has
-  id: id_number.substring(3),
+  id: id_number,
   name: name,
   model_no: model_number,
   hp: 100,
