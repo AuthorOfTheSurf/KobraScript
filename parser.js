@@ -160,7 +160,6 @@ function parseStatement() {
     return parseContinueStatement()
   } else {
     return parseExpression()
-    //error('Statement expected', tokens[0])
   }
 }
 
@@ -190,21 +189,6 @@ function parseDeclaration() {
   }
 }
 
-// Should-be artifact code
-// function parseAssignmentStatement() {
-//   var target = parseVar()
-//   match('=')
-//   var value
-//   if (at(['fn','proc'])) {
-//     value = parseFn()
-//   } else if (at(['{','[','construct'])) {
-//     value = parseValue()
-//   } else {
-//     value = parseExpression()
-//   }
-//   return new AssignmentStatement(target, value)
-// }
-
 function parsePropertyStatement() {
   var name = parseBasicVar()
   match(':')
@@ -220,32 +204,6 @@ function parsePropertyStatement() {
   }
   return new Property(name, initializer)
 }
-
-// Should-be artifact code.
-// function parseUseOfVar() {
-//   var name = parseBasicVar()
-//   if (at(':=:')) {
-//     match()
-//     var right = parseValue()
-//     return new ExchangeStatement(name, right)
-//   } else if (at('=')) {
-//     match()
-//     if (at(['fn','proc'])) {
-//       value = parseFn()
-//     } else if (at(['{','[','construct'])) {
-//       value = parseValue()
-//     } else {
-//       value = parseExpression()
-//     }    
-//     return new AssignmentStatement(name, value)
-//   } else if (at(['*=','/=','+=','-='])) {
-//     var op = match()
-//     var magnitude = match('NUMLIT')
-//     return new MathChangeAssignment(name, op, magnitude)
-//   } else {
-//     return name
-//   }
-// }
 
 function parseBasicVar () {
   var name = match('ID')
@@ -476,7 +434,7 @@ function parseConditionalStatement() {
 
 function parseExpression() {
   var left = parseExp0()
-  while (at(['=','+=','-=','*=','/=','%='])) {
+  while (at(['=','+=','-=','*=','/=','%=', ':=:'])) {
     var op = match()
     var right = parseExp0()
     left = new BinaryExpression(op, left, right)

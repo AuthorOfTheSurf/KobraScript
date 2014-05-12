@@ -233,7 +233,7 @@ var generator = {
       // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
       var a = makeIntoVariable(ent.left.referent)
       var b = makeIntoVariable(ent.right.referent)
-      return util.format('%s = [%s, %s = %s][0];', b, a, a, b)
+      return util.format('%s = [%s, %s = %s][0]', b, a, a, b)
     } else {
       return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
     }
