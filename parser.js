@@ -475,7 +475,6 @@ function parseConditionalStatement() {
 }
 
 function parseExpression() {
-  // console.log('beginning to parse expression at: ' + JSON.stringify(tokens[0]))
   var left = parseExp0()
   while (at(['=','+=','-=','*=','/=','%='])) {
     var op = match()

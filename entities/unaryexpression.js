@@ -1,7 +1,6 @@
 var Type = require('./type')
 
 function UnaryExpression(op, operand) {
-  console.log('building unary expression ' + op.lexeme + ' ' + operand)
   this.op = op
   this.operand = operand
 }

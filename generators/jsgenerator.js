@@ -48,7 +48,7 @@ function gen(ent) {
 }
 
 function genExp(ent) {
-  emit(generator[ent.constructor.name](ent))
+  emit(generator[ent.constructor.name](ent) + ';')
 }
 
 var generator = {
@@ -91,7 +91,7 @@ var generator = {
     indentLevel++
     ent.statements.forEach(function (statement) {
       var kind = statement.constructor.name
-      if (kind === 'UnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar' || kind === 'IndexVar' || kind === 'DottedVar' || kind === 'Call') {
+      if (kind === 'UnaryExpression' || kind === 'PostUnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar' || kind === 'IndexVar' || kind === 'DottedVar' || kind === 'Call') {
         genExp(statement)
       } else {
         gen(statement)
