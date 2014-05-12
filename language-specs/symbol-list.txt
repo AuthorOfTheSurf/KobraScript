@@ -13,7 +13,6 @@ SYM     NEG     DESCRIPTION
 <=      !>=     LTOE
 ==      !=      type and value equality
 ~=      !~=     coerced value equality
-is      !is     type equality
 =               assignment
 :=:             swap the values LHS of RHS
 &&              AND
