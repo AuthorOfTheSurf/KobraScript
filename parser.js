@@ -484,6 +484,7 @@ function parseExpression() {
     var right = parseExp0()
     left = new BinaryExpression(op, left, right)
   }
+  return left
 }
 
 function parseExp0() {
