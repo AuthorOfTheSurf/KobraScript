@@ -579,6 +579,14 @@ function parseExpRoot() {
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseBasicVar()
+  } else if (at('construct')) {
+    return parseConstruct()
+  } else if (at(['fn','proc','anon'])) {
+    return parseFn()
+  } else if (at('[')) {
+    return parseArrayLiteral()
+  } else if (at('{')) {
+    return parseObjectLiteral()
   } else if (at('(')) {
     match('(')
     var expression = parseExpression()
