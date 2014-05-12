@@ -22,7 +22,7 @@ function padExtra (line) {
 
 function makeOp(op) {
   return {
-    '~?': 'typeof',
+    '~?': 'typeof ',
     '==': '===',
     '!=': '!==',
     '~=': '==',
@@ -45,6 +45,10 @@ var makeIntoVariable = (function () {
 
 function gen(ent) {
   return generator[ent.constructor.name](ent)
+}
+
+function genExp(ent) {
+  emit(generator[ent.constructor.name](ent))
 }
 
 var generator = {
@@ -113,14 +117,6 @@ var generator = {
     emit('(function () {')
     gen(ent.body)
     emit('}());')
-  },
-
-  'AssignmentStatement': function (ent) {
-    emit(util.format('%s = %s;', gen(ent.target), gen(ent.source)))
-  },
-
-  'MathChangeAssignment': function (ent) {
-    emit(util.format('%s %s %s', gen(ent.target), ent.op.lexeme, ent.magnitude.lexeme))
   },
 
   'ConditionalStatement': function (ent) {
@@ -207,18 +203,6 @@ var generator = {
     emit('continue;')
   },
 
-  'Construction': function(ent) {
-    var a = ent.args.map(function (arg) {gen(arg)})
-    emit(util.format('var %s = new %s(%s);', gen(ent.blueid), a.join(', ')))
-  },
-
-  'ExchangeStatement': function (ent) {
-    // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
-    var a = makeIntoVariable(ent.left.referent)
-    var b = makeIntoVariable(ent.right.referent)
-    emit(util.format('%s = [%s, %s = %s][0];', b, a, a, b))
-  },
-
   'UnaryExpression': function (ent) {
     if (ent.op.lexeme == '~!') {
       var factorialFunction = 'function __factorial(n){var f=[];function factorialHelper(value){if(value==0||value==1){return 1;}if(f[value]>0){return f[value];}return f[value]=factorial(value-1)*value;}return factorialHelper(n);}'
@@ -240,6 +224,11 @@ var generator = {
       return util.format('((1.0)/Math.pow(%s,%s))', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
     } else if (ent.op.lexeme === 'is') {
       return util.format('(typeof %s === typeof %s)', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
+    } else if (ent.op.lexeme === ':=:') {
+      // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
+      var a = makeIntoVariable(ent.left.referent)
+      var b = makeIntoVariable(ent.right.referent)
+      return util.format('%s = [%s, %s = %s][0];', b, a, a, b)
     } else {
       return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
     }
