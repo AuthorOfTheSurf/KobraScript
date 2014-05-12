@@ -167,6 +167,8 @@ Here is an example of a blueprint of a Person.
     defcc
 
 #### Arrays
+Arrays in KobraScript follow normal scripting language convention.
+
     $ protein_intake = [12, 21.3, 7.2, 20]                  var protein_intake = [12.0, 21.3, 7.2, 20.0];
     $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false];
 
@@ -230,8 +232,7 @@ Here is an example of a blueprint of a Person.
         DOESBLK ::=  '@'  'does'  (PROP  (','  PROP)*)?
         SYNCHLD ::=  '@'  'syn'  ':'  ID  (PROP  (','  PROP)*)?
 
-
-    ### Microsyntax
+### Microsyntax
 
         NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
         STRLIT  ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
