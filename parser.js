@@ -17,8 +17,6 @@ var Fn = require('./entities/function')
 var AnonRunFn = require('./entities/anonrunfn')
 var Declaration = require('./entities/declaration')
 var Property = require('./entities/property')
-var AssignmentStatement = require('./entities/assignmentstatement')
-var MathChangeAssignment = require('./entities/mathchangeassignment')
 var ConditionalStatement = require('./entities/conditionalstatement')
 var Conditional = require('./entities/conditional')
 var ForStatement = require('./entities/forstatement')
@@ -147,8 +145,6 @@ function parseStatement() {
     return parseFnDeclaration()
   } else if (at('anon')) {
     return parseAnonRunFn()
-  } else if (at('ID')) {
-    return parseUseOfVar()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -459,7 +455,7 @@ function parseConditionalStatement() {
       defaultAct
   match('if')
   conditionals.push(parseConditional())
-  while(at('else') && next('if')) {
+  while (at('else') && next('if')) {
     match(['else','if'])
     conditionals.push(parseConditional())
   }
@@ -479,7 +475,18 @@ function parseConditionalStatement() {
   return new ConditionalStatement(conditionals, defaultAct)
 }
 
+
 function parseExpression() {
+  console.log('beginning to parse expression at: ' + JSON.stringify(tokens[0]))
+  var left = parseExp0()
+  while (at(['=','+=','-=','*=','/=','%='])) {
+    var op = match()
+    var right = parseExp0()
+    left = new BinaryExpression(op, left, right)
+  }
+}
+
+function parseExp0() {
   if (at(['!','++','--'])) {
     var left = parseExp7()
   } else {
@@ -487,12 +494,12 @@ function parseExpression() {
   }
   while (at('||')) {
     var op = match()
-    var right = parseExp1()
+    var right = parseExp0()
     left = new BinaryExpression(op, left, right)
   }
   if (at('#')) {
     var op = match()
-    var right = parseExp1()
+    var right = parseExp0()
     left = new BinaryExpression(op, left, right)
   }
   return left
@@ -607,7 +614,7 @@ function parseExp9() {
   } else if (at('ID')) {
     return parseBasicVar()
   } else if (at('(')) {
-    match()
+    match('(')
     var expression = parseExpression()
     match(')')
     return expression
