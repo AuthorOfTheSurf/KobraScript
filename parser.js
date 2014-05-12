@@ -238,7 +238,7 @@ function parseValue() {
   } else if (at('ID')) {
     return parseExpression()
   } else if (at('construct')) {
-    return parseConstructValue()
+    return parseConstruct()
   } else if (at(['fn','proc'])) {
     return parseFn()
   } else {
@@ -296,25 +296,31 @@ function parseArgs() {
   return args
 }
 
-function parseConstructArgs() {
-  match('(')
-  var args = [] //of values and assignment instructions
-  if (at('ID') && next('=') || at(['fn','proc'])) {
-    args.push(parseAssignmentStatement('='))
-  } else if (!at(')')) {
-    args.push(parseExpression())
+function parseConstruct() {
+  match('construct')
+  var name = parseBasicVar()
+  var args = (function () {
+      match('(')
+      var args = [] //of values and assignment instructions
+      if (at('ID') && next('=') || at(['fn','proc'])) {
+        args.push(parseAssignmentStatement('='))
+      } else if (!at(')')) {
+        args.push(parseExpression())
+      }
+      while (at(',')) {
+        match()
+        if (at('ID') && next('=') || at(['fn','proc'])) {
+          args.push(parseAssignmentStatement('='))
+        } else if (!at(')')) {
+          args.push(parseExpression())
+        }
+      }
+      match(')')
+      return args
+    }())
+
+  return new Construction(name, args, dirname)
   }
-  while (at(',')) {
-    match()
-    if (at('ID') && next('=') || at(['fn','proc'])) {
-      args.push(parseAssignmentStatement('='))
-    } else if (!at(')')) {
-      args.push(parseExpression())
-    }
-  }
-  match(')')
-  return args
-}
 
 function parseArrayLiteral() {
   var elements = []
@@ -403,13 +409,6 @@ function parseBreakStatement() {
 function parseContinueStatement() {
   match('continue')
   return new ContinueStatement()
-}
-
-function parseConstructValue() {
-  match('construct')
-  var name = parseBasicVar()
-  var args = parseConstructArgs()
-  return new Construction(name, args, dirname)
 }
 
 function parseConditionalStatement() {
