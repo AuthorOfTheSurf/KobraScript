@@ -91,7 +91,7 @@ var generator = {
     indentLevel++
     ent.statements.forEach(function (statement) {
       var kind = statement.constructor.name
-      if (kind === 'UnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar') {
+      if (kind === 'UnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar' || kind === 'IndexVar' || kind === 'DottedVar' || kind === 'Call') {
         genExp(statement)
       } else {
         gen(statement)
@@ -252,8 +252,11 @@ var generator = {
   },
 
   'Call': function (ent) {
-    var a = ent.args.map(function (arg) {gen(arg)})
-    return util.format('%s(%s)', gen(ent.fn), a.join(', '))
+    var params = []
+    ent.args.forEach(function (arg) {
+      params.push(gen(arg))
+    });
+    return util.format('%s(%s)', gen(ent.fn), params.join(', '))
   },
 
   'ArrayLiteral': function (ent) {
