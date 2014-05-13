@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ -z "$1" ]]
+then
+  node kobrac
+else
+  node kobrac $1 | node
+fi
