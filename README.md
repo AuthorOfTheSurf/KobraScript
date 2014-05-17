@@ -60,12 +60,17 @@ Similar to Javascript, anonymous self-calling functions are in KobraScript, writ
 #### Blocks
 Blocks in KobraScript are beautiful. Start a multiline block with `:` and terminate it with the clear `end` or the elegantly-flowing `..`. Fearlessly create a single-statement block by pointing `->` to it. Nice.
 
-    while (i--):
-        say "Countdown ..." + i
-    end
+    while (i--):                                            while (i--) {
+        say "Countdown ... " + i                                console.log("Countdown ... " + i)
+    end                                                     }
 
+    fn numResponse (x):                                     function numResponse (x) {
+        if (x == 1) -> say "that's one!"                        if (x === 1) console.log("that's one!");
+        else if (x == 2) -> say "that's two!"                   else if (x === 2) console.log("that's two!");
+        else -> say "that's somthin' else!"                     else console.log("that's somthin' else!");
+    ..                                                      }
 
-
+    proc on (socket) -> this.active[socket] = true          function on (socket) this.active[socket] = true;
 
 #### Conditional Statement
 In KobraScript an `if` statement is written with a preference to `..` between conditional blocks and an `end` after the final block to signal the conclusion of the statement. Kobra is cold as ice.
@@ -88,7 +93,7 @@ KobraScript utilizes a Go/Python-inspired statement in order to swap, or "exchan
     say b   >> 2                                            console.log(b);  // 2
 
 #### `for` and `while` loops
-For and while loops look beautiful as expected, keyword, condition, block, nice.
+For and while loops look beautiful as expected; keyword, condition, block, nice.
 
     $ a = 0 >> A test variable for loops.                   var a = 0; // A test variable for loops.
 
@@ -124,6 +129,7 @@ Blueprints are special structures in KobraScript. They allow for a robust way to
 To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
 - Specific -> `construct Person (hairColor = "black")`
 - Dynamic  -> `construct Person()` or `construct Person("Joe")`
+
 
     $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
     $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
