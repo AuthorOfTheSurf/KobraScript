@@ -37,7 +37,7 @@ function scan(line, linenumber, tokens) {
         threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/,
         twoCharTokens = /<=|==|>=|\!=|\*\*|~=|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|\%=|-=|\+=|\->/,
         oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/,
-        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|construct|blueprint|has|does|syn|defcc|if|else|do|while|for|switch|break|continue|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say|loge|_hidden|anon|__factorial)$/,
+        definedTokens = /^(?:bit|int|float|bool|str|undefined|null|fn|return|construct|blueprint|has|does|syn|defcc|if|else|only|do|while|for|switch|break|continue|case|try|catch|finally|throw|function|instanceof|var|void|with|end|proc|say|loge|_hidden|anon|__factorial)$/,
         numericLit = /(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?/,
         booleanLit = /^(?:true|false)$/,
         oneCharEscapeChars = /[bfnrtv0\"\']/,

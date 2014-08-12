@@ -1,18 +1,18 @@
 #!/usr/bin/env node
-
-var parseArgs = require('minimist')
-var path = require('path')
-var argv = parseArgs(process.argv.slice(2), opts={
+var parseArgs     = require('minimist')
+var path          = require('path')
+var argv          = parseArgs(process.argv.slice(2), opts={
   boolean: ['t', 'a', 'o', 'i']
 })
-var scan = require('./scanner')
-var parse = require('./parser')
-var generate = require('./generator')('js')
-var error = require('./error')
+
+var scan          = require('./scanner')
+var parse         = require('./parser')
+var generate      = require('./generator')('js')
+var error         = require('./error')
 
 var fileExtension = path.extname(argv._[0])
-var ksbname = path.basename(argv._[0], '.ksb')
-var currentDir = path.dirname(argv._[0])
+var ksbname       = path.basename(argv._[0], '.ksb')
+var currentDir    = path.dirname(argv._[0])
 
 var validExtension = fileExtension === '.ks' || fileExtension === '.ksb'
 
@@ -22,7 +22,7 @@ if (argv._.length === 0) {
 } else {
   if (validExtension) {
     scan(argv._[0], function (tokens) {
-      if (error.count > 0) return;
+      if (error.count > 0) { return }
       if (argv.t) {
         tokenIndex = 1
         tokens.forEach(function (t) {
@@ -32,7 +32,7 @@ if (argv._.length === 0) {
         return
       }
       var program = parse(tokens, ksbname, currentDir)
-      if (error.count > 0) return;
+      if (error.count > 0) { return }
       if (argv.a) {
         console.log(program.toString())
         return
@@ -41,7 +41,7 @@ if (argv._.length === 0) {
         program = program.optimize()
       }
       program.analyze()
-      if (error.count > 0) return;
+      if (error.count > 0) { return }
       if (argv.i) {
         program.showSemanticGraph()
         return
@@ -49,6 +49,6 @@ if (argv._.length === 0) {
       generate(program)
     })
   } else {
-    error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks or .ksb', {path: fileExtension})
+    error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks or .ksb', { path: fileExtension })
   }
 }

@@ -6,46 +6,48 @@
  *   var program = parse(tokens)
  */
 
-var scanner = require('./scanner')
-var error = require('./error')
+var scanner              = require('./scanner'),
+    error                = require('./error')
 
-var Program = require('./entities/program')
-var Blueprint = require('./entities/blueprint')
-var Block = require('./entities/block')
-var Type = require('./entities/type')
-var Fn = require('./entities/function')
-var AnonRunFn = require('./entities/anonrunfn')
-var Declaration = require('./entities/declaration')
-var Property = require('./entities/property')
-var ConditionalStatement = require('./entities/conditionalstatement')
-var Conditional = require('./entities/conditional')
-var ForStatement = require('./entities/forstatement')
-var WhileStatement = require('./entities/whilestatement')
-var SayStatement = require('./entities/saystatement')
-var ReturnStatement = require('./entities/returnstatement')
-var BreakStatement = require('./entities/breakstatement')
-var ContinueStatement = require('./entities/continuestatement')
-var Construction = require('./entities/construction')
-var Params = require('./entities/params')
-var UnaryExpression = require('./entities/unaryexpression')
-var PostUnaryExpression = require('./entities/postunaryexpression')
-var BinaryExpression = require('./entities/binaryexpression')
-var BasicVar = require('./entities/basicvar')
-var IndexVar = require('./entities/indexvar')
-var DottedVar = require('./entities/dottedvar')
-var Call = require('./entities/call')
-var ArrayLiteral = require('./entities/arrayliteral')
-var ObjectLiteral = require('./entities/objectliteral')
-var NumericLiteral = require('./entities/numericliteral')
-var BooleanLiteral = require('./entities/booleanliteral')
-var StringLiteral = require('./entities/stringliteral')
-var UndefinedLiteral = require('./entities/undefinedliteral')
-var NullLiteral = require('./entities/nullliteral')
+var Program              = require('./entities/program'),
+    Blueprint            = require('./entities/blueprint'),
+    Block                = require('./entities/block'),
+    Type                 = require('./entities/type'),
+    Fn                   = require('./entities/function'),
+    AnonRunFn            = require('./entities/anonrunfn'),
+    Declaration          = require('./entities/declaration'),
+    Property             = require('./entities/property'),
+    ConditionalStatement = require('./entities/conditionalstatement'),
+    OnlyIfStatement      = require('./entities/onlyifstatement')
+    Conditional          = require('./entities/conditional'),
+    ForStatement         = require('./entities/forstatement'),
+    WhileStatement       = require('./entities/whilestatement'),
+    SayStatement         = require('./entities/saystatement'),
+    ReturnStatement      = require('./entities/returnstatement'),
+    BreakStatement       = require('./entities/breakstatement'),
+    ContinueStatement    = require('./entities/continuestatement'),
+    Construction         = require('./entities/construction'),
+    Params               = require('./entities/params'),
+    UnaryExpression      = require('./entities/unaryexpression'),
+    PostUnaryExpression  = require('./entities/postunaryexpression'),
+    BinaryExpression     = require('./entities/binaryexpression'),
+    BasicVar             = require('./entities/basicvar'),
+    IndexVar             = require('./entities/indexvar'),
+    DottedVar            = require('./entities/dottedvar'),
+    Call                 = require('./entities/call'),
+    ArrayLiteral         = require('./entities/arrayliteral'),
+    ObjectLiteral        = require('./entities/objectliteral'),
+    NumericLiteral       = require('./entities/numericliteral'),
+    BooleanLiteral       = require('./entities/booleanliteral'),
+    StringLiteral        = require('./entities/stringliteral'),
+    UndefinedLiteral     = require('./entities/undefinedliteral'),
+    NullLiteral          = require('./entities/nullliteral')
 
+// Parser Globals
 var tokens
 var dirname
-/* Used by parse statement to parse and continuing
-   variable declaration */
+
+// Used by multiple variable declaration
 var continuing = false
 
 module.exports = function (scanner_output, filename, dir) {
@@ -136,7 +138,7 @@ function parseStatements() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','fn','proc','anon','++','--','return','say','loge','break','continue']))
+  } while (at(['$',',','ID','for','while','if','only','fn','proc','anon','++','--','return','say','loge','break','continue']))
   return statements
 }
 
@@ -153,6 +155,8 @@ function parseStatement() {
     return parseWhileStatement()
   } else if (at('if')) {
     return parseConditionalStatement()
+  } else if (at('only')) {
+    return parseOnlyIfStatement()
   } else if (at('for')) {
     return parseForStatement()
   } else if (at(['say','loge'])) {
@@ -424,7 +428,6 @@ function parseConditionalStatement() {
     match()
     defaultAct = parseBlock()
   }
-
   function parseConditional() {
     match('(')
     var condition = parseExpression()
@@ -432,8 +435,21 @@ function parseConditionalStatement() {
     var action = parseBlock()
     return new Conditional(condition, action)
   }
-
   return new ConditionalStatement(conditionals, defaultAct)
+}
+
+function parseOnlyIfStatement() {
+  match(['only'])
+  var action = parseBlock()
+  match(['if','('])
+  var condition = parseExpression()
+  match(')')
+  if (at('else')) {
+    match()
+    var defaultAct = parseBlock()
+  }
+  var conditional = new Conditional(condition, action)
+  return new OnlyIfStatement(conditional, defaultAct)
 }
 
 function parseExpression() {

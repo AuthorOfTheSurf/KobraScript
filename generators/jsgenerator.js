@@ -150,6 +150,17 @@ var generator = {
     }
   },
 
+  'OnlyIfStatement': function (ent) {
+    emit('if (' + gen(ent.conditional.condition) + ') {')
+    gen(ent.conditional.body)
+    emit('}')
+    if (ent.defaultAct) {
+      emit('else {')
+      gen(ent.defaultAct)
+      emit('}')
+    }
+  },
+
   'ForStatement': function (ent) {
     var assignments = (ent.assignments[0].constructor.name === 'Declaration') ? 'var ' : '' 
     for (var i = 0; i < ent.assignments.length; i++) {

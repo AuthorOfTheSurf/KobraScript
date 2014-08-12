@@ -7,6 +7,10 @@ Conditional.prototype.toString = function () {
   return '(if ' + this.condition.toString() + ' -> ' + this.body.toString()
 }
 
+Conditional.prototype.onlyString = function () {
+  return this.body.toString() + 'if ' + this.condition.toString()
+}
+
 Conditional.prototype.analyze = function (context) {
   this.condition.analyze(context)
   this.body.analyze(context)
