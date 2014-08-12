@@ -1,6 +1,6 @@
 **/
 * This is regarded as the the most up to date specification of KS
-* KobraScript Syntax v.1.7s
+* KobraScript Syntax v.1.8
 * 
 */
 
@@ -21,6 +21,8 @@
             |    'if'  '('  EXP  ')'  BLOCK
                  ('else'  'if'  '('  EXP  ')'  BLOCK)*
                  ('else'  '('  EXP  ')'  BLOCK)?
+            |    'only'  BLOCK  'if'  '('  EXP  ')'
+                 ('else'  BLOCK)?
             |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
             |    'while'  '('  EXP  ')'  BLOCK
             |    'return'  EXP
@@ -56,7 +58,6 @@
     HASBLK  ::=  '@'  'has'  (PROP  (','  PROP)*)?
     DOESBLK ::=  '@'  'does'  (PROP  (','  PROP)*)?
     SYNCHLD ::=  '@'  'syn'  ':'  ID  (PROP  (','  PROP)*)?
-
 
 ### Microsyntax
 

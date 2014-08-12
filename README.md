@@ -83,6 +83,19 @@ In KobraScript an `if` statement is written with a preference to `..` between co
         keep()                                                  keep();
     end                                                     }
 
+#### Only If Statement
+Bite first, ask for booleans later. Kobrascript allows a lightning-quick, conditional alternative to the garden-variety `if` statement.
+
+    only:                                                   if (feelingLucky) {
+      rollDice() .. if (feelingLucky)                           rollDice()
+                                                            }
+    only -> abandonShip() if (sinking)                      if (sinking) {
+    else -> justKeepSwiming()                                 abandonShip()
+                                                            } else {
+                                                              justKeepSwimming()
+                                                            }
+
+
 #### Exchange Statement
 KobraScript utilizes a Go/Python-inspired statement in order to swap, or "exchange", the values of two variables.
     
@@ -105,7 +118,6 @@ For and while loops look beautiful as expected; keyword, condition, block, nice.
         a++                                                     a++;
     end                                                     }
 
-
 #### Objects
 Objects are easily specified and finely readable in KobraScript. Braces are used specifically for objects in this language, `{}` is an object (the one with no properties).
 
@@ -127,9 +139,8 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
 Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expedite the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
 To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
-- Specific -> `construct Person (hairColor = "black")`
-- Dynamic  -> `construct Person()` or `construct Person("Joe")`
-
+- Specific: `construct Person (hairColor = "black")`
+- Dynamic:  `construct Person()` or `construct Person("Joe")`
 
     $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
     $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
@@ -181,7 +192,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.7s
+    * KobraScript Syntax v.1.8
     * 
     */
 
@@ -202,6 +213,8 @@ Arrays in KobraScript follow normal scripting language convention.
                 |    'if'  '('  EXP  ')'  BLOCK
                      ('else'  'if'  '('  EXP  ')'  BLOCK)*
                      ('else'  '('  EXP  ')'  BLOCK)?
+                |    'only'  BLOCK  'if'  '('  EXP  ')'
+                     ('else'  BLOCK)?
                 |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
                 |    'while'  '('  EXP  ')'  BLOCK
                 |    'return'  EXP
