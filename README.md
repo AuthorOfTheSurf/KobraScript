@@ -27,7 +27,7 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`
+Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
