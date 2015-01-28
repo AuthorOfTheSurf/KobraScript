@@ -10,7 +10,8 @@ Say my name...
     say "Kobra!"                                           console.log("Kobra!");
 
 #### Variable Declarations
-In KobraScript, variable declarations are simplified to one character: `$`. Also: no semicolons, ever.
+In KobraScript, variable declarations are simplified to one character: `$`  
+Also: no semicolons, *ever*.
 
     $ name = "Samson"                                       var name = "Samson";
 
@@ -26,7 +27,7 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`.
+Declare a function easily with `fn`. Open the block with `:` and close using `end`, or `..`
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
@@ -58,7 +59,8 @@ Similar to Javascript, anonymous self-calling functions are in KobraScript, writ
     end                                                     }())
 
 #### Blocks
-Blocks in KobraScript are beautiful. Start a multiline block with `:` and terminate it with the clear `end` or the elegantly-flowing `..`. Fearlessly create a single-statement block by pointing `->` to it. Nice.
+Blocks in KobraScript are beautiful. Start a multiline block with `:` and terminate it with the clear `end`, or the elegantly-flowing `..`  
+Fearlessly create a single-statement block by pointing `->` to it. Nice.
 
     while (i--):                                            while (i--) {
         say "Countdown ... " + i                                console.log("Countdown ... " + i)
@@ -73,7 +75,7 @@ Blocks in KobraScript are beautiful. Start a multiline block with `:` and termin
     proc on (socket) -> this.active[socket] = true          function on (socket) this.active[socket] = true;
 
 #### Conditional Statement
-In KobraScript an `if` statement is written with a preference to `..` between conditional blocks and an `end` after the final block to signal the conclusion of the statement. Kobra is cold as ice.
+In KobraScript the `if` statement is written with a preference to `..` between conditional blocks. An `end` after the final block signals the conclusion of the statement. Kobra is cold as ice.
 
     if (is_red && is_food):                                 if (is_red && is_food) {
         eat()                                                   eat ();
@@ -97,7 +99,7 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
 
 
 #### Exchange Statement
-KobraScript utilizes a Go/Python-inspired statement in order to swap, or "exchange", the values of two variables.
+KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` the values of two variables.
     
     $ a = 2,                                                var a = 2,
       b = 3                                                     b = 3;
@@ -135,15 +137,16 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame}
     }                                                       }
 
-#### Blueprints
+#### Blueprints [Not fully functional]
 Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expedite the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
 
 To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
-- Specific: `construct Person (hairColor = "black")`
+- Specific: `construct Person (hairColor="black")`
 - Dynamic:  `construct Person()` or `construct Person("Joe")`
 
+
     $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
-    $ p2 = construct Person(age = 18)          var p2 = new Person(undefined, 18)
+    $ p2 = construct Person(age=18)            var p2 = new Person(undefined, 18)
 
 A Blueprint consists of 3 parts:
 
@@ -151,12 +154,15 @@ A Blueprint consists of 3 parts:
        * Specify Blueprint properties.
        * The `#` operator can be used to specify a default value.
             `haircolor = hairColor # "black"`
+       * These properties are private
 2. `does`
        * Specify Blueprint methods (functions).
        * Methods can be defined from parameters
             `do_exercise = exercise # running()`
 3. `syn` `:` `<branch_name>`
        * Allows for flexible and organized creation of branches from the main object
+       * Access these properties as `Object.<branch_name>.<property>` e.g. `Person.get.name`
+       * Synthesized branches cannot be nested, but you may have as many as you like. `set` and `get` are common branches to include.
 
 Here is an example of a blueprint of a Person.  
 
