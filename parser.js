@@ -444,9 +444,10 @@ function parseOnlyIfStatement() {
   match(['if','('])
   var condition = parseExpression()
   match(')')
+  var defaultAct = null
   if (at('else')) {
     match()
-    var defaultAct = parseBlock()
+    defaultAct = parseBlock()
   }
   var conditional = new Conditional(condition, action)
   return new OnlyIfStatement(conditional, defaultAct)

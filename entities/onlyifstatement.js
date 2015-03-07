@@ -5,7 +5,7 @@ function OnlyIfStatement(conditional, defaultAct) {
 
 OnlyIfStatement.prototype.toString = function () {
   var string = '(Only ' + this.conditional.onlyString()
-  if (defaultAct) {
+  if (this.defaultAct) {
     string = string.concat('else ' + this.defaultAct.toString())
   }
   return string + ')'
