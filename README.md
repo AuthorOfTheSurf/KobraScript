@@ -32,23 +32,23 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
         for ($ i = 0; i < x.length; i++):                       for (var i = 0; i < x.length; i++) {
-            total = total + x[i]                                    total = total + x[i]
+            total = total + x[i]                                    total = total + x[i];
         end                                                     }
-        say total                                               console.log(total)
-        return total / x.length                                 return total / x.length
+        say total                                               console.log(total);
+        return total / x.length                                 return total / x.length;
     end                                                     }
 
     $ getSoup = fn (): return Res.soupOfTheDay() ..,        var getSoup = function () {return Res.soupOfTheDay()},
       getDrink = fn (): return Res.specdrinks ..,               getDrink = function () {return Res.spacdrinks},
       placeOrder = fn (item, quantity):                         placeOrder = function (item, quantity) {
-          Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity)
-          return true                                               return true
+          Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity);
+          return true                                               return true;
       end                                                       };
 
 A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression -- return `null` if you have no value to return.
 
     proc print_intake (y):                                  function printIntake (y) {
-        say average_intake(y)                                   console.log(averageIntake(y))
+        say average_intake(y)                                   console.log(averageIntake(y));
     end                                                     }
 
 Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`.
@@ -68,7 +68,7 @@ Blocks in KobraScript are beautiful. Start a multiline block with `:` and termin
 Fearlessly create a single-statement block by pointing `->` to it. Nice.
 
     while (i--):                                            while (i--) {
-        say "Countdown ... " + i                                console.log("Countdown ... " + i)
+        say "Countdown ... " + i                                console.log("Countdown ... " + i);
     end                                                     }
 
     fn numResponse (x):                                     function numResponse (x) {
@@ -94,12 +94,12 @@ In KobraScript the `if` statement is written with a preference to `..` between c
 Bite first, ask for booleans later. Kobrascript allows a lightning-quick, conditional alternative to the garden-variety `if` statement.
 
     only:                                                   if (feelingLucky) {
-      rollDice() .. if (feelingLucky)                           rollDice()
+      rollDice() .. if (feelingLucky)                           rollDice();
                                                             }
     only -> abandonShip() if (sinking)                      if (sinking) {
-    else -> justKeepSwiming()                                 abandonShip()
+    else -> justKeepSwiming()                                 abandonShip();
                                                             } else {
-                                                              justKeepSwimming()
+                                                              justKeepSwimming();
                                                             }
 
 
@@ -134,12 +134,12 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         gears: 10,                                                  gears: 10,
         speed: 12.7,                                                speed: 12.7,
         move: proc ():                                              move: function () {
-            Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed)
+            Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed);
         ..,                                                         },
         upgrade_speed: fn ():                                       upgradeSpeed: function () {
-            return this.speed = this.speed * 1.1                        return this.speed = this.speed * 1.1
+            return this.speed = this.speed * 1.1                        return this.speed = this.speed * 1.1;
         ..,                                                         },
-        get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame}
+        get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame;}
     }                                                       }
 
 #### Blueprints [Not fully functional]
@@ -150,8 +150,8 @@ To utilize a blueprint in KobraScript, you "construct" the blueprint in a variab
 - Dynamic:  `construct Person()` or `construct Person("Joe")`
 
 
-    $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18)
-    $ p2 = construct Person(age=18)            var p2 = new Person(undefined, 18)
+    $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18);
+    $ p2 = construct Person(age=18)            var p2 = new Person(undefined, 18);
 
 A Blueprint consists of 3 parts:
 
