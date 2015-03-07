@@ -2,7 +2,7 @@ var util = require('util')
 var HashMap = require('hashmap').HashMap
 
 module.exports = function (program) {
-  gen(program)  
+  gen(program)
 }
 
 var indentPadding = 4
@@ -119,9 +119,13 @@ var generator = {
   },
 
   'AnonRunFn': function (ent) {
-    emit('(function () {')
+    var arglist = []
+    ent.args.forEach(function(arg) {
+      arglist.push(gen(arg))
+    })
+    emit(util.format('(function (%s) {', arglist.join(', ')))
     gen(ent.body)
-    emit('}());')
+    emit(util.format("}(%s));", arglist.join(', ')))
   },
 
   'ConditionalStatement': function (ent) {
@@ -167,7 +171,7 @@ var generator = {
   },
 
   'ForStatement': function (ent) {
-    var assignments = (ent.assignments[0].constructor.name === 'Declaration') ? 'var ' : '' 
+    var assignments = (ent.assignments[0].constructor.name === 'Declaration') ? 'var ' : ''
     for (var i = 0; i < ent.assignments.length; i++) {
       if (!i) {
         /* If Declaration, makeIntoVariable(ent) to add it to the name map */
@@ -312,5 +316,5 @@ var generator = {
   'NullLiteral': function(ent) {
     return ent.toString()
   }
-  
+
 }
