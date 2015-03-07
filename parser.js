@@ -75,7 +75,7 @@ function parseBlock() {
   } else {
     match(':')
     statements = parseStatements()
-    if (at(['end','..'])) { 
+    if (at(['end','..'])) {
       match()
     } else {
       error('expected end or ..')
@@ -111,9 +111,9 @@ function parseBlueprint(filename) {
       does.push(parsePropertyStatement())
     }
   }
-  
+
   while(at('@')) synergize()
-  
+
   match('defcc')
 
   function synergize () {
@@ -267,9 +267,18 @@ function parseFnDeclaration() {
 
 function parseAnonRunFn() {
   match('anon')
-  var params = parseParams()
+  var args = []
+  if (at('(')) {
+    match()
+    args.push(parseExpression())
+    while (at(',')) {
+      match()
+      args.push(parseExpression())
+    }
+    match(')')
+  }
   var body = parseBlock()
-  return new AnonRunFn(params, body)
+  return new AnonRunFn(args, body)
 }
 
 function parseParams() {
@@ -361,7 +370,7 @@ function parseWhileStatement() {
   match(')')
   var body = parseBlock()
   return new WhileStatement(condition, body)
-}  
+}
 
 function parseForStatement() {
   match('for')
@@ -627,7 +636,7 @@ function at(symbol) {
     return symbol.some(function (s) {return at(s)})
   } else {
     return symbol === tokens[0].kind
-  }  
+  }
 }
 
 function next(symbol) {
@@ -637,7 +646,7 @@ function next(symbol) {
     return symbol.some(function (s) {return next(s)})
   } else {
     return symbol === tokens[1].kind
-  }  
+  }
 }
 
 function match(symbol) {
