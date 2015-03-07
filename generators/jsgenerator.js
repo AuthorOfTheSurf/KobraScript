@@ -138,14 +138,19 @@ var generator = {
       }
     }
     if (ent.defaultAct) {
-      emit(conditionalPrint('else', ent.defaultAct))
+      emit(conditionalPrint('else', null))
       gen(ent.defaultAct)
       emit('}')
     }
 
     function conditionalPrint(kind, c) {
       var result = kind + ' '
-      result = result.concat('(' + gen(c.condition) + ') {')
+      if (c != null) {
+        result = result.concat('(' + gen(c.condition) + ') {')
+      } else {
+        result = result.concat('{')
+      }
+
       return result
     }
   },
