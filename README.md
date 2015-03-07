@@ -53,10 +53,15 @@ A function that does not return anything in KobraScript is called a procedure, w
 
 Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`.
 
-    anon ():                                                (function() {
+    anon:                                                   (function() {
       $ x = 10                                                  var x = 10;
       say x                                                     console.log(x);
-    end                                                     }())
+    end                                                     }());
+    
+    $ x = [1, 2, 3]                                         var x = [1, 2, 3];
+    anon(x):                                                (function(x) {
+      print "I am " + x[1] + " good"                            console.log("I am " + x[1] + " good");
+    end                                                     }(x));
 
 #### Blocks
 Blocks in KobraScript are beautiful. Start a multiline block with `:` and terminate it with the clear `end`, or the elegantly-flowing `..`  
