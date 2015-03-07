@@ -1,7 +1,9 @@
-anon ():
+anon:
   $ x = 10
 end
 
-anon ():
-  $ y = 20
+$ a = 2
+
+anon (a):
+  $ y = a
 end
