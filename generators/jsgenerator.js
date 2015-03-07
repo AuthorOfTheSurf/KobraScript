@@ -247,8 +247,8 @@ var generator = {
       return util.format('(typeof %s === typeof %s)', makeIntoVariable(ent.left.referent), makeIntoVariable(ent.right.referent))
     } else if (ent.op.lexeme === ':=:') {
       // Way we do it: http://stackoverflow.com/questions/16201656/how-to-swap-two-variables-in-javascript
-      var a = makeIntoVariable(ent.left.referent)
-      var b = makeIntoVariable(ent.right.referent)
+      var a = gen(ent.left)
+      var b = gen(ent.right)
       return util.format('%s = [%s, %s = %s][0]', b, a, a, b)
     } else {
       return util.format('(%s %s %s)', gen(ent.left), makeOp(ent.op.lexeme), gen(ent.right))
