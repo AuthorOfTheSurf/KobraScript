@@ -1,13 +1,12 @@
 <p align="center">
-  <img src="ks-logo.jpg" alt="KobraScript Logo"/>
+  <img src="https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg" alt="KobraScript Logo"/>
 </p>
-==============
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
 ## Install
-You can install KobraScript into your global environment so that you can execute KobraScript programs from anywhere. To do so, clone this repo, `cd` into the directory and run this command:
+You can install KobraScript into your global environment so that you can execute KobraScript programs from anywhere. To do so, run this command:
   
-    npm install . -g
+    npm install -g kobrascript
   
 You can execute KobraScript programs like so:
 
