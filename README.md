@@ -4,6 +4,20 @@
 ==============
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
+## Install
+You can install KobraScript into your global environment so that you can execute KobraScript programs from anywhere. To do so, clone this repo, `cd` into the directory and run this command:
+  
+    npm install . -g
+  
+You can execute KobraScript programs like so:
+
+    kobra <name_of_program.ks>
+
+To see a list of commands, just type:
+
+    kobra
+  
+
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
 
