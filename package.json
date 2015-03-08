@@ -1,11 +1,15 @@
 {
-  "name": "kobrascript-compiler",
-  "version": "0.0.1",
-  "description": "a compiler for the KobraScript language",
+  "name": "KobraScript",
+  "version": "1.8",
+  "description": "A compiler for the KobraScript language",
   "dependencies": {
     "byline": "latest",
     "hashmap": "latest",
     "minimist": "latest"
+  },
+  "main": "./kobrac.js",
+  "bin": {
+    "kobra": "./kobrac.js"
   },
   "devDependencies": {
     "mocha": "latest",
