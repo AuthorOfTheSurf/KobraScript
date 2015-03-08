@@ -1,6 +1,6 @@
 {
   "name": "kobrascript",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A compiler for the KobraScript language",
   "dependencies": {
     "byline": "latest",
