@@ -14,41 +14,48 @@ var fileExtension = path.extname(argv._[0])
 var ksbname       = path.basename(argv._[0], '.ksb')
 var currentDir    = path.dirname(argv._[0])
 
-var validExtension = fileExtension === '.ks' || fileExtension === '.ksb'
+if ([".ks",".ksb"].indexOf(fileExtension) < 0) {
+  error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks or .ksb', { path: fileExtension })
+}
 
 //  Begin execution.
 if (argv._.length === 0) {
-  console.log("This is KobraScript compiler!\n$ kobra [-t] [-a] [-o] [-i] filename\n-t scans, prints the tokens, then exits\n-a scans, parses, prints the abstract syntax tree, then exits\n-o does optimizations\n-i goes up to semantic analysis, prints the semantic graph, then exits");
+  console.log(
+    "This is KobraScript compiler!\n" +
+    "$ kobra [-t] [-a] [-o] [-i] filename\n" +
+    "-t scans, prints the tokens, then exits\n" +
+    "-a scans, parses, prints the abstract syntax tree, then exits\n" +
+    "-o does optimizations\n" +
+    "-i goes up to semantic analysis, prints the semantic graph, then exits");
 } else {
-  if (validExtension) {
-    scan(argv._[0], function (tokens) {
-      if (error.count > 0) { return }
-      if (argv.t) {
-        tokenIndex = 1
-        tokens.forEach(function (t) {
-            console.log(tokenIndex + " - " + JSON.stringify(t))
-            tokenIndex++
-        })
-        return
-      }
-      var program = parse(tokens, ksbname, currentDir)
-      if (error.count > 0) { return }
-      if (argv.a) {
-        console.log(program.toString())
-        return
-      }
-      if (argv.o) {
-        program = program.optimize()
-      }
-      program.analyze()
-      if (error.count > 0) { return }
-      if (argv.i) {
-        program.showSemanticGraph()
-        return
-      }
-      generate(program)
-    })
-  } else {
-    error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks or .ksb', { path: fileExtension })
-  }
+  scan(argv._[0], function (tokens) {
+    if (error.count > 0) { return }
+    if (argv.t) {
+      logTokens(tokens)
+      return
+    }
+    var program = parse(tokens, ksbname, currentDir)
+    if (error.count > 0) { return }
+    if (argv.a) {
+      console.log(program.toString())
+      return
+    }
+    if (argv.o) {
+      program = program.optimize()
+    }
+    program.analyze()
+    if (error.count > 0) { return }
+    if (argv.i) {
+      program.showSemanticGraph()
+      return
+    }
+    generate(program)
+  })
+}
+
+function logTokens(tokens) {
+  var tokenIndex = 0
+  tokens.forEach(function (t) {
+      console.log(++tokenIndex + " - " + JSON.stringify(t))
+  })
 }
