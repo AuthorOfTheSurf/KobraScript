@@ -67,24 +67,7 @@ function scan(line, linenumber, tokens) {
         if (pos >= line.length) break
 
         // Single-line comments
-        if (line[pos] === '>' && line[pos+1] === '>') break
-        
-        // Multi-line comments
-        if (line[pos] === '>' && line[pos+1] === '|' && !multiLine) {
-            multiLine = true
-            break
-        }
-        if (line[pos] === '|' && line[pos+1] === '<' && multiLine) {
-            multiLine = false
-            break
-        } else if (line[line.length-2] === '|' && line[line.length-1] === '<' && multiLine) {
-            multiLine = false
-            break
-        }
-        if (multiLine) {
-            break
-        }
-
+        if (line[pos] === '/' && line[pos+1] === '/') break
 
         // Three-character tokens
         if (threeCharTokens.test(line.substring(pos, pos+3))) {

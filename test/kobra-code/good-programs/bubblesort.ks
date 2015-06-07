@@ -1,5 +1,5 @@
->> KS 1.8 syntax
->> node kobrac.js bubblesort.ks | node
+// to run:
+// node kobrac.js bubblesort.ks | node
 
 fn bubbleSort(a):
   $ found = true
