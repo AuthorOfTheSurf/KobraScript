@@ -138,14 +138,24 @@ function parseStatements() {
   var statements = []
   do {
     statements.push(parseStatement())
-  } while (at(['$',',','ID','for','while','if','only','fn','proc','anon','++','--','return','say','loge','break','continue']))
+  } while (shouldParseStatement())
   return statements
 }
 
+function shouldParseStatement() {
+  var statementStartingToken = [
+    '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'proc',
+    'anon', '++', '--', 'return', 'say', 'loge', 'break', 'continue'
+  ]
+  if (!continuing && at('..')) {
+    return false
+  } else {
+    return at(statementStartingToken)
+  }
+}
+
 function parseStatement() {
-  if (at('$')) {
-    return parseDeclaration()
-  } else if (at(',') && continuing) {
+  if (at(['$',',','..'])) {
     return parseDeclaration()
   } else if (at(['fn','proc'])) {
     return parseFnDeclaration()
@@ -173,7 +183,10 @@ function parseStatement() {
 }
 
 function parseDeclaration() {
-  !continuing ? match('$') : match(',')
+  continuing = false
+  if (at(['$',',','..'])) {
+    match()
+  }
   var name = parseBasicVar()
   if (at('=')) {
     match()
@@ -185,11 +198,10 @@ function parseDeclaration() {
     } else {
       initializer = parseExpression()
     }
-
-    continuing = at(',')
+    continuing = at([',','..'])
     return new Declaration(name, initializer)
 
-  } else if (at(',')) {
+  } else if (at([',','..'])) {
     continuing = true
     return new Declaration(name, new UndefinedLiteral())
   } else {
@@ -378,7 +390,7 @@ function parseForStatement() {
   var assignments = []
   if (at('$')) {
     assignments.push(parseDeclaration())
-    while (at(',')) {
+    while (at([',','..'])) {
       continuing = true
       assignments.push(parseDeclaration())
     }
@@ -424,25 +436,28 @@ function parseContinueStatement() {
   return new ContinueStatement()
 }
 
+function parseConditionalClause() {
+  match('(')
+  var condition = parseExpression()
+  match(')')
+  var action = parseBlock()
+  return new Conditional(condition, action)
+}
+
 function parseConditionalStatement() {
-  var conditionals = [],
-      defaultAct
+  var conditionals = []
+  var defaultAct
   match('if')
-  conditionals.push(parseConditional())
+  conditionals.push(parseConditionalClause())
+
   while (at('else') && next('if')) {
     match(['else','if'])
-    conditionals.push(parseConditional())
+    conditionals.push(parseConditionalClause())
   }
+
   if (at('else')) {
     match()
     defaultAct = parseBlock()
-  }
-  function parseConditional() {
-    match('(')
-    var condition = parseExpression()
-    match(')')
-    var action = parseBlock()
-    return new Conditional(condition, action)
   }
   return new ConditionalStatement(conditionals, defaultAct)
 }

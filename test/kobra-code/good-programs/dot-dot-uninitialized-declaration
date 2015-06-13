@@ -1,0 +1,6 @@
+$  a
+.. b
+.. c
+.. d = anon():
+  return [a, b, c]
+end
