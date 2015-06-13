@@ -216,7 +216,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.8
+    * KobraScript Syntax v.1.9.1
     * 
     */
 
@@ -244,7 +244,7 @@ Arrays in KobraScript follow normal scripting language convention.
                 |    'return'  EXP
                 |    EXP
 
-        VARDEC  ::=  '$'  ID  '='  EXP  (','  ID  '='  EXP)*
+        VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
         FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
         FNTYPE  ::=  'proc' | 'fn'
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
@@ -253,14 +253,15 @@ Arrays in KobraScript follow normal scripting language convention.
         EXP0    ::=  EXP1 (('||' | '#') EXP1)*
         EXP1    ::=  EXP2 ('&&' EXP2)*
         EXP2    ::=  EXP3 ('==' | '~=' | '!='  EXP3)?
-        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>'  EXP4)?
+        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>')  EXP4)?
         EXP4    ::=  EXP5 ([+-] EXP5)*
         EXP5    ::=  EXP6 ([%*/] EXP6)*
         EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
         EXP7    ::=  ('~!' | '~?')?  EXP8
         EXP8    ::=  ('!' | '++' | '--')?  EXP9
         EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
-        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT | ID | CONST | FNVAL | ARRAY | OBJECT | '(' EXP ')'
+        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
+                |    ID | CONST | FNVAL | ARRAY | OBJECT | '(' EXP ')'
 
         CONST   ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)?  ')'
         FNVAL   ::=  FNTYPE  PARAMS  BLOCK
@@ -283,5 +284,4 @@ Arrays in KobraScript follow normal scripting language convention.
         UNDEFLIT::=  'undefined'
         NULLLIT ::=  'null'
         ID      ::=  [_a-zA-Z]\w*
-        COMMENT ::=  '>>'  TEXT  '\n'
-                |    '>|'  TEXT  '|<'
+        COMMENT ::=  '//'  TEXT  '\n'
