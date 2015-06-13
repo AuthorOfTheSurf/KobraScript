@@ -20,20 +20,19 @@ To see a list of commands, just type:
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
 
-    say "Kobra!"                                           console.log("Kobra!");
+    say "Kobra!"                                            console.log("Kobra!");
 
 #### Variable Declarations
-In KobraScript, variable declarations are simplified to one character: `$`  
-Also: no semicolons, *ever*.
+In KobraScript, variable declarations are simplified to one character: `$`. Declare multiple variables at the same time with `,` or the slick `..` "dot-dot". KobraScript knows no semi-colons.
 
     $ name = "Samson"                                       var name = "Samson";
 
     $ likesMusic = true,                                    var likesMusic = true,
       likesJazz                                                 likesJazz = undefined;
 
-    $ isRed = true,                                         var isRed = true,
-      isFood = false,                                           isFood = false,
-      isMine = true                                             isMine = true;
+    $ isRed = true                                          var isRed = true,
+    .. isFood = false                                           isFood = false,
+    .. isMine = true                                            isMine = true;
 
 Variables with uninitialized values are set to undefined.
 
@@ -51,9 +50,9 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
         return total / x.length                                 return total / x.length;
     end                                                     }
 
-    $ getSoup = fn (): return Res.soupOfTheDay() ..,        var getSoup = function () {return Res.soupOfTheDay()},
-      getDrink = fn (): return Res.specdrinks ..,               getDrink = function () {return Res.spacdrinks},
-      placeOrder = fn (item, quantity):                         placeOrder = function (item, quantity) {
+    $ getSoup = fn (): return Res.soupOfTheDay() ..         var getSoup = function () {return Res.soupOfTheDay()},
+    .. getDrink = fn (): return Res.specdrinks ..               getDrink = function () {return Res.spacdrinks},
+    .. placeOrder = fn (item, quantity):                        placeOrder = function (item, quantity) {
           Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity);
           return true                                               return true;
       end                                                       };
@@ -61,10 +60,10 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
 A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression -- return `null` if you have no value to return.
 
     proc print_intake (y):                                  function printIntake (y) {
-        say average_intake(y)                                   console.log(averageIntake(y));
+      say average_intake(y)                                   console.log(averageIntake(y));
     end                                                     }
 
-Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`.
+Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`. One never has to worry about the oddly-placed call and whether it's there or not. If you find you do not need to self-call, just switch back to `fn`.
 
     anon:                                                   (function() {
       $ x = 10                                                  var x = 10;
@@ -109,8 +108,9 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
     only:                                                   if (feelingLucky) {
       rollDice() .. if (feelingLucky)                           rollDice();
                                                             }
-    only -> abandonShip() if (sinking)                      if (sinking) {
-    else -> justKeepSwiming()                                 abandonShip();
+    only:
+      abandonShip() .. if (sinking) else:                   if (sinking) {
+      justKeepSwiming() ..                                    abandonShip();
                                                             } else {
                                                               justKeepSwimming();
                                                             }
@@ -122,13 +122,13 @@ KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` t
     $ a = 2,                                                var a = 2,
       b = 3                                                     b = 3;
     a :=: b                                                 var swap = a; a = b; b = swap; // Awful.
-    say a   >> 3                                            console.log(a);  // 3
-    say b   >> 2                                            console.log(b);  // 2
+    say a   // 3                                            console.log(a);  // 3
+    say b   // 2                                            console.log(b);  // 2
 
 #### `for` and `while` loops
 For and while loops look beautiful as expected; keyword, condition, block, nice.
 
-    $ a = 0 >> A test variable for loops.                   var a = 0; // A test variable for loops.
+    $ a = 0 // A test variable for loops.                   var a = 0; // A test variable for loops.
 
     for ($ i = 0; i < 4; i++):                              for (var i = 0; i < 4; i++) {
         a++                                                     a++;
