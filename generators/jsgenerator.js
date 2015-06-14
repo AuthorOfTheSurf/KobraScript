@@ -34,12 +34,14 @@ var makeIntoVariable = (function () {
   // No need to synchronize because Node is single-threaded
   var lastId = 0;
   var map = new HashMap()
-  return function (v) {
-    /* v: Declaration entity */
-    if (!map.has(v)) {
-      map.set(v, ++lastId)
+
+  return function (declaration) {
+    var varname = declaration.name
+
+    if (!map.has(varname)) {
+      map.set(varname, ++lastId)
     }
-    return '_v' + map.get(v)
+    return '_v' + map.get(varname)
   }
 }())
 
@@ -91,7 +93,8 @@ var generator = {
     indentLevel++
     ent.statements.forEach(function (statement) {
       var kind = statement.constructor.name
-      if (kind === 'UnaryExpression' || kind === 'PostUnaryExpression' || kind === 'BinaryExpression' || kind === 'BasicVar' || kind === 'IndexVar' || kind === 'DottedVar' || kind === 'Call') {
+      if (  kind === 'UnaryExpression' || kind === 'PostUnaryExpression' || kind === 'BinaryExpression'
+         || kind === 'BasicVar' || kind === 'IndexVar' || kind === 'DottedVar' || kind === 'Call') {
         genExp(statement)
       } else {
         gen(statement)
@@ -260,7 +263,11 @@ var generator = {
   },
 
   'BasicVar': function (ent) {
-    return makeIntoVariable(ent.referent)
+    if (ent.referent.constructor.name === 'EnvironmentEntity') {
+      return ent.referent.name
+    } else {
+      return makeIntoVariable(ent.referent)
+    }
   },
 
   'IndexVar': function (ent) {

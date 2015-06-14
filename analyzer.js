@@ -19,6 +19,7 @@ AnalysisContext.prototype.addVariable = function (name, entity) {
 
 AnalysisContext.prototype.lookupVariable = function (name) {
   var variable = this.symbolTable[name]
+
   if (variable) {
     return variable
   } else if (!this.parent) {
