@@ -13,4 +13,10 @@ UnaryExpression.prototype.analyze = function (context) {
   this.operand.analyze(context)
 }
 
+UnaryExpression.prototype.generateJavaScript = function (state) {
+  var op = this.op.lexeme
+  var operand = this.operand.generateJavaScript(state)
+  return op + operand
+}
+
 module.exports = UnaryExpression

@@ -17,4 +17,11 @@ Params.prototype.analyze = function (context) {
   })
 }
 
+Params.prototype.generateJavaScript = function (state) {
+  var js = this.params.map(function (p) {
+    return p.generateJavaScript(state)
+  })
+  return js.join(', ')
+}
+
 module.exports = Params

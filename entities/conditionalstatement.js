@@ -25,4 +25,22 @@ ConditionalStatement.prototype.analyze = function (context) {
   }
 }
 
+ConditionalStatement.prototype.generateJavaScript = function (state) {
+  var js = []
+  
+  for (var i = 0; i < this.conditionals.length; i++) {
+    var conditional = this.conditionals[i]
+    var condition   = conditional.condition.generateJavaScript(state)
+    var body        = conditional.body.generateJavaScript(state)
+
+    if (i === 0) {
+      js.push('if')
+    } else {
+      js.push('else','if')
+    }
+    js.push('(', condition, ')', body)
+  }
+  return js.join(' ')
+}
+
 module.exports = ConditionalStatement

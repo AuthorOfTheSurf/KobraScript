@@ -20,4 +20,15 @@ Fn.prototype.analyze = function (context) {
   this.body.analyze(localContext)
 }
 
+Fn.prototype.generateJavaScript = function (state) {
+  var js = [
+    'function',
+    '(',
+    this.params.generateJavaScript(state),
+    ')',
+    this.body.generateJavaScript(state)
+  ]
+  return js.join(' ')
+}
+
 module.exports = Fn

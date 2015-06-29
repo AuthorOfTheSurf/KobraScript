@@ -14,4 +14,8 @@ ContinueStatement.prototype.analyze = function (context) {
   }
 }
 
+ContinueStatement.prototype.generateJavaScript = function (state) {
+  return 'continue'
+}
+
 module.exports = ContinueStatement

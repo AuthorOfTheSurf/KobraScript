@@ -12,4 +12,8 @@ StringLiteral.prototype.analyze = function (context) {
   this.type = Type.STRLIT
 }
 
+StringLiteral.prototype.generateJavaScript = function (state) {
+  return this.toString()
+}
+
 module.exports = StringLiteral

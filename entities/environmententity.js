@@ -16,4 +16,10 @@ EnvironmentEntity.prototype.analyze = function (context) {
   // for a value that will exist in the runtime environment
 }
 
+EnvironmentEntity.prototype.generateJavaScript = function (state) {
+  // Allow the environment variable to pass through
+  // i.e. it is not converted via state.variableMaker
+  return this.name
+}
+
 module.exports = EnvironmentEntity

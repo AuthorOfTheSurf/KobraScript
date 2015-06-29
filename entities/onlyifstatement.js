@@ -18,4 +18,16 @@ OnlyIfStatement.prototype.analyze = function (context) {
   }
 }
 
+OnlyIfStatement.prototype.generateJavaScript = function (state) {
+  var js = [
+    this.conditional.generateJavaScript(state)
+  ]
+
+  if (this.defaultAct) {
+    js.push('else')
+    js.push(this.defaultAct.generateJavaScript(state))
+  }
+  return js.join(' ')
+}
+
 module.exports = OnlyIfStatement

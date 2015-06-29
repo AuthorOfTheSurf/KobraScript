@@ -14,4 +14,8 @@ BreakStatement.prototype.analyze = function (context) {
   }
 }
 
+BreakStatement.prototype.generateJavaScript = function (state) {
+  return 'break'
+}
+
 module.exports = BreakStatement

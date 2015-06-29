@@ -7,7 +7,6 @@ var argv          = parseArgs(process.argv.slice(2), opts={
 
 var scan          = require('./scanner')
 var parse         = require('./parser')
-var generate      = require('./generator')('js')
 var error         = require('./error')
 
 var fileExtension = path.extname(argv._[0])
@@ -53,7 +52,8 @@ if (argv._.length === 0) {
       program.showSemanticGraph()
       return
     }
-    generate(program)
+    var out = program.generateJavaScript()
+    console.log(out)
   })
 }
 

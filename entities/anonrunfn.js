@@ -16,4 +16,12 @@ AnonRunFn.prototype.analyze = function (context) {
   this.body.analyze(localContext)
 }
 
+AnonRunFn.prototype.generateJavaScript = function (state) {
+  var js = []
+  js.push('(function ()')
+  js.push(this.body.generateJavaScript(state))
+  js.push('())')
+  return js.join(' ')
+}
+
 module.exports = AnonRunFn

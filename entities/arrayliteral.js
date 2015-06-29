@@ -15,4 +15,14 @@ ArrayLiteral.prototype.analyze = function (context) {
   })
 }
 
+ArrayLiteral.prototype.generateJavaScript = function (state) {
+  var js = []
+  js.push(this.elements.map(function (element) {
+    return element.generateJavaScript(state)
+  }).join(', '))
+  js.unshift('[')
+  js.push(']')
+  return js.join('')
+}
+
 module.exports = ArrayLiteral
