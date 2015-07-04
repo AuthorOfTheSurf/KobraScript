@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg" alt="KobraScript Logo"/>
-</p>
+![KobraScript Logo](https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg)
+![Travis.CI build status](https://travis-ci.org/AuthorOfTheSurf/KobraScript.svg?branch=development)
+
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
 ## Install
