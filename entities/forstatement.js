@@ -40,13 +40,19 @@ ForStatement.prototype.generateJavaScript = function (state) {
     js.push(this.assignments[i].generateJavaScript(state))
   }
 
-  js.push(
-    ';',
+  var after = this.after.map(function (afterStmt) {
+    return afterStmt.generateJavaScript(state)
+  })
+
+  js.push(';',
     this.condition.generateJavaScript(state),
-    ';',
-    this.after.generateJavaScript(state),
-    ')',
-    this.body.generateJavaScript(state))
+    ';')
+  
+  if (after) {
+    js.push(after.join(', '))
+  }
+
+  js.push(')', this.body.generateJavaScript(state))
 
   state.continuingDeclaration = false
   return js.join(' ')
