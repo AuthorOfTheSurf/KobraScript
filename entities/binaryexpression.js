@@ -41,7 +41,7 @@ BinaryExpression.prototype.generateJavaScript = function (state) {
     // :^)
     return util.format('%s = [%s, %s = %s][0]', right, left, left, right)
   } else {
-    return util.format('(%s %s %s)', left, makeOp(lexeme), right)
+    return util.format('%s %s %s', left, makeOp(lexeme), right)
   }
 }
 
