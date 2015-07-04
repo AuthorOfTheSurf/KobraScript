@@ -168,7 +168,7 @@ describe('The scanner', function () {
 
   it('reads escape characters properly', function (done) {
     var x = 0
-    scan('test/kobra-code/good-programs/escapecharacters.ks', function (tokens) {
+    scan('test/kobra-code/good-programs/escape-characters.ks', function (tokens) {
       i(tokens[x++]).should.equal(i({kind:'$',lexeme:'$',line:1,col:1}))
       i(tokens[x++]).should.equal(i({kind:'ID',lexeme:'a',line:1,col:3}))
       i(tokens[x++]).should.equal(i({kind:'=',lexeme:'=',line:1,col:5}))
