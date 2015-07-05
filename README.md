@@ -89,7 +89,14 @@ Fearlessly create a single-statement block by pointing `->` to it. Nice.
         else -> say "that's somthin' else!"                     else console.log("that's somthin' else!");
     ..                                                      }
 
-    proc on (socket) -> this.active[socket] = true          function on (socket) this.active[socket] = true;
+    for ($ i = 0; i < nums["length"]; i++):                 for (var i = 0; i < nums.length; i++) {
+      $ p = nums[i]                                             var p = nums[i];
+      only -> primes.push(p) if (p)                             if (p) { primes.push(p) }
+    end                                                     }
+
+    if (socket)                                             if (socket) {
+      -> this.active[socket] = i++                              this.active[socket] = i++;
+                                                            }
 
 #### Conditional Statement
 In KobraScript the `if` statement is written with a preference to `..` between conditional blocks. An `end` after the final block signals the conclusion of the statement. Kobra is cold as ice.
