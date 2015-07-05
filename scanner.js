@@ -27,8 +27,6 @@ module.exports = function (filename, callback) {
   })
 }
 
-var multiLine = false
-
 function scan(line, linenumber, tokens) {
   if (!line) return
 
