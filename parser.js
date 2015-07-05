@@ -57,12 +57,14 @@ module.exports = function (scanner_output, filename, dir) {
 }
 
 function parseProgram() {
-  var initialBlock = new Block(parseStatements())
-  if (initialBlock.statements[0] !== undefined) {
-    return new Program(initialBlock)
-  } else {
-    error('expected statement but found EOF')
+  if (at('EOF')) {
+    error('KobraScript programs may not be empty')
   }
+
+  var initialBlock = new Block(parseStatements())
+  match('EOF')
+
+  return new Program(initialBlock)
 }
 
 function parseBlock() {
