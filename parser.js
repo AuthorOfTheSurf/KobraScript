@@ -10,7 +10,6 @@ var scanner              = require('./scanner'),
     error                = require('./error')
 
 var Program              = require('./entities/program'),
-    Blueprint            = require('./entities/blueprint'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
     Fn                   = require('./entities/function'),
@@ -25,8 +24,7 @@ var Program              = require('./entities/program'),
     SayStatement         = require('./entities/saystatement'),
     ReturnStatement      = require('./entities/returnstatement'),
     BreakStatement       = require('./entities/breakstatement'),
-    ContinueStatement    = require('./entities/continuestatement'),
-    Construction         = require('./entities/construction'),
+    ContinueStatement    = require('./entities/continuestatement')
     Params               = require('./entities/params'),
     UnaryExpression      = require('./entities/unaryexpression'),
     PostUnaryExpression  = require('./entities/postunaryexpression'),
@@ -53,18 +51,19 @@ var continuing = false
 module.exports = function (scanner_output, filename, dir) {
   dirname = dir
   tokens = scanner_output
-  var program = at('blueprint') ? parseBlueprint(filename) : parseProgram()
-  match('EOF')
+  var program = parseProgram()
   return program
 }
 
 function parseProgram() {
-  var initialBlock = new Block(parseStatements())
-  if (initialBlock.statements[0] !== undefined) {
-    return new Program(initialBlock)
-  } else {
-    error('expected statement but found EOF')
+  if (at('EOF')) {
+    error('KobraScript programs may not be empty')
   }
+
+  var initialBlock = new Block(parseStatements())
+  match('EOF')
+
+  return new Program(initialBlock)
 }
 
 function parseBlock() {
@@ -82,56 +81,6 @@ function parseBlock() {
     }
   }
   return new Block(statements)
-}
-
-function parseBlueprint(filename) {
-  var has = [],
-      does = [],
-      syn = [];
-
-  match('blueprint')
-  var blueid = parseBasicVar()
-  var params = parseParams()
-  match(':')
-
-  match(['@','has'])
-  if (at('ID')) {
-    has.push(parsePropertyStatement())
-    while (at(',')) {
-      match()
-      has.push(parsePropertyStatement())
-    }
-  }
-
-  match(['@','does'])
-  if (at('ID')) {
-    does.push(parsePropertyStatement())
-    while (at(',')) {
-      match()
-      does.push(parsePropertyStatement())
-    }
-  }
-
-  while(at('@')) synergize()
-
-  match('defcc')
-
-  function synergize () {
-    match(['@','syn',':'])
-    var synthesis = {}
-        synthesis.branch = parseBasicVar()
-        synthesis.leaf = []
-    if (at('ID')) {
-      synthesis.leaf.push(parsePropertyStatement())
-      while (at(',')) {
-        match()
-        synthesis.leaf.push(parsePropertyStatement())
-      }
-    }
-    syn.push(synthesis)
-  }
-
-  return new Blueprint(blueid, params, has, does, syn, filename)
 }
 
 function parseStatements() {
@@ -193,7 +142,7 @@ function parseDeclaration() {
     var initializer
     if (at(['fn','proc'])) {
       initializer = parseFn()
-    } else if (at(['{','[','construct'])) {
+    } else if (at(['{','['])) {
       initializer = parseValue()
     } else {
       initializer = parseExpression()
@@ -218,7 +167,7 @@ function parsePropertyStatement() {
     return new Property(name, new UndefinedLiteral())
   } else if (at(['fn','proc'])) {
     initializer = parseFn()
-  } else if (at(['{','[','construct'])) {
+  } else if (at(['{','['])) {
     initializer = parseValue()
   } else {
     initializer = parseExpression()
@@ -253,8 +202,6 @@ function parseValue() {
     return new StringLiteral(match())
   } else if (at('ID')) {
     return parseExpression()
-  } else if (at('construct')) {
-    return parseConstruct()
   } else if (at(['fn','proc'])) {
     return parseFn()
   } else {
@@ -320,32 +267,6 @@ function parseArgs() {
   match(')')
   return args
 }
-
-function parseConstruct() {
-  match('construct')
-  var name = parseBasicVar()
-  var args = (function () {
-      match('(')
-      var args = [] //of values and assignment instructions
-      if (at('ID') && next('=') || at(['fn','proc'])) {
-        args.push(parseAssignmentStatement('='))
-      } else if (!at(')')) {
-        args.push(parseExpression())
-      }
-      while (at(',')) {
-        match()
-        if (at('ID') && next('=') || at(['fn','proc'])) {
-          args.push(parseAssignmentStatement('='))
-        } else if (!at(')')) {
-          args.push(parseExpression())
-        }
-      }
-      match(')')
-      return args
-    }())
-
-  return new Construction(name, args, dirname)
-  }
 
 function parseArrayLiteral() {
   var elements = []
@@ -624,8 +545,6 @@ function parseExpRoot() {
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseBasicVar()
-  } else if (at('construct')) {
-    return parseConstruct()
   } else if (at(['fn','proc','anon'])) {
     return parseFn()
   } else if (at('[')) {

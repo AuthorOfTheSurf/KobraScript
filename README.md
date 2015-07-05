@@ -89,7 +89,14 @@ Fearlessly create a single-statement block by pointing `->` to it. Nice.
         else -> say "that's somthin' else!"                     else console.log("that's somthin' else!");
     ..                                                      }
 
-    proc on (socket) -> this.active[socket] = true          function on (socket) this.active[socket] = true;
+    for ($ i = 0; i < nums["length"]; i++):                 for (var i = 0; i < nums.length; i++) {
+      $ p = nums[i]                                             var p = nums[i];
+      only -> primes.push(p) if (p)                             if (p) { primes.push(p) }
+    end                                                     }
+
+    if (socket)                                             if (socket) {
+      -> this.active[socket] = i++                              this.active[socket] = i++;
+                                                            }
 
 #### Conditional Statement
 In KobraScript the `if` statement is written with a preference to `..` between conditional blocks. An `end` after the final block signals the conclusion of the statement. Kobra is cold as ice.
@@ -114,7 +121,6 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
                                                             } else {
                                                               justKeepSwimming();
                                                             }
-
 
 #### Exchange Statement
 KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` the values of two variables.
@@ -155,58 +161,6 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame;}
     }                                                       }
 
-#### Blueprints [Not fully functional]
-Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expedite the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
-
-To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
-- Specific: `construct Person (hairColor="black")`
-- Dynamic:  `construct Person()` or `construct Person("Joe")`
-
-
-    $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18);
-    $ p2 = construct Person(age=18)            var p2 = new Person(undefined, 18);
-
-A Blueprint consists of 3 parts:
-
-1. `has`
-       * Specify Blueprint properties.
-       * The `#` operator can be used to specify a default value.
-            `haircolor = hairColor # "black"`
-       * These properties are private
-2. `does`
-       * Specify Blueprint methods (functions).
-       * Methods can be defined from parameters
-            `do_exercise = exercise # running()`
-3. `syn` `:` `<branch_name>`
-       * Allows for flexible and organized creation of branches from the main object
-       * Access these properties as `Object.<branch_name>.<property>` e.g. `Person.get.name`
-       * Synthesized branches cannot be nested, but you may have as many as you like. `set` and `get` are common branches to include.
-
-Here is an example of a blueprint of a Person.  
-
-    $ blueprint Person (name, age, hairColor, exercise)
-
-    @has
-        name: name,
-        age: age,
-        hairColor: hairColor # "black"
-
-    @does
-        do_exercise: exercise # running,
-        running: proc ():
-            say("26.2 miles")
-        end
-
-    @syn:get
-        name = fn (): return name..,
-        age = fn (): return age ..,
-        hairColor = fn (): return hairColor ..
-
-    @syn:set
-        newHairColor = proc (color): hairColor = color ..
-
-    defcc
-
 #### Arrays
 Arrays in KobraScript follow normal scripting language convention.
 
@@ -216,14 +170,13 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.9.1
+    * KobraScript Syntax v.1.9.8
     * 
     */
 
     ### Macrosyntax
 
         UNIT    ::=  PROGRAM
-                |    BLUPRNT
 
         PROGRAM ::=  STMT+  (as BLOCK)
 
@@ -269,12 +222,6 @@ Arrays in KobraScript follow normal scripting language convention.
         ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
         OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
         PROP    ::=  ID  ':'  EXP
-
-        BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-        BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
-        HASBLK  ::=  '@'  'has'  (PROP  (','  PROP)*)?
-        DOESBLK ::=  '@'  'does'  (PROP  (','  PROP)*)?
-        SYNCHLD ::=  '@'  'syn'  ':'  ID  (PROP  (','  PROP)*)?
 
 ### Microsyntax
 
