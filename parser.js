@@ -24,8 +24,7 @@ var Program              = require('./entities/program'),
     SayStatement         = require('./entities/saystatement'),
     ReturnStatement      = require('./entities/returnstatement'),
     BreakStatement       = require('./entities/breakstatement'),
-    ContinueStatement    = require('./entities/continuestatement'),
-    Construction         = require('./entities/construction'),
+    ContinueStatement    = require('./entities/continuestatement')
     Params               = require('./entities/params'),
     UnaryExpression      = require('./entities/unaryexpression'),
     PostUnaryExpression  = require('./entities/postunaryexpression'),
@@ -143,7 +142,7 @@ function parseDeclaration() {
     var initializer
     if (at(['fn','proc'])) {
       initializer = parseFn()
-    } else if (at(['{','[','construct'])) {
+    } else if (at(['{','['])) {
       initializer = parseValue()
     } else {
       initializer = parseExpression()
@@ -168,7 +167,7 @@ function parsePropertyStatement() {
     return new Property(name, new UndefinedLiteral())
   } else if (at(['fn','proc'])) {
     initializer = parseFn()
-  } else if (at(['{','[','construct'])) {
+  } else if (at(['{','['])) {
     initializer = parseValue()
   } else {
     initializer = parseExpression()
@@ -203,8 +202,6 @@ function parseValue() {
     return new StringLiteral(match())
   } else if (at('ID')) {
     return parseExpression()
-  } else if (at('construct')) {
-    return parseConstruct()
   } else if (at(['fn','proc'])) {
     return parseFn()
   } else {
@@ -270,32 +267,6 @@ function parseArgs() {
   match(')')
   return args
 }
-
-function parseConstruct() {
-  match('construct')
-  var name = parseBasicVar()
-  var args = (function () {
-      match('(')
-      var args = [] //of values and assignment instructions
-      if (at('ID') && next('=') || at(['fn','proc'])) {
-        args.push(parseAssignmentStatement('='))
-      } else if (!at(')')) {
-        args.push(parseExpression())
-      }
-      while (at(',')) {
-        match()
-        if (at('ID') && next('=') || at(['fn','proc'])) {
-          args.push(parseAssignmentStatement('='))
-        } else if (!at(')')) {
-          args.push(parseExpression())
-        }
-      }
-      match(')')
-      return args
-    }())
-
-  return new Construction(name, args, dirname)
-  }
 
 function parseArrayLiteral() {
   var elements = []
@@ -574,8 +545,6 @@ function parseExpRoot() {
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseBasicVar()
-  } else if (at('construct')) {
-    return parseConstruct()
   } else if (at(['fn','proc','anon'])) {
     return parseFn()
   } else if (at('[')) {
