@@ -10,7 +10,6 @@ var scanner              = require('./scanner'),
     error                = require('./error')
 
 var Program              = require('./entities/program'),
-    Blueprint            = require('./entities/blueprint'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
     Fn                   = require('./entities/function'),
@@ -53,8 +52,7 @@ var continuing = false
 module.exports = function (scanner_output, filename, dir) {
   dirname = dir
   tokens = scanner_output
-  var program = at('blueprint') ? parseBlueprint(filename) : parseProgram()
-  match('EOF')
+  var program = parseProgram()
   return program
 }
 
@@ -82,56 +80,6 @@ function parseBlock() {
     }
   }
   return new Block(statements)
-}
-
-function parseBlueprint(filename) {
-  var has = [],
-      does = [],
-      syn = [];
-
-  match('blueprint')
-  var blueid = parseBasicVar()
-  var params = parseParams()
-  match(':')
-
-  match(['@','has'])
-  if (at('ID')) {
-    has.push(parsePropertyStatement())
-    while (at(',')) {
-      match()
-      has.push(parsePropertyStatement())
-    }
-  }
-
-  match(['@','does'])
-  if (at('ID')) {
-    does.push(parsePropertyStatement())
-    while (at(',')) {
-      match()
-      does.push(parsePropertyStatement())
-    }
-  }
-
-  while(at('@')) synergize()
-
-  match('defcc')
-
-  function synergize () {
-    match(['@','syn',':'])
-    var synthesis = {}
-        synthesis.branch = parseBasicVar()
-        synthesis.leaf = []
-    if (at('ID')) {
-      synthesis.leaf.push(parsePropertyStatement())
-      while (at(',')) {
-        match()
-        synthesis.leaf.push(parsePropertyStatement())
-      }
-    }
-    syn.push(synthesis)
-  }
-
-  return new Blueprint(blueid, params, has, does, syn, filename)
 }
 
 function parseStatements() {
