@@ -12,14 +12,7 @@ BasicVar.prototype.analyze = function (context) {
 }
 
 BasicVar.prototype.generateJavaScript = function (state) {
-  var ref = this.referent
-  
-  if (ref && ref.constructor.name === 'EnvironmentEntity') {
-    // allow the environment variable to pass through
-    return this.referent.name
-  } else {
-    return state.variableMaker(this)
-  }
+  return state.variableMaker(this)
 }
 
 module.exports = BasicVar

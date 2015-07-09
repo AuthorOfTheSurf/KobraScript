@@ -13,12 +13,6 @@ Program.prototype.analyze = function () {
   this.block.analyze(initialContext)
 }
 
-Program.prototype.environment = function(env) {
-  if (env === 'NODE') {
-    this.block.addNameToEnvironment('require')
-  }
-}
-
 Program.prototype.optimize = function () {
   console.log('Optimization for Program is not yet implemented')
   return this
