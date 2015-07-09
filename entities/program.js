@@ -75,17 +75,17 @@ Program.prototype.state = {
 
 Program.prototype.generateJavaScript = function () {
   var prettyPrint = require('../code-gen/js-beautifier').prettyPrint
-  var js = [
-    // '(function ()',
-    'if (true)',
-    this.block.generateJavaScript(this.state),
-    // '());'
-  ]
-  // Gurantees we print a string, not an array
-  var str = [].concat.apply([], js).join(' ')
+  var code = this.block.generateJavaScript(this.state)
+
+  // Removes enclosing curly braces
+  // (Program is block of statements)
+  code = code.substring(1, code.length - 1)
+
   // Bad semicolons
-  str = str.replace(new RegExp('};', 'g'), '}')
-  return prettyPrint(str)
+  code = code.replace(new RegExp('};', 'g'), '}')
+
+  // Return formatted code
+  return prettyPrint(code)
 }
 
 module.exports = Program
