@@ -12,4 +12,14 @@ IndexVar.prototype.analyze = function (context) {
   this.index.analyze(context)
 }
 
+IndexVar.prototype.generateJavaScript = function (state) {
+  var js = [
+    this.array.generateJavaScript(state),
+    '[',
+    this.index.generateJavaScript(state),
+    ']'
+  ]
+  return js.join('')
+}
+
 module.exports = IndexVar

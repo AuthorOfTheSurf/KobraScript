@@ -1,3 +1,3 @@
-$ kitchen
+$ kitchen = {}
 
 kitchen.pasta = []

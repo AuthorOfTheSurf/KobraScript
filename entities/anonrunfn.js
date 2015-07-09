@@ -16,4 +16,27 @@ AnonRunFn.prototype.analyze = function (context) {
   this.body.analyze(localContext)
 }
 
+function pushArgs(arr, args) {
+  if (args) {
+    arr.push('(', args.join(', '), ')')
+  } else {
+    arr.push('()')
+  }
+}
+
+AnonRunFn.prototype.generateJavaScript = function (state) {
+  var js = []
+  var args = [] || this.args.map(function (arg) {
+    return arg.generateJavaScript(state)
+  })
+
+  js.push('(', 'function')
+  pushArgs(js, args)
+  js.push(this.body.generateJavaScript(state))
+  pushArgs(js, args)
+  js.push(')')
+
+  return js.join(' ')
+}
+
 module.exports = AnonRunFn

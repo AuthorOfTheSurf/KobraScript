@@ -44,4 +44,16 @@ Block.prototype.contains = function (Ent) {
   }
   return false
 }
+
+Block.prototype.generateJavaScript = function (state) {
+  var js = [
+    '{',
+    this.statements.map(function (s) {
+      return s.generateJavaScript(state) + ';'
+    }).join(''),
+    '}'
+  ]
+  return js.join(' ')
+}
+
 module.exports = Block

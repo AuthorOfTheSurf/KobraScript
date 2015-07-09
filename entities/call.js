@@ -18,4 +18,16 @@ Call.prototype.analyze = function (context) {
   })
 }
 
+Call.prototype.generateJavaScript = function (state) {
+  var js = [
+    this.fn.generateJavaScript(state),
+    '(',
+    this.args.map(function (arg) {
+      return arg.generateJavaScript(state)
+    }).join(', '),
+    ')'
+  ]
+  return js.join('')
+}
+
 module.exports = Call

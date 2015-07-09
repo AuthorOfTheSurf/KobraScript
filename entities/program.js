@@ -57,4 +57,41 @@ Program.prototype.showSemanticGraph = function () {
   dump(this, 0)
 }
 
+// The state of the program at runtime, this is available
+// during code generation
+Program.prototype.state = {
+  variableMaker: (function () {
+    var lastId = 0
+    var map = {}
+
+    return function (basicVar) {
+      var name = basicVar.name
+
+      if (!map[name]) {
+        lastId = lastId + 1
+        map[name] = lastId
+      }
+      return '_' + name + '_' + map[name]
+    }
+  }()),
+
+  // used to decide when to output 'var'
+  continuingDeclaration: false
+}
+
+Program.prototype.generateJavaScript = function () {
+  var prettyPrint = require('../code-gen/js-beautifier').prettyPrint
+  var js = [
+    // '(function ()',
+    'if (true)',
+    this.block.generateJavaScript(this.state),
+    // '());'
+  ]
+  // Gurantees we print a string, not an array
+  var str = [].concat.apply([], js).join(' ')
+  // Bad semicolons
+  str = str.replace(new RegExp('};', 'g'), '}')
+  return prettyPrint(str)
+}
+
 module.exports = Program

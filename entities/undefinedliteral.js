@@ -12,4 +12,8 @@ UndefinedLiteral.prototype.analyze = function (context) {
   this.type = Type.UNDEFLIT
 }
 
+UndefinedLiteral.prototype.generateJavaScript = function (state) {
+  return 'undefined'
+}
+
 module.exports = UndefinedLiteral

@@ -367,7 +367,8 @@ function parseConditionalClause() {
 
 function parseConditionalStatement() {
   var conditionals = []
-  var defaultAct
+  var elseBlock
+
   match('if')
   conditionals.push(parseConditionalClause())
 
@@ -378,9 +379,9 @@ function parseConditionalStatement() {
 
   if (at('else')) {
     match()
-    defaultAct = parseBlock()
+    elseBlock = parseBlock()
   }
-  return new ConditionalStatement(conditionals, defaultAct)
+  return new ConditionalStatement(conditionals, elseBlock)
 }
 
 function parseOnlyIfStatement() {

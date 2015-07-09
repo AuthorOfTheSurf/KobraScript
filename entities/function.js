@@ -1,4 +1,5 @@
 var error = require('../error')
+var AnonRunFn = require('./anonrunfn')
 
 function Fn(fntype, params, body) {
   this.fntype = fntype
@@ -18,6 +19,24 @@ Fn.prototype.analyze = function (context) {
     error('proceedure calls cannot return')
   }
   this.body.analyze(localContext)
+}
+
+Fn.prototype.generateJavaScript = function (state) {
+  // We may have to break out the fntypes into separate entities
+  // properly after putting this fix in for declaration statements
+  if (this.fntype.lexeme === 'anon') {
+    var anonRunFn = new AnonRunFn(this.params, this.body)
+    return anonRunFn.generateJavaScript(state)
+  }
+
+  var js = [
+    'function',
+    '(',
+    this.params.generateJavaScript(state),
+    ')',
+    this.body.generateJavaScript(state)
+  ]
+  return js.join(' ')
 }
 
 module.exports = Fn
