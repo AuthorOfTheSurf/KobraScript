@@ -401,7 +401,7 @@ function parseOnlyIfStatement() {
 
 function parseExpression() {
   var left = parseExp0()
-  while (at(['=','+=','-=','*=','/=','%=', ':=:'])) {
+  while (at(['=','+=','-=','*=','/=','%=',':=:'])) {
     var op = match()
     var right = parseExp0()
     left = new BinaryExpression(op, left, right)

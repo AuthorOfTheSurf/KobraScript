@@ -14,7 +14,6 @@ describe('The compiler', function () {
         var priorErrorCount = error.count
         var program = parse(tokens)
 
-        program.environment('NODE')
         program.analyze()
         
         error.count.should.equal(priorErrorCount)
