@@ -33,7 +33,7 @@ $ incrementer = |startingValue|:
 end
 
 $ incrementer = close{ startingValue as s }:
-  $ x = startingValue
+  $ x = s
 
   return {
     increment: fn():
