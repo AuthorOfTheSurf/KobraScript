@@ -1,3 +1,6 @@
+// This entity will become fn.js soon;
+// will only represent the fn function type
+
 var error = require('../error')
 var AnonRunFn = require('./anonrunfn')
 
@@ -13,17 +16,15 @@ Fn.prototype.toString = function () {
 }
 
 Fn.prototype.analyze = function (context) {
-  this.params.analyze(context)
+  this.params.analyze(context) // this line causes problems if fn and anon are the same entity at analyze time
   var localContext = context.createChildContext()
-  if (this.fntype.lexeme === 'proc' && this.body.contains('ReturnStatement')) {
-    error('proceedure calls cannot return')
-  }
   this.body.analyze(localContext)
 }
 
 Fn.prototype.generateJavaScript = function (state) {
   // We may have to break out the fntypes into separate entities
   // properly after putting this fix in for declaration statements
+  // -- yes.
   if (this.fntype.lexeme === 'anon') {
     var anonRunFn = new AnonRunFn(this.params, this.body)
     return anonRunFn.generateJavaScript(state)
