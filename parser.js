@@ -12,7 +12,7 @@ var scanner              = require('./scanner'),
 var Program              = require('./entities/program'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
-    Fn                   = require('./entities/function'),
+    Fn                   = require('./entities/fn'),
     AnonRunFn            = require('./entities/anonrunfn'),
     Declaration          = require('./entities/declaration'),
     Property             = require('./entities/property'),
@@ -176,6 +176,7 @@ function parsePropertyStatement() {
   return new Property(name, initializer)
 }
 
+// I really want this to be called parseName at some point
 function parseBasicVar () {
   var name = match('ID')
   if (name) {
@@ -212,10 +213,15 @@ function parseValue() {
 
 // should not be used for both fn and anon
 function parseFnLiteral() {
-  var fntype = match()
+  var fntype = match('fn')
+  var name
+
+  if (!at('(')) {
+    name = parseBasicVar()
+  }
   var params = parseParams()
   var body = parseBlock()
-  return new Fn(fntype, params, body)
+  return new Fn(fntype, name, params, body)
 }
 
 function parseAnonLiteral() {
@@ -227,7 +233,7 @@ function parseFnDeclarationStatement() {
   var name = parseBasicVar()
   var params = parseParams()
   var body = parseBlock()
-  return new Declaration(name, new Fn(fntype, params, body))
+  return new Declaration(name, new Fn(fntype, name, params, body))
 }
 
 function parseAnonRunFnStatement() {
