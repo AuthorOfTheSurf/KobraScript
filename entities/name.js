@@ -8,7 +8,7 @@ Name.prototype.toString = function () {
 }
 
 Name.prototype.analyze = function (context) {
-  this.referent = context.lookupVariable(this.value)
+  this.referent = context.addVariable(this.value)
 }
 
 Name.prototype.generateJavaScript = function (state) {

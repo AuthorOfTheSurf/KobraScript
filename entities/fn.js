@@ -18,9 +18,6 @@ Fn.prototype.toString = function () {
 }
 
 Fn.prototype.analyze = function (context) {
-  // don't analyze name yet.
-  // Will only cause issues if the name is a reserved keyword
-  // in JavaScript, logic which hasn't been written yet.
   // this.name.analyze(context)
   this.params.analyze(context)
 
@@ -29,14 +26,6 @@ Fn.prototype.analyze = function (context) {
 }
 
 Fn.prototype.generateJavaScript = function (state) {
-  // We may have to break out the fntypes into separate entities
-  // properly after putting this fix in for declaration statements
-  // -- yes.
-  if (this.fntype.lexeme === 'anon') {
-    var anonRunFn = new AnonRunFn(this.params, this.body)
-    return anonRunFn.generateJavaScript(state)
-  }
-
   var js = [
     'function',
     (this.name) ? this.name : '',
