@@ -13,7 +13,7 @@ var Program              = require('./entities/program'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
     Fn                   = require('./entities/fn'),
-    AnonRunFn            = require('./entities/anonrunfn'),
+    ClosureLiteral       = require('./entities/closureliteral'),
     Declaration          = require('./entities/declaration'),
     Property             = require('./entities/property'),
     ConditionalStatement = require('./entities/conditionalstatement'),
@@ -93,7 +93,7 @@ function parseStatements() {
 
 function shouldParseStatement() {
   var statementStartingToken = [
-    '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'anon',
+    '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn',
     '++', '--', 'return', 'say', 'loge', 'break', 'continue'
   ]
   if (!continuing && at('..')) {
@@ -108,8 +108,6 @@ function parseStatement() {
     return parseDeclaration()
   } else if (at('fn')) {
     return parseFnDeclarationStatement()
-  } else if (at('anon')) {
-    return parseAnonRunFnStatement()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -139,16 +137,7 @@ function parseDeclaration() {
   var name = parseBasicVar()
   if (at('=')) {
     match()
-    var initializer
-
-    if (at('fn')) {
-      initializer = parseFnLiteral()
-    } else if (at(['{','['])) {
-      initializer = parseValue()
-    } else {
-      initializer = parseExpression()
-    }
-
+    var initializer = parseExpression()
     continuing = at([',','..'])
     return new Declaration(name, initializer)
   } else if (at([',','..'])) {
@@ -163,17 +152,12 @@ function parseDeclaration() {
 function parsePropertyStatement() {
   var name = parseBasicVar()
   match(':')
-  var initializer
   if (at(',')) {
     return new Property(name, new UndefinedLiteral())
-  } else if (at('fn')) {
-    initializer = parseFnLiteral()
-  } else if (at(['{','['])) {
-    initializer = parseValue()
   } else {
-    initializer = parseExpression()
+    var initializer = parseExpression()
+    return new Property(name, initializer)
   }
-  return new Property(name, initializer)
 }
 
 // I really want this to be called parseName at some point
@@ -560,8 +544,8 @@ function parseExpRoot() {
     return parseBasicVar()
   } else if (at('fn')) {
     return parseFnLiteral()
-  } else if (at('anon')) {
-    return parseAnonLiteral()
+  } else if (at('close')) {
+    return parseClosureLiteral()
   } else if (at('[')) {
     return parseArrayLiteral()
   } else if (at('{')) {
