@@ -552,8 +552,10 @@ function parseExpRoot() {
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseBasicVar()
-  } else if (at(['fn','anon'])) {
+  } else if (at('fn')) {
     return parseFnLiteral()
+  } else if (at('anon')) {
+    return parseAnonLiteral()
   } else if (at('[')) {
     return parseArrayLiteral()
   } else if (at('{')) {
