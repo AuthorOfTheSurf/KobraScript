@@ -1,6 +1,6 @@
 $  a
 .. b
 .. c
-.. d = anon():
+.. d = close{}:
   return [a, b, c]
 end

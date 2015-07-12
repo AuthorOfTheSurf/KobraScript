@@ -1,6 +1,6 @@
 $ a = ", world",
   b = "Hello"
 
-anon (a, b):
-  loge a
+close{a, b}:
+  loge b + a
 end
