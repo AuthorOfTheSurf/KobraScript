@@ -183,8 +183,22 @@ function parseFnLiteral() {
   return new Fn(fntype, name, params, body)
 }
 
-function parseAnonLiteral() {
-  throw "not implemented yet"
+function parseClosureLiteral() {
+  match('close')
+  match('{')
+  var args = []
+
+  if (at('ID')) {
+    args.push(parseBasicVar())
+
+    while (at(',')) {
+      match()
+      args.push(parseBasicVar())
+    }
+  }
+  match('}')
+  var body = parseBlock()
+  return new ClosureLiteral(args, body)
 }
 
 function parseFnDeclarationStatement() {
