@@ -210,11 +210,16 @@ function parseValue() {
   }
 }
 
+// should not be used for both fn and anon
 function parseFnLiteral() {
   var fntype = match()
   var params = parseParams()
   var body = parseBlock()
   return new Fn(fntype, params, body)
+}
+
+function parseAnonLiteral() {
+  throw "not implemented yet"
 }
 
 function parseFnDeclarationStatement() {
