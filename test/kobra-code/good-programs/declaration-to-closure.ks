@@ -1,4 +1,4 @@
-$ closed = anon():
+$ closed = close{}:
   $ a = 10
   .. b = 20
 

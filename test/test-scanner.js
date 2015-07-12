@@ -119,7 +119,7 @@ describe('The scanner', function () {
       i(tokens[x++]).should.equal(i({kind:',',lexeme:',',line:7,col:41}))
       i(tokens[x++]).should.equal(i({kind:'ID',lexeme:'move',line:9,col:5}))
       i(tokens[x++]).should.equal(i({kind:':',lexeme:':',line:9,col:9}))
-      i(tokens[x++]).should.equal(i({kind:'proc',lexeme:'proc',line:9,col:11}))
+      i(tokens[x++]).should.equal(i({kind:'fn',lexeme:'fn',line:9,col:11}))
       i(tokens[x++]).should.equal(i({kind:'(',lexeme:'(',line:9,col:16}))
       i(tokens[x++]).should.equal(i({kind:')',lexeme:')',line:9,col:17}))
       i(tokens[x++]).should.equal(i({kind:':',lexeme:':',line:9,col:18}))

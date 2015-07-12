@@ -37,10 +37,10 @@ function scan(line, linenumber, tokens) {
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",
-    "bit|int|float|bool|str|undefined|null|fn|return",
+    "bit|int|float|bool|str|undefined|null|fn|close|return",
     "|if|else|only|do|while|for|switch|break|continue",
     "|case|try|catch|finally|throw|function|instanceof",
-    "|var|void|with|end|proc|say|loge|_hidden|anon|__factorial",
+    "|var|void|with|end|say|loge|_hidden|__factorial",
     ")$"].join(''))
   var numericLit = /(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?/
   var booleanLit = /^(?:true|false)$/
