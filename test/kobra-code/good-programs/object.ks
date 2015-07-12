@@ -5,8 +5,8 @@ $ bicycle = {
     speed: 12.7,
     carbonFiber: true,
     extraParts: ['speedometer', 'light'],
-    
-    move: proc ():
+    // 2 extra spaces there for scanner test
+    move: fn   ():
         Transform.translate(FORWARD * this.speed)
     end,
     upgrade_speed: fn ():
