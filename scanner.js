@@ -99,7 +99,7 @@ function scan(line, linenumber, tokens) {
 
         //  Checks for escape characters
         //  Link below helped immensely:
-        //  http://mathiasbynens.be/notes/javascript-escapes    
+        //  http://mathiasbynens.be/notes/javascript-escapes
         if (line[pos] === '\\') {
           s = s.concat(line[pos])
           if (oneCharEscapeChars.test(line.substring(pos+1, pos+2))) {
@@ -193,7 +193,7 @@ function scan(line, linenumber, tokens) {
         emit('ID', word)
       }
     }
-    
+
     // All else
     else {
       error('Illegal character: ' + line[pos], {line: linenumber, col: pos+1})
