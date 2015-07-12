@@ -29,7 +29,7 @@ var Program              = require('./entities/program'),
     UnaryExpression      = require('./entities/unaryexpression'),
     PostUnaryExpression  = require('./entities/postunaryexpression'),
     BinaryExpression     = require('./entities/binaryexpression'),
-    BasicVar             = require('./entities/basicvar'),
+    Name                 = require('./entities/name'),
     IndexVar             = require('./entities/indexvar'),
     DottedVar            = require('./entities/dottedvar'),
     Call                 = require('./entities/call'),
@@ -134,7 +134,7 @@ function parseDeclaration() {
   if (at(['$',',','..'])) {
     match()
   }
-  var name = parseBasicVar()
+  var name = parseName()
   if (at('=')) {
     match()
     var initializer = parseExpression()
@@ -150,7 +150,7 @@ function parseDeclaration() {
 }
 
 function parsePropertyStatement() {
-  var name = parseBasicVar()
+  var name = parseName()
   match(':')
   if (at(',')) {
     return new Property(name, new UndefinedLiteral())
@@ -160,23 +160,21 @@ function parsePropertyStatement() {
   }
 }
 
-// I really want this to be called parseName at some point
-function parseBasicVar () {
+function parseName () {
   var name = match('ID')
   if (name) {
-    return new BasicVar(name.lexeme)
+    return new Name(name.lexeme)
   } else {
     error('invalid token')
   }
 }
 
-// should not be used for both fn and anon
 function parseFnLiteral() {
   var fntype = match('fn')
   var name
 
   if (!at('(')) {
-    name = parseBasicVar()
+    name = parseName()
   }
   var params = parseParams()
   var body = parseBlock()
@@ -189,11 +187,11 @@ function parseClosureLiteral() {
   var args = []
 
   if (at('ID')) {
-    args.push(parseBasicVar())
+    args.push(parseName())
 
     while (at(',')) {
       match()
-      args.push(parseBasicVar())
+      args.push(parseName())
     }
   }
   match('}')
@@ -203,7 +201,7 @@ function parseClosureLiteral() {
 
 function parseFnDeclarationStatement() {
   var fntype = match()
-  var name = parseBasicVar()
+  var name = parseName()
   var params = parseParams()
   var body = parseBlock()
   return new Declaration(name, new Fn(fntype, name, params, body))
@@ -229,11 +227,11 @@ function parseParams() {
   match('(')
   var params = []
   if (at('ID')) {
-    params.push(parseBasicVar())
+    params.push(parseName())
   }
   while (at(',')) {
     match()
-    params.push(parseBasicVar())
+    params.push(parseName())
   }
   match(')')
   return new Params(params)
@@ -502,7 +500,7 @@ function parseExp9() {
   while (at(['.','[','('])) {
     if (at('.')) {
       match()
-      left = new DottedVar(left, parseBasicVar())
+      left = new DottedVar(left, parseName())
     } else if (at('[')) {
       match('[')
       left = new IndexVar(left, parseExpression())
@@ -530,7 +528,7 @@ function parseExpRoot() {
   } else if (at('NUMLIT')) {
     return new NumericLiteral(match())
   } else if (at('ID')) {
-    return parseBasicVar()
+    return parseName()
   } else if (at('fn')) {
     return parseFnLiteral()
   } else if (at('close')) {

@@ -6,7 +6,7 @@ function Program(block) {
 }
 
 Program.prototype.toString = function () {
-  return '(Program ' + this.block + ')' 
+  return '(Program ' + this.block + ')'
 }
 
 Program.prototype.analyze = function () {
@@ -59,7 +59,7 @@ Program.prototype.state = {
     var map = {}
 
     return function (basicVar) {
-      var name = basicVar.name
+      var name = basicVar.value
 
       if (!map[name]) {
         lastId = lastId + 1

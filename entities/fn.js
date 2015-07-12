@@ -18,7 +18,7 @@ Fn.prototype.toString = function () {
 }
 
 Fn.prototype.analyze = function (context) {
-  // don't analyse name yet.
+  // don't analyze name yet.
   // Will only cause issues if the name is a reserved keyword
   // in JavaScript, logic which hasn't been written yet.
   // this.name.analyze(context)

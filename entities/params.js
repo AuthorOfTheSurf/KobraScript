@@ -12,7 +12,7 @@ Params.prototype.toArray = function () {
 
 Params.prototype.analyze = function (context) {
   this.params.forEach(function (parameter) {
-    context.addVariable(parameter.name, parameter)
+    context.addVariable(parameter.value, parameter)
     parameter.analyze(context)
   })
 }
