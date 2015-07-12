@@ -170,31 +170,6 @@ function parseBasicVar () {
   }
 }
 
-/*  This is anything that can be assigned to an id; RHS values */
-function parseValue() {
-  if (at('{')) {
-    return parseObjectLiteral()
-  } else if (at('[')) {
-    return parseArrayLiteral()
-  } else if (at('UNDEFLIT')) {
-    return new UndefinedLiteral(match())
-  } else if (at('NULLLIT')) {
-    return new NullLiteral(match())
-  } else if (at('NUMLIT')) {
-    return new NumericLiteral(match())
-  } else if (at('BOOLIT')) {
-    return new BooleanLiteral(match())
-  } else if (at('STRLIT')) {
-    return new StringLiteral(match())
-  } else if (at('ID')) {
-    return parseExpression()
-  } else if (at('fn')) {
-    return parseFnLiteral()
-  } else {
-    return parseExpression()
-  }
-}
-
 // should not be used for both fn and anon
 function parseFnLiteral() {
   var fntype = match('fn')
@@ -268,11 +243,11 @@ function parseArrayLiteral() {
   var elements = []
   match('[')
   if (!at(']')) {
-    elements.push(parseValue())
+    elements.push(parseExpression())
   }
   while (at(',')) {
     match()
-    elements.push(parseValue())
+    elements.push(parseExpression())
   }
   match(']')
   return new ArrayLiteral(elements)
