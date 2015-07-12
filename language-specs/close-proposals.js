@@ -1,7 +1,7 @@
 $ startingValue = 10
 
-$ incrementer = closure:
-  $ x = included startingValue
+$ incrementer = closure(startingValue):
+  $ x = startingValue
 
   return {
     increment: fn():
@@ -16,4 +16,34 @@ $ incrementer = closure:
   }
 end
 
-|this| -> fnWithSideEffects(this)
+$ incrementer = |startingValue|:
+  $ x = startingValue
+
+  return {
+    increment: fn():
+      return x += 1
+    ..,
+    decrement: fn():
+      return x -= 1
+    ..,
+    zero: fn():
+      return x = 0
+    ..
+  }
+end
+
+$ incrementer = close{ startingValue as s }:
+  $ x = startingValue
+
+  return {
+    increment: fn():
+      return x += 1
+    ..,
+    decrement: fn():
+      return x -= 1
+    ..,
+    zero: fn():
+      return x = 0
+    ..
+  }
+end
