@@ -54,21 +54,6 @@ Program.prototype.showSemanticGraph = function () {
 // The state of the program at runtime, this is available
 // during code generation
 Program.prototype.state = {
-  variableMaker: (function () {
-    var lastId = 0
-    var map = {}
-
-    return function (basicVar) {
-      var name = basicVar.value
-
-      if (!map[name]) {
-        lastId = lastId + 1
-        map[name] = lastId
-      }
-      return '_' + name + '_' + map[name]
-    }
-  }()),
-
   // used to decide when to output 'var'
   continuingDeclaration: false
 }

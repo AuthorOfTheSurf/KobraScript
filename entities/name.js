@@ -12,7 +12,7 @@ Name.prototype.analyze = function (context) {
 }
 
 Name.prototype.generateJavaScript = function (state) {
-  return state.variableMaker(this)
+  return this.toString()
 }
 
 module.exports = Name
