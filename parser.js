@@ -107,9 +107,9 @@ function parseStatement() {
   if (at(['$',',','..'])) {
     return parseDeclaration()
   } else if (at('fn')) {
-    return parseFnDeclaration()
+    return parseFnDeclarationStatement()
   } else if (at('anon')) {
-    return parseAnonRunFn()
+    return parseAnonRunFnStatement()
   } else if (at('while')) {
     return parseWhileStatement()
   } else if (at('if')) {
@@ -142,7 +142,7 @@ function parseDeclaration() {
     var initializer
 
     if (at('fn')) {
-      initializer = parseFn()
+      initializer = parseFnLiteral()
     } else if (at(['{','['])) {
       initializer = parseValue()
     } else {
@@ -167,7 +167,7 @@ function parsePropertyStatement() {
   if (at(',')) {
     return new Property(name, new UndefinedLiteral())
   } else if (at('fn')) {
-    initializer = parseFn()
+    initializer = parseFnLiteral()
   } else if (at(['{','['])) {
     initializer = parseValue()
   } else {
@@ -204,20 +204,20 @@ function parseValue() {
   } else if (at('ID')) {
     return parseExpression()
   } else if (at('fn')) {
-    return parseFn()
+    return parseFnLiteral()
   } else {
     return parseExpression()
   }
 }
 
-function parseFn() {
+function parseFnLiteral() {
   var fntype = match()
   var params = parseParams()
   var body = parseBlock()
   return new Fn(fntype, params, body)
 }
 
-function parseFnDeclaration() {
+function parseFnDeclarationStatement() {
   var fntype = match()
   var name = parseBasicVar()
   var params = parseParams()
@@ -225,7 +225,7 @@ function parseFnDeclaration() {
   return new Declaration(name, new Fn(fntype, params, body))
 }
 
-function parseAnonRunFn() {
+function parseAnonRunFnStatement() {
   match('anon')
   var args = []
   if (at('(')) {
@@ -548,7 +548,7 @@ function parseExpRoot() {
   } else if (at('ID')) {
     return parseBasicVar()
   } else if (at(['fn','anon'])) {
-    return parseFn()
+    return parseFnLiteral()
   } else if (at('[')) {
     return parseArrayLiteral()
   } else if (at('{')) {
