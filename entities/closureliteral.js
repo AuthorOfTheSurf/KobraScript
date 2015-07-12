@@ -6,7 +6,7 @@ function ClosureLiteral(args, body) {
 
 ClosureLiteral.prototype.toString = function() {
   var args = this.args.toString()
-  var body = this.body.toString
+  var body = this.body.toString()
 
   return '(Closure ' + args + ' ' + body + ')'
 }
