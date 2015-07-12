@@ -93,8 +93,8 @@ function parseStatements() {
 
 function shouldParseStatement() {
   var statementStartingToken = [
-    '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'proc',
-    'anon', '++', '--', 'return', 'say', 'loge', 'break', 'continue'
+    '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'anon',
+    '++', '--', 'return', 'say', 'loge', 'break', 'continue'
   ]
   if (!continuing && at('..')) {
     return false
@@ -106,7 +106,7 @@ function shouldParseStatement() {
 function parseStatement() {
   if (at(['$',',','..'])) {
     return parseDeclaration()
-  } else if (at(['fn','proc'])) {
+  } else if (at('fn')) {
     return parseFnDeclaration()
   } else if (at('anon')) {
     return parseAnonRunFn()
@@ -140,16 +140,17 @@ function parseDeclaration() {
   if (at('=')) {
     match()
     var initializer
-    if (at(['fn','proc'])) {
+
+    if (at('fn')) {
       initializer = parseFn()
     } else if (at(['{','['])) {
       initializer = parseValue()
     } else {
       initializer = parseExpression()
     }
+
     continuing = at([',','..'])
     return new Declaration(name, initializer)
-
   } else if (at([',','..'])) {
     continuing = true
     return new Declaration(name, new UndefinedLiteral())
@@ -165,7 +166,7 @@ function parsePropertyStatement() {
   var initializer
   if (at(',')) {
     return new Property(name, new UndefinedLiteral())
-  } else if (at(['fn','proc'])) {
+  } else if (at('fn')) {
     initializer = parseFn()
   } else if (at(['{','['])) {
     initializer = parseValue()
@@ -202,7 +203,7 @@ function parseValue() {
     return new StringLiteral(match())
   } else if (at('ID')) {
     return parseExpression()
-  } else if (at(['fn','proc'])) {
+  } else if (at('fn')) {
     return parseFn()
   } else {
     return parseExpression()
@@ -546,7 +547,7 @@ function parseExpRoot() {
     return new NumericLiteral(match())
   } else if (at('ID')) {
     return parseBasicVar()
-  } else if (at(['fn','proc','anon'])) {
+  } else if (at(['fn','anon'])) {
     return parseFn()
   } else if (at('[')) {
     return parseArrayLiteral()

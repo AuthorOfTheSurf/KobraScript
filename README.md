@@ -39,7 +39,7 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`
+Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression -- use `undefined` or `0` if you want to return from a function early with success.
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
@@ -50,18 +50,11 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
         return total / x.length                                 return total / x.length;
     end                                                     }
 
-    $ getSoup = fn (): return Res.soupOfTheDay() ..         var getSoup = function () {return Res.soupOfTheDay()},
+    $  getSoup = fn (): return Res.soupOfTheDay() ..        var getSoup = function () {return Res.soupOfTheDay()},
     .. getDrink = fn (): return Res.specdrinks ..               getDrink = function () {return Res.spacdrinks},
     .. placeOrder = fn (item, quantity):                        placeOrder = function (item, quantity) {
-          Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity);
-          return true                                               return true;
-      end                                                       };
-
-A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression -- return `null` if you have no value to return.
-
-    proc print_intake (y):                                  function printIntake (y) {
-      say average_intake(y)                                   console.log(averageIntake(y));
-    end                                                     }
+         Kitchen.addOrder(item, quantity)                           Kitchen.addOrder(item, quantity);
+       end                                                      };
 
 Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`. One never has to worry about the oddly-placed call and whether it's there or not. If you find you do not need to self-call, just switch back to `fn`.
 
@@ -152,7 +145,7 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         year: 2009,                                                 year: 2009,
         gears: 10,                                                  gears: 10,
         speed: 12.7,                                                speed: 12.7,
-        move: proc ():                                              move: function () {
+        move: fn ():                                                move: function () {
             Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed);
         ..,                                                         },
         upgrade_speed: fn ():                                       upgradeSpeed: function () {
@@ -170,7 +163,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.9.8
+    * KobraScript Syntax v.1.9.9
     * 
     */
 
@@ -198,8 +191,10 @@ Arrays in KobraScript follow normal scripting language convention.
                 |    EXP
 
         VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
-        FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
-        FNTYPE  ::=  'proc' | 'fn'
+        FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
+                |    'anon' PARAMS BLOCK
+        FNLIT   ::=  FNTYPE  PARAMS  BLOCK
+        
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
         EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
@@ -214,10 +209,7 @@ Arrays in KobraScript follow normal scripting language convention.
         EXP8    ::=  ('!' | '++' | '--')?  EXP9
         EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
         EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
-                |    ID | CONST | FNVAL | ARRAY | OBJECT | '(' EXP ')'
-
-        CONST   ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)?  ')'
-        FNVAL   ::=  FNTYPE  PARAMS  BLOCK
+                |    ID | CONST | FNLIT | ARRAY | OBJECT | '(' EXP ')'
 
         ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
         OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
