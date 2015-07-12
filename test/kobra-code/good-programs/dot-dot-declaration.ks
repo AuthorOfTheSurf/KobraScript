@@ -9,11 +9,13 @@ $  incr = fn (x):
   return x -= 1
 ..
 
-$ world = anon():
+// purposely un-clean to test parser
+
+$ world = close{}:
   return "hello"
 .. .. dir = fn():
   return "~"
 end .. soup = fn(): return "good temp" end
-.. marching = anon():
+.. marching = close{}:
   return "band"
 end

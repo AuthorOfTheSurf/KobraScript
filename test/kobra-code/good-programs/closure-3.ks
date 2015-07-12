@@ -1,6 +1,6 @@
 $ startingValue = 10
 
-$ incrementer = closure(startingValue):
+$ incrementer = close{startingValue}:
   $ x = startingValue
 
   return {
@@ -16,12 +16,7 @@ $ incrementer = closure(startingValue):
   }
 end
 
-$ incrementer = close ||
-  -> return fn()
-    -> return x += 1
-
-$ incrementer = close{}:
-  return fn():
-    return x += 1
-  ..
-end
+loge incrementer.increment()
+loge incrementer.increment()
+loge incrementer.increment()
+loge incrementer.zero()

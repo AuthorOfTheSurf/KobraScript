@@ -1,9 +1,9 @@
-anon:
+close{}:
   $ x = 10
 end
 
 $ a = 2
 
-anon (a):
+close{a}:
   $ y = a
 end
