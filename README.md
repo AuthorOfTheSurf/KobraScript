@@ -56,15 +56,15 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
          Kitchen.addOrder(item, quantity)                           Kitchen.addOrder(item, quantity);
        end                                                      };
 
-Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`. One never has to worry about the oddly-placed call and whether it's there or not. If you find you do not need to self-call, just switch back to `fn`.
+Similar to Javascript, anonymous self-calling functions are in KobraScript. These are typically used to create a private scope. In KobraScript, a closure literal may be constructed with `close`, followed by the inteded arguments as parameters enclosed in curly braces. One never has to worry about whether ones functions are being invoked on the fly. _Closed to the world, KobraScript may evaluate._
 
-    anon:                                                   (function() {
+    close{}:                                                (function() {
       $ x = 10                                                  var x = 10;
       say x                                                     console.log(x);
     end                                                     }());
     
     $ x = [1, 2, 3]                                         var x = [1, 2, 3];
-    anon(x):                                                (function(x) {
+    close{x}:                                               (function(x) {
       print "I am " + x[1] + " good"                            console.log("I am " + x[1] + " good");
     end                                                     }(x));
 
@@ -163,7 +163,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.9.9
+    * KobraScript Syntax v.2.0.0
     * 
     */
 
@@ -192,8 +192,7 @@ Arrays in KobraScript follow normal scripting language convention.
 
         VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
         FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
-                |    'anon' PARAMS BLOCK
-        FNLIT   ::=  FNTYPE  PARAMS  BLOCK
+        
         
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
@@ -206,11 +205,14 @@ Arrays in KobraScript follow normal scripting language convention.
         EXP5    ::=  EXP6 ([%*/] EXP6)*
         EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
         EXP7    ::=  ('~!' | '~?')?  EXP8
-        EXP8    ::=  ('!' | '++' | '--')?  EXP9
+        EXP8    ::=  ('!' | '++' | '--' | 'new')?  EXP9
         EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
         EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
-                |    ID | CONST | FNLIT | ARRAY | OBJECT | '(' EXP ')'
+                |    | ID | CLOSLIT | FNLIT | ARRAY | OBJECT
+                |    '(' EXP ')'
 
+        FNLIT   ::=  'fn'  (ID)? PARAMS  BLOCK
+        CLOSLIT ::=  'close'  '{'  (ID  (','  ID)*)?  '}'  BLOCK
         ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
         OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
         PROP    ::=  ID  ':'  EXP
