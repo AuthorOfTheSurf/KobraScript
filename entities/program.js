@@ -6,17 +6,11 @@ function Program(block) {
 }
 
 Program.prototype.toString = function () {
-  return '(Program ' + this.block + ')' 
+  return '(Program ' + this.block + ')'
 }
 
 Program.prototype.analyze = function () {
   this.block.analyze(initialContext)
-}
-
-Program.prototype.environment = function(env) {
-  if (env === 'NODE') {
-    this.block.addNameToEnvironment('require')
-  }
 }
 
 Program.prototype.optimize = function () {
@@ -60,38 +54,23 @@ Program.prototype.showSemanticGraph = function () {
 // The state of the program at runtime, this is available
 // during code generation
 Program.prototype.state = {
-  variableMaker: (function () {
-    var lastId = 0
-    var map = {}
-
-    return function (basicVar) {
-      var name = basicVar.name
-
-      if (!map[name]) {
-        lastId = lastId + 1
-        map[name] = lastId
-      }
-      return '_' + name + '_' + map[name]
-    }
-  }()),
-
   // used to decide when to output 'var'
   continuingDeclaration: false
 }
 
 Program.prototype.generateJavaScript = function () {
   var prettyPrint = require('../code-gen/js-beautifier').prettyPrint
-  var js = [
-    // '(function ()',
-    'if (true)',
-    this.block.generateJavaScript(this.state),
-    // '());'
-  ]
-  // Gurantees we print a string, not an array
-  var str = [].concat.apply([], js).join(' ')
+  var code = this.block.generateJavaScript(this.state)
+
+  // Removes enclosing curly braces
+  // (Program is block of statements)
+  code = code.substring(1, code.length - 1)
+
   // Bad semicolons
-  str = str.replace(new RegExp('};', 'g'), '}')
-  return prettyPrint(str)
+  code = code.replace(new RegExp('};', 'g'), '}')
+
+  // Return formatted code
+  return prettyPrint(code)
 }
 
 module.exports = Program

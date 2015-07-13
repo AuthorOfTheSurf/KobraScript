@@ -2,7 +2,7 @@
 var parseArgs     = require('minimist')
 var path          = require('path')
 var argv          = parseArgs(process.argv.slice(2), opts={
-  boolean: ['t', 'a', 'o', 'i', 'E'],
+  boolean: ['t', 'a', 'o', 'i'],
 })
 
 var scan          = require('./scanner')
@@ -25,8 +25,7 @@ if (argv._.length === 0) {
     "-t scans, prints the tokens, then exits\n",
     "-a scans, parses, prints the abstract syntax tree, then exits\n",
     "-o does optimizations\n",
-    "-i goes up to semantic analysis, prints the semantic graph, then exits\n",
-    "-E initializes the program without the default (Node) environment variables\n");
+    "-i goes up to semantic analysis, prints the semantic graph, then exits\n");
 } else {
   scan(argv._[0], function (tokens) {
     if (error.count > 0) { return }
@@ -42,9 +41,6 @@ if (argv._.length === 0) {
     }
     if (argv.o) {
       program.optimize()
-    }
-    if (!argv.E) {
-      program.environment('NODE')
     }
     program.analyze()
     if (error.count > 0) { return }

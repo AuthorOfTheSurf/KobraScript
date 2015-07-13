@@ -16,6 +16,11 @@ UnaryExpression.prototype.analyze = function (context) {
 UnaryExpression.prototype.generateJavaScript = function (state) {
   var op = this.op.lexeme
   var operand = this.operand.generateJavaScript(state)
+
+  if (op === 'new') {
+    op = op + ' '
+  }
+
   return op + operand
 }
 
