@@ -12,7 +12,7 @@ var scanner              = require('./scanner'),
 var Program              = require('./entities/program'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
-    Fn                   = require('./entities/fn'),
+    FnLiteral            = require('./entities/fn-literal'),
     ClosureLiteral       = require('./entities/closure-literal'),
     Declaration          = require('./entities/declaration'),
     Property             = require('./entities/property'),
@@ -178,7 +178,7 @@ function parseFnLiteral() {
   }
   var params = parseParams()
   var body = parseBlock()
-  return new Fn(fntype, name, params, body)
+  return new FnLiteral(fntype, name, params, body)
 }
 
 function parseClosureLiteral() {
@@ -204,7 +204,7 @@ function parseFnDeclarationStatement() {
   var name = parseName()
   var params = parseParams()
   var body = parseBlock()
-  return new Declaration(name, new Fn(fntype, name, params, body))
+  return new Declaration(name, new FnLiteral(fntype, name, params, body))
 }
 
 function parseAnonRunFnStatement() {
