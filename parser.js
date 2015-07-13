@@ -484,7 +484,7 @@ function parseExp7() {
 
 /* Prefix unary expressions */
 function parseExp8() {
-  if (at(['!','++','--'])) {
+  if (at(['!','++','--','new'])) {
     var op = match()
     var operand = parseExp9()
     var left = new UnaryExpression(op, operand)
