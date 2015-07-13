@@ -12,34 +12,34 @@ var scanner              = require('./scanner'),
 var Program              = require('./entities/program'),
     Block                = require('./entities/block'),
     Type                 = require('./entities/type'),
-    Fn                   = require('./entities/fn'),
-    ClosureLiteral       = require('./entities/closureliteral'),
+    FnLiteral            = require('./entities/fn-literal'),
+    ClosureLiteral       = require('./entities/closure-literal'),
     Declaration          = require('./entities/declaration'),
     Property             = require('./entities/property'),
-    ConditionalStatement = require('./entities/conditionalstatement'),
-    OnlyIfStatement      = require('./entities/onlyifstatement')
+    ConditionalStatement = require('./entities/conditional-statement'),
+    OnlyIfStatement      = require('./entities/only-if-statement')
     Conditional          = require('./entities/conditional'),
-    ForStatement         = require('./entities/forstatement'),
-    WhileStatement       = require('./entities/whilestatement'),
-    SayStatement         = require('./entities/saystatement'),
-    ReturnStatement      = require('./entities/returnstatement'),
-    BreakStatement       = require('./entities/breakstatement'),
-    ContinueStatement    = require('./entities/continuestatement')
+    ForStatement         = require('./entities/for-statement'),
+    WhileStatement       = require('./entities/while-statement'),
+    SayStatement         = require('./entities/say-statement'),
+    ReturnStatement      = require('./entities/return-statement'),
+    BreakStatement       = require('./entities/break-statement'),
+    ContinueStatement    = require('./entities/continue-statement')
     Params               = require('./entities/params'),
-    UnaryExpression      = require('./entities/unaryexpression'),
-    PostUnaryExpression  = require('./entities/postunaryexpression'),
-    BinaryExpression     = require('./entities/binaryexpression'),
+    UnaryExpression      = require('./entities/unary-expression'),
+    PostUnaryExpression  = require('./entities/post-unary-expression'),
+    BinaryExpression     = require('./entities/binary-expression'),
     Name                 = require('./entities/name'),
-    IndexVar             = require('./entities/indexvar'),
-    DottedVar            = require('./entities/dottedvar'),
+    IndexVar             = require('./entities/index-var'),
+    DottedVar            = require('./entities/dotted-var'),
     Call                 = require('./entities/call'),
-    ArrayLiteral         = require('./entities/arrayliteral'),
-    ObjectLiteral        = require('./entities/objectliteral'),
-    NumericLiteral       = require('./entities/numericliteral'),
-    BooleanLiteral       = require('./entities/booleanliteral'),
-    StringLiteral        = require('./entities/stringliteral'),
-    UndefinedLiteral     = require('./entities/undefinedliteral'),
-    NullLiteral          = require('./entities/nullliteral')
+    ArrayLiteral         = require('./entities/array-literal'),
+    ObjectLiteral        = require('./entities/object-literal'),
+    NumericLiteral       = require('./entities/numeric-literal'),
+    BooleanLiteral       = require('./entities/boolean-literal'),
+    StringLiteral        = require('./entities/string-literal'),
+    UndefinedLiteral     = require('./entities/undefined-literal'),
+    NullLiteral          = require('./entities/null-literal')
 
 // Parser Globals
 var tokens
@@ -178,7 +178,7 @@ function parseFnLiteral() {
   }
   var params = parseParams()
   var body = parseBlock()
-  return new Fn(fntype, name, params, body)
+  return new FnLiteral(fntype, name, params, body)
 }
 
 function parseClosureLiteral() {
@@ -204,7 +204,7 @@ function parseFnDeclarationStatement() {
   var name = parseName()
   var params = parseParams()
   var body = parseBlock()
-  return new Declaration(name, new Fn(fntype, name, params, body))
+  return new Declaration(name, new FnLiteral(fntype, name, params, body))
 }
 
 function parseAnonRunFnStatement() {

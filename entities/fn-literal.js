@@ -1,6 +1,6 @@
 var error = require('../error')
 
-function Fn(fntype, name, params, body) {
+function FnLiteral(fntype, name, params, body) {
   this.fntype = fntype
   this.name = name
   this.params = params
@@ -8,7 +8,7 @@ function Fn(fntype, name, params, body) {
   this.body.subroutine = true
 }
 
-Fn.prototype.toString = function () {
+FnLiteral.prototype.toString = function () {
   var lexeme = this.fntype.lexeme
   var name = (this.name) ? this.name.name : ''
   var params = this.params.toString()
@@ -17,15 +17,17 @@ Fn.prototype.toString = function () {
   return '(' + [lexeme, name, params, body].join(' ') + ')'
 }
 
-Fn.prototype.analyze = function (context) {
-  // this.name.analyze(context)
+FnLiteral.prototype.analyze = function (context) {
+  if (this.name) {
+    this.name.analyze(context)
+  }
   this.params.analyze(context)
 
   var localContext = context.createChildContext()
   this.body.analyze(localContext)
 }
 
-Fn.prototype.generateJavaScript = function (state) {
+FnLiteral.prototype.generateJavaScript = function (state) {
   var js = [
     'function',
     (this.name) ? this.name : '',
@@ -37,4 +39,4 @@ Fn.prototype.generateJavaScript = function (state) {
   return js.join(' ')
 }
 
-module.exports = Fn
+module.exports = FnLiteral
