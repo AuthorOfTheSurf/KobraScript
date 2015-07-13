@@ -5,6 +5,7 @@
   "dependencies": {
     "byline": "latest",
     "hashmap": "latest",
+    "js-beautify": "^1.5.10",
     "minimist": "latest"
   },
   "main": "./kobrac.js",
@@ -14,5 +15,8 @@
   "devDependencies": {
     "mocha": "latest",
     "should": "latest"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }

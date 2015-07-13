@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg" alt="KobraScript Logo"/>
-</p>
+![KobraScript Logo](https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg)
+![Travis.CI build status](https://travis-ci.org/AuthorOfTheSurf/KobraScript.svg?branch=development)
+
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
 
 ## Install
@@ -20,27 +20,26 @@ To see a list of commands, just type:
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
 
-    say "Kobra!"                                           console.log("Kobra!");
+    say "Kobra!"                                            console.log("Kobra!");
 
 #### Variable Declarations
-In KobraScript, variable declarations are simplified to one character: `$`  
-Also: no semicolons, *ever*.
+In KobraScript, variable declarations are simplified to one character: `$`. Declare multiple variables at the same time with `,` or the slick `..` "dot-dot". KobraScript knows no semi-colons.
 
     $ name = "Samson"                                       var name = "Samson";
 
     $ likesMusic = true,                                    var likesMusic = true,
       likesJazz                                                 likesJazz = undefined;
 
-    $ isRed = true,                                         var isRed = true,
-      isFood = false,                                           isFood = false,
-      isMine = true                                             isMine = true;
+    $ isRed = true                                          var isRed = true,
+    .. isFood = false                                           isFood = false,
+    .. isMine = true                                            isMine = true;
 
 Variables with uninitialized values are set to undefined.
 
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`
+Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression -- use `undefined` or `0` if you want to return from a function early with success.
 
     fn average_intake (x):                                  function averageIntake (x) {
         $ total = 0                                             var total = 0;
@@ -51,28 +50,21 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
         return total / x.length                                 return total / x.length;
     end                                                     }
 
-    $ getSoup = fn (): return Res.soupOfTheDay() ..,        var getSoup = function () {return Res.soupOfTheDay()},
-      getDrink = fn (): return Res.specdrinks ..,               getDrink = function () {return Res.spacdrinks},
-      placeOrder = fn (item, quantity):                         placeOrder = function (item, quantity) {
-          Kitchen.addOrder(item, quantity)                          Kitchen.addOrder(item, quantity);
-          return true                                               return true;
-      end                                                       };
+    $  getSoup = fn (): return Res.soupOfTheDay() ..        var getSoup = function () {return Res.soupOfTheDay()},
+    .. getDrink = fn (): return Res.specdrinks ..               getDrink = function () {return Res.spacdrinks},
+    .. placeOrder = fn (item, quantity):                        placeOrder = function (item, quantity) {
+         Kitchen.addOrder(item, quantity)                           Kitchen.addOrder(item, quantity);
+       end                                                      };
 
-A function that does not return anything in KobraScript is called a procedure, written as `proc`. All other subroutines are functions, `fn`, and may optionally have a return statement. Subroutines are first-class in KobraScript. Also note that the return statement always expects an expression -- return `null` if you have no value to return.
+Similar to Javascript, anonymous self-calling functions are in KobraScript. These are typically used to create a private scope. In KobraScript, a closure literal may be constructed with `close`, followed by the inteded arguments as parameters enclosed in curly braces. One never has to worry about whether ones functions are being invoked on the fly. _Closed to the world, KobraScript may evaluate._
 
-    proc print_intake (y):                                  function printIntake (y) {
-        say average_intake(y)                                   console.log(averageIntake(y));
-    end                                                     }
-
-Similar to Javascript, anonymous self-calling functions are in KobraScript, written as `anon`.
-
-    anon:                                                   (function() {
+    close{}:                                                (function() {
       $ x = 10                                                  var x = 10;
       say x                                                     console.log(x);
     end                                                     }());
     
     $ x = [1, 2, 3]                                         var x = [1, 2, 3];
-    anon(x):                                                (function(x) {
+    close{x}:                                               (function(x) {
       print "I am " + x[1] + " good"                            console.log("I am " + x[1] + " good");
     end                                                     }(x));
 
@@ -90,7 +82,14 @@ Fearlessly create a single-statement block by pointing `->` to it. Nice.
         else -> say "that's somthin' else!"                     else console.log("that's somthin' else!");
     ..                                                      }
 
-    proc on (socket) -> this.active[socket] = true          function on (socket) this.active[socket] = true;
+    for ($ i = 0; i < nums["length"]; i++):                 for (var i = 0; i < nums.length; i++) {
+      $ p = nums[i]                                             var p = nums[i];
+      only -> primes.push(p) if (p)                             if (p) { primes.push(p) }
+    end                                                     }
+
+    if (socket)                                             if (socket) {
+      -> this.active[socket] = i++                              this.active[socket] = i++;
+                                                            }
 
 #### Conditional Statement
 In KobraScript the `if` statement is written with a preference to `..` between conditional blocks. An `end` after the final block signals the conclusion of the statement. Kobra is cold as ice.
@@ -109,12 +108,12 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
     only:                                                   if (feelingLucky) {
       rollDice() .. if (feelingLucky)                           rollDice();
                                                             }
-    only -> abandonShip() if (sinking)                      if (sinking) {
-    else -> justKeepSwiming()                                 abandonShip();
+    only:
+      abandonShip() .. if (sinking) else:                   if (sinking) {
+      justKeepSwiming() ..                                    abandonShip();
                                                             } else {
                                                               justKeepSwimming();
                                                             }
-
 
 #### Exchange Statement
 KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` the values of two variables.
@@ -122,13 +121,13 @@ KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` t
     $ a = 2,                                                var a = 2,
       b = 3                                                     b = 3;
     a :=: b                                                 var swap = a; a = b; b = swap; // Awful.
-    say a   >> 3                                            console.log(a);  // 3
-    say b   >> 2                                            console.log(b);  // 2
+    say a   // 3                                            console.log(a);  // 3
+    say b   // 2                                            console.log(b);  // 2
 
 #### `for` and `while` loops
 For and while loops look beautiful as expected; keyword, condition, block, nice.
 
-    $ a = 0 >> A test variable for loops.                   var a = 0; // A test variable for loops.
+    $ a = 0 // A test variable for loops.                   var a = 0; // A test variable for loops.
 
     for ($ i = 0; i < 4; i++):                              for (var i = 0; i < 4; i++) {
         a++                                                     a++;
@@ -146,7 +145,7 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         year: 2009,                                                 year: 2009,
         gears: 10,                                                  gears: 10,
         speed: 12.7,                                                speed: 12.7,
-        move: proc ():                                              move: function () {
+        move: fn ():                                                move: function () {
             Transform.translate(FORWARD * this.speed)                   Transform.translate(FORWARD * this.speed);
         ..,                                                         },
         upgrade_speed: fn ():                                       upgradeSpeed: function () {
@@ -154,58 +153,6 @@ Objects are easily specified and finely readable in KobraScript. Braces are used
         ..,                                                         },
         get_frame: fn (): return this.frame end                     getFrame: function () {return this.frame;}
     }                                                       }
-
-#### Blueprints [Not fully functional]
-Blueprints are special structures in KobraScript. They allow for a robust way to define object properties and methods, and expedite the process of creating a complex object. Blueprints use a different file extension, `.ksb`, due to the fact that blueprints are individual files.
-
-To utilize a blueprint in KobraScript, you "construct" the blueprint in a variable declaration, as you would an object in other languages. Parameters to construction can be specified specificly or dynamically.
-- Specific: `construct Person (hairColor="black")`
-- Dynamic:  `construct Person()` or `construct Person("Joe")`
-
-
-    $ p1 = construct Person("Joe", 18)         var p1 = new Person("Joe", 18);
-    $ p2 = construct Person(age=18)            var p2 = new Person(undefined, 18);
-
-A Blueprint consists of 3 parts:
-
-1. `has`
-       * Specify Blueprint properties.
-       * The `#` operator can be used to specify a default value.
-            `haircolor = hairColor # "black"`
-       * These properties are private
-2. `does`
-       * Specify Blueprint methods (functions).
-       * Methods can be defined from parameters
-            `do_exercise = exercise # running()`
-3. `syn` `:` `<branch_name>`
-       * Allows for flexible and organized creation of branches from the main object
-       * Access these properties as `Object.<branch_name>.<property>` e.g. `Person.get.name`
-       * Synthesized branches cannot be nested, but you may have as many as you like. `set` and `get` are common branches to include.
-
-Here is an example of a blueprint of a Person.  
-
-    $ blueprint Person (name, age, hairColor, exercise)
-
-    @has
-        name: name,
-        age: age,
-        hairColor: hairColor # "black"
-
-    @does
-        do_exercise: exercise # running,
-        running: proc ():
-            say("26.2 miles")
-        end
-
-    @syn:get
-        name = fn (): return name..,
-        age = fn (): return age ..,
-        hairColor = fn (): return hairColor ..
-
-    @syn:set
-        newHairColor = proc (color): hairColor = color ..
-
-    defcc
 
 #### Arrays
 Arrays in KobraScript follow normal scripting language convention.
@@ -216,14 +163,13 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.1.8
+    * KobraScript Syntax v.2.0.0
     * 
     */
 
     ### Macrosyntax
 
         UNIT    ::=  PROGRAM
-                |    BLUPRNT
 
         PROGRAM ::=  STMT+  (as BLOCK)
 
@@ -244,36 +190,32 @@ Arrays in KobraScript follow normal scripting language convention.
                 |    'return'  EXP
                 |    EXP
 
-        VARDEC  ::=  '$'  ID  '='  EXP  (','  ID  '='  EXP)*
-        FNDEC   ::=  FNTYPE  ID  PARAMS  BLOCK
-        FNTYPE  ::=  'proc' | 'fn'
+        VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
+        FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
+        
+        
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
         EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
         EXP0    ::=  EXP1 (('||' | '#') EXP1)*
         EXP1    ::=  EXP2 ('&&' EXP2)*
         EXP2    ::=  EXP3 ('==' | '~=' | '!='  EXP3)?
-        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>'  EXP4)?
+        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>')  EXP4)?
         EXP4    ::=  EXP5 ([+-] EXP5)*
         EXP5    ::=  EXP6 ([%*/] EXP6)*
         EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
         EXP7    ::=  ('~!' | '~?')?  EXP8
-        EXP8    ::=  ('!' | '++' | '--')?  EXP9
+        EXP8    ::=  ('!' | '++' | '--' | 'new')?  EXP9
         EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
-        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT | ID | CONST | FNVAL | ARRAY | OBJECT | '(' EXP ')'
+        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
+                |    | ID | CLOSLIT | FNLIT | ARRAY | OBJECT
+                |    '(' EXP ')'
 
-        CONST   ::=  'construct'  ID  '('  ((ID  '='  EXP  ',')*  ID  '='  EXP | (ID  ',')*  ID)?  ')'
-        FNVAL   ::=  FNTYPE  PARAMS  BLOCK
-
+        FNLIT   ::=  'fn'  (ID)? PARAMS  BLOCK
+        CLOSLIT ::=  'close'  '{'  (ID  (','  ID)*)?  '}'  BLOCK
         ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
         OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
         PROP    ::=  ID  ':'  EXP
-
-        BLUPRNT ::=  'blueprint'  ID  PARAMS  BLUBLK  'defcc'
-        BLUBLK  ::=  ':'  HASBLK  DOESBLK  SYNCHILD*
-        HASBLK  ::=  '@'  'has'  (PROP  (','  PROP)*)?
-        DOESBLK ::=  '@'  'does'  (PROP  (','  PROP)*)?
-        SYNCHLD ::=  '@'  'syn'  ':'  ID  (PROP  (','  PROP)*)?
 
 ### Microsyntax
 
@@ -283,5 +225,4 @@ Arrays in KobraScript follow normal scripting language convention.
         UNDEFLIT::=  'undefined'
         NULLLIT ::=  'null'
         ID      ::=  [_a-zA-Z]\w*
-        COMMENT ::=  '>>'  TEXT  '\n'
-                |    '>|'  TEXT  '|<'
+        COMMENT ::=  '//'  TEXT  '\n'

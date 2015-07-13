@@ -13,4 +13,15 @@ WhileStatement.prototype.analyze = function (context) {
   this.body.analyze(context)
 }
 
+WhileStatement.prototype.generateJavaScript = function (state) {
+  var js = [
+    'while',
+    '(',
+    this.condition.generateJavaScript(state),
+    ')',
+    this.body.generateJavaScript(state)
+  ]
+  return js.join(' ')
+}
+
 module.exports = WhileStatement

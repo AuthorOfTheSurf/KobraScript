@@ -11,4 +11,13 @@ DottedVar.prototype.analyze = function (context) {
   this.struct.analyze(context)
 }
 
+DottedVar.prototype.generateJavaScript = function (state) {
+  var js = [
+    this.struct.generateJavaScript(state),
+    '.',
+    this.property.generateJavaScript(state)
+  ]
+  return js.join(' ')
+}
+
 module.exports = DottedVar

@@ -1,9 +1,11 @@
->| Derp
- |<
+// A Comment
+//
+  // //
 
-$ a = 10,
-  b = 20,
-  c,
-  d = 30
+$ a = 10
+.. b = 30
 
-b :=: d >> Custom exchange statement.
+b :=: a
+
+loge a
+loge b

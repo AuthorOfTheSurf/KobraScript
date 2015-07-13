@@ -16,4 +16,26 @@ ObjectLiteral.prototype.analyze = function (context) {
   })
 }
 
+ObjectLiteral.prototype.generateJavaScript = function (state) {
+  var js = []
+  var propText = []
+
+  js.push('{')
+
+  this.properties.forEach(function (p) {
+    var name = p.name.generateJavaScript(state)
+    var initializer = p.initializer.generateJavaScript(state)
+
+    propText.push(name + ':' + initializer)
+  })
+
+  if (propText) {
+    js.push(propText.join(', '))
+  }
+
+  js.push('}')
+
+  return js.join('')
+}
+
 module.exports = ObjectLiteral

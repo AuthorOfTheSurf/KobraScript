@@ -1,5 +1,5 @@
->> KS 1.8 syntax
->> node kobrac.js mergesort.ks | node
+// to run:
+// node kobrac.js mergesort.ks | node
 
 fn merge(left, right):
   $ i = 0,

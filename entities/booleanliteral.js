@@ -12,4 +12,8 @@ BooleanLiteral.prototype.analyze = function (context) {
   this.type = Type.BOOLIT
 }
 
+BooleanLiteral.prototype.generateJavaScript = function (state) {
+  return this.toString()
+}
+
 module.exports = BooleanLiteral

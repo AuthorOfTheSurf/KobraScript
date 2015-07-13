@@ -12,7 +12,10 @@ describe('The compiler', function () {
     it('should compile ' + name + ' without errors', function (done) {
       scan(path.join(TEST_DIR, name), function (tokens) {
         var priorErrorCount = error.count
-        parse(tokens).analyze()
+        var program = parse(tokens)
+
+        program.analyze()
+        
         error.count.should.equal(priorErrorCount)
         done()
       })

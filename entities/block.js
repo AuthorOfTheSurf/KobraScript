@@ -10,9 +10,11 @@ Block.prototype.toString = function () {
 
 Block.prototype.analyze = function (context) {
   var localContext = context.createChildContext()
-  /* Pass state into owned context */
+  
+  // Pass Block's state into context
   localContext.looped = this.looped
   localContext.subroutine = this.subroutine
+
   this.statements.forEach(function (statement) {
     statement.analyze(localContext)
   })
@@ -26,4 +28,16 @@ Block.prototype.contains = function (Ent) {
   }
   return false
 }
+
+Block.prototype.generateJavaScript = function (state) {
+  var js = [
+    '{',
+    this.statements.map(function (s) {
+      return s.generateJavaScript(state) + ';'
+    }).join(''),
+    '}'
+  ]
+  return js.join(' ')
+}
+
 module.exports = Block

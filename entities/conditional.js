@@ -16,4 +16,15 @@ Conditional.prototype.analyze = function (context) {
   this.body.analyze(context)
 }
 
+Conditional.prototype.generateJavaScript = function (state) {
+  var js = [
+    'if',
+    '(',
+    this.condition.generateJavaScript(state),
+    ')',
+    this.body.generateJavaScript(state)
+  ]
+  return js.join(' ')
+}
+
 module.exports = Conditional

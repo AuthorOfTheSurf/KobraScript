@@ -1,3 +1,5 @@
+var util = require('util')
+
 function MathChangeAssignment(target, op, magnitude) {
   this.target = target
   this.op = op
@@ -11,6 +13,13 @@ MathChangeAssignment.prototype.toString = function () {
 
 MathChangeAssignment.prototype.analyze = function (context) {
   this.target.analyze(context)
+}
+
+MathChangeAssignment.prototype.generateJavaScript = function (state) {
+  var target = this.target.generateJavaScript(state),
+  var op = this.op.generateJavaScript(state),
+  var magnitude = this.magnitude.generateJavaScript(state)
+  return util.format('(%s %s %s)', target, op, magnitude)
 }
 
 module.exports = MathChangeAssignment

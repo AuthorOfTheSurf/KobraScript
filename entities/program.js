@@ -6,7 +6,7 @@ function Program(block) {
 }
 
 Program.prototype.toString = function () {
-  return '(Program ' + this.block + ')' 
+  return '(Program ' + this.block + ')'
 }
 
 Program.prototype.analyze = function () {
@@ -49,6 +49,28 @@ Program.prototype.showSemanticGraph = function () {
     }
   }
   dump(this, 0)
+}
+
+// The state of the program at runtime, this is available
+// during code generation
+Program.prototype.state = {
+  // used to decide when to output 'var'
+  continuingDeclaration: false
+}
+
+Program.prototype.generateJavaScript = function () {
+  var prettyPrint = require('../code-gen/js-beautifier').prettyPrint
+  var code = this.block.generateJavaScript(this.state)
+
+  // Removes enclosing curly braces
+  // (Program is block of statements)
+  code = code.substring(1, code.length - 1)
+
+  // Bad semicolons
+  code = code.replace(new RegExp('};', 'g'), '}')
+
+  // Return formatted code
+  return prettyPrint(code)
 }
 
 module.exports = Program

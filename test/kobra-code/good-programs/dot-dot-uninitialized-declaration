@@ -1,0 +1,6 @@
+$  a
+.. b
+.. c
+.. d = close{}:
+  return [a, b, c]
+end

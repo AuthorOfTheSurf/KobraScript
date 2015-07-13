@@ -12,4 +12,8 @@ NullLiteral.prototype.analyze = function (context) {
   this.type = Type.NULLLIT
 }
 
+NullLiteral.prototype.generateJavaScript = function (state) {
+  return 'null'
+}
+
 module.exports = NullLiteral

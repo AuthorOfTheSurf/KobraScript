@@ -11,4 +11,10 @@ PostUnaryExpression.prototype.analyze = function (context) {
   this.operand.analyze(context)
 }
 
+PostUnaryExpression.prototype.generateJavaScript = function (state) {
+  var operand = this.operand.generateJavaScript(state)
+  var op = this.op.lexeme
+  return operand + op
+}
+
 module.exports = PostUnaryExpression

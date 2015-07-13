@@ -12,4 +12,16 @@ Declaration.prototype.analyze = function (context) {
   this.initializer.analyze(context)
 }
 
+Declaration.prototype.generateJavaScript = function (state) {
+  var js = []
+  if (!state.continuingDeclaration) {
+    js.push('var')
+  }
+  js.push(
+    this.name.generateJavaScript(state),
+    '=',
+    this.initializer.generateJavaScript(state))
+  return js.join(' ')
+}
+
 module.exports = Declaration
