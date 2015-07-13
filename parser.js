@@ -207,22 +207,6 @@ function parseFnDeclarationStatement() {
   return new Declaration(name, new FnLiteral(fntype, name, params, body))
 }
 
-function parseAnonRunFnStatement() {
-  match('anon')
-  var args = []
-  if (at('(')) {
-    match()
-    args.push(parseExpression())
-    while (at(',')) {
-      match()
-      args.push(parseExpression())
-    }
-    match(')')
-  }
-  var body = parseBlock()
-  return new AnonRunFn(args, body)
-}
-
 function parseParams() {
   match('(')
   var params = []
