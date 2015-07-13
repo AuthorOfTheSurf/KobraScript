@@ -37,10 +37,12 @@ function scan(line, linenumber, tokens) {
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",
-    "bit|int|float|bool|str|undefined|null|fn|close|return",
-    "|if|else|only|do|while|for|switch|break|continue",
-    "|case|try|catch|finally|throw|function|instanceof",
-    "|var|void|with|end|say|loge|_hidden|__factorial",
+    "undefined|null|fn|close|return|if|else|only|do|while|for",
+    "|break|continue|new|case|end|say|loge|_hidden|__factorial",
+    ")$"].join(''))
+  var bannedTokens = new RegExp([
+    "^(?:",
+    "var|void|with|instanceof|function|try|catch|finally|throw|switch",
     ")$"].join(''))
   var numericLit = /(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?/
   var booleanLit = /^(?:true|false)$/
@@ -185,9 +187,15 @@ function scan(line, linenumber, tokens) {
 
     // Reserved words or identifiers
     else if (/[$A-Za-z]/.test(line[pos])) {
-      while (/\w/.test(line[pos]) && pos < line.length) pos++
+      while (/\w/.test(line[pos]) && pos < line.length) {
+        pos++
+      }
+
       var word = line.substring(start, pos)
-      if (definedTokens.test(word)) {
+
+      if (bannedTokens.test(word)) {
+        error('Illegal token \'' + word + '\'', {line: linenumber, col: pos+1})
+      } else if (definedTokens.test(word)) {
         emit(word)
       } else {
         emit('ID', word)
