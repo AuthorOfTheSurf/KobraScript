@@ -5,17 +5,19 @@ KobraScript is a language that harvests the power of JavaScript with an incredib
 
 ## Install
 You can install KobraScript into your global environment so that you can execute KobraScript programs from anywhere. To do so, run this command:
-  
+
     npm install -g kobrascript
-  
+
 You can execute KobraScript programs like so:
 
     kobra <name_of_program.ks>
 
-To see a list of commands, just type:
+You can also see the transpiled version of your code by running `kobrac`:
 
-    kobra
-  
+    kobrac <name_of_program.ks>
+
+To see a list of commands available, type `kobra` or `kobrac` with no arguments.
+
 
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
@@ -70,7 +72,7 @@ Similar to Javascript, anonymous self-calling functions are in KobraScript. Thes
       $ x = 10                                                  var x = 10;
       say x                                                     console.log(x);
     end                                                     }());
-    
+
     $ x = [1, 2, 3]                                         var x = [1, 2, 3];
     close{x}:                                               (function(x) {
       print "I am " + x[1] + " good"                            console.log("I am " + x[1] + " good");
@@ -125,7 +127,7 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
 
 #### Exchange Statement
 KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` the values of two variables.
-    
+
     $ a = 2,                                                var a = 2,
       b = 3                                                     b = 3;
     a :=: b                                                 var swap = a; a = b; b = swap; // Awful.
@@ -172,7 +174,7 @@ Arrays in KobraScript follow normal scripting language convention.
     **/
     * This is regarded as the the most up to date specification of KS
     * KobraScript Syntax v.2.1.0
-    * 
+    *
     */
 
     ### Macrosyntax
@@ -203,8 +205,8 @@ Arrays in KobraScript follow normal scripting language convention.
 
         VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
         FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
-        
-        
+
+
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
         EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
