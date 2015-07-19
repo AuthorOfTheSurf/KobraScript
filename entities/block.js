@@ -9,14 +9,8 @@ Block.prototype.toString = function () {
 }
 
 Block.prototype.analyze = function (context) {
-  var localContext = context.createChildContext()
-  
-  // Pass Block's state into context
-  localContext.looped = this.looped
-  localContext.subroutine = this.subroutine
-
   this.statements.forEach(function (statement) {
-    statement.analyze(localContext)
+    statement.analyze(context)
   })
 }
 
