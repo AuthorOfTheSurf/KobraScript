@@ -12,16 +12,12 @@ ReturnStatement.prototype.analyze = function (context) {
   this.expression.analyze(context)
   
   if (!context.isSubroutine) {
-    error('illegal return from non-function context')
+    error('illegal return in non-functional context')
   }
 }
 
 ReturnStatement.prototype.generateJavaScript = function (state) {
-  if (this.expression) {
-    return 'return' + ' ' + this.expression.generateJavaScript(state)
-  } else {
-    return 'return'
-  }
+  return 'return' + ' ' + this.expression.generateJavaScript(state)
 }
 
 module.exports = ReturnStatement
