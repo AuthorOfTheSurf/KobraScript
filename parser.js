@@ -539,6 +539,7 @@ function parseExpRoot() {
   } else if (at('(')) {
     match('(')
     var expression = parseExpression()
+    expression.wrappedByParens = true
     match(')')
     return expression
   } else if (at('EOF')) {
