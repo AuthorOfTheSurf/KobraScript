@@ -49,9 +49,9 @@ var dirname
 // Used by multiple variable declaration
 var continuing = false
 
-module.exports = function (scanner_output, filename, dir) {
-  dirname = dir
+module.exports = function (scanner_output, dir) {
   tokens = scanner_output
+  dirname = dir
   var program = parseProgram()
   return program
 }
