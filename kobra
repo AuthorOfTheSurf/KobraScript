@@ -1,8 +1,10 @@
 #!/bin/bash
 
-if [[ -z "$@" ]]
-then
+if [ $# -eq 0 ]; then
+  node kobrac
+elif [ $# -gt 1 ]; then
+  echo "Use \"kobrac\" for command-line arguments."
   node kobrac
 else
-  node kobrac $@ | node
+  node kobrac $1 | node
 fi

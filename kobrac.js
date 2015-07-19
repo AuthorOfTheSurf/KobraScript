@@ -16,7 +16,7 @@ var currentDir    = path.dirname(argv._[0])
 if (argv._.length === 0) {
   console.log(
     "This is KobraScript compiler!\n",
-    "$ kobra [-t] [-a] [-o] [-i] filename\n",
+    "$ kobrac [-t] [-a] [-o] [-i] filename\n",
     "-t scans, prints the tokens, then exits\n",
     "-a scans, parses, prints the abstract syntax tree, then exits\n",
     "-o does optimizations\n",
@@ -27,7 +27,7 @@ if (argv._.length === 0) {
     error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks', { path: fileExtension })
     return
   }
-  
+
   scan(argv._[0], function (tokens) {
     if (error.count > 0) { return }
     if (argv.t) {
