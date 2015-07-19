@@ -5,7 +5,6 @@ function ForStatement(assignments, condition, after, body) {
   this.condition = condition
   this.after = after
   this.body = body
-  this.body.looped = true
 }
 
 ForStatement.prototype.toString = function () {
@@ -20,7 +19,9 @@ ForStatement.prototype.analyze = function (context) {
   this.after.forEach(function (after) {
     after.analyze(context)
   })
+  context.looped = true
   this.body.analyze(context)
+  context.looped = false
 }
 
 ForStatement.prototype.generateJavaScript = function (state) {
