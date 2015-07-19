@@ -39,9 +39,9 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression -- use `undefined` or `0` if you want to return from a function early with success.
+Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression–use the `leave` statement to return early from a function without an expression.
 
-    fn average_intake (x):                                  function averageIntake (x) {
+    fn average_intake(x):                                   function averageIntake(x) {
         $ total = 0                                             var total = 0;
         for ($ i = 0; i < x.length; i++):                       for (var i = 0; i < x.length; i++) {
             total = total + x[i]                                    total = total + x[i];
@@ -55,6 +55,14 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
     .. placeOrder = fn (item, quantity):                        placeOrder = function (item, quantity) {
          Kitchen.addOrder(item, quantity)                           Kitchen.addOrder(item, quantity);
        end                                                      };
+
+    fn bomb(code):                                          function bomb(code) {
+      if (code == "Password1"):                                 if (code === "Password1") {
+        leave                                                       return;
+      .. else:                                                  } else {
+        say "Boom!"                                                 console.log("Boom!")
+      end                                                       }
+    end                                                     }
 
 Similar to Javascript, anonymous self-calling functions are in KobraScript. These are typically used to create a private scope. In KobraScript, a closure literal may be constructed with `close`, followed by the inteded arguments as parameters enclosed in curly braces. One never has to worry about whether ones functions are being invoked on the fly. _Closed to the world, KobraScript may evaluate._
 
@@ -163,7 +171,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.2.0.0
+    * KobraScript Syntax v.2.1.0
     * 
     */
 
@@ -187,7 +195,10 @@ Arrays in KobraScript follow normal scripting language convention.
                      ('else'  BLOCK)?
                 |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
                 |    'while'  '('  EXP  ')'  BLOCK
+                |    'break'
+                |    'continue'
                 |    'return'  EXP
+                |    'leave'
                 |    EXP
 
         VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
