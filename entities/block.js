@@ -1,7 +1,5 @@
 function Block(statements) {
   this.statements = statements
-  this.looped = false
-  this.subroutine = false
 }
 
 Block.prototype.toString = function () {
@@ -14,9 +12,9 @@ Block.prototype.analyze = function (context) {
   })
 }
 
-Block.prototype.contains = function (Ent) {
+Block.prototype.contains = function (EntityName) {
   for (var i = 0; i < this.statements.length; i++) {
-    if (this.statements[i].constructor.name === Ent) {
+    if (this.statements[i].constructor.name === EntityName) {
       return true
     }
   }
