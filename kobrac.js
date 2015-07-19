@@ -12,10 +12,6 @@ var error         = require('./error')
 var fileExtension = path.extname(argv._[0])
 var currentDir    = path.dirname(argv._[0])
 
-if ([".ks",".ksb"].indexOf(fileExtension) < 0) {
-  error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks or .ksb', { path: fileExtension })
-}
-
 //  Begin execution.
 if (argv._.length === 0) {
   console.log(
@@ -26,6 +22,12 @@ if (argv._.length === 0) {
     "-o does optimizations\n",
     "-i goes up to semantic analysis, prints the semantic graph, then exits\n");
 } else {
+  // Check for proper .ks extension if arg provided
+  if ('.ks'.indexOf(fileExtension) < 0) {
+    error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks', { path: fileExtension })
+    return
+  }
+  
   scan(argv._[0], function (tokens) {
     if (error.count > 0) { return }
     if (argv.t) {
