@@ -540,12 +540,25 @@ function parseExpRoot() {
     match('(')
     var expression = parseExpression()
     expression.wrappedByParens = true
+    okToWrap(expression)
     match(')')
     return expression
   } else if (at('EOF')) {
     return
   } else {
     error('Expected expression start but found ' + JSON.stringify(tokens[0]))
+  }
+}
+
+function okToWrap(expression) {
+  var exptype = expression.constructor.name
+  var shouldNotBeWrapped = [
+    'ClosureLiteral', 'FunctionLiteral'
+  ]
+  var incorrectlyWrapped = shouldNotBeWrapped.indexOf(exptype) >= 0
+
+  if (incorrectlyWrapped) {
+    error('There is no need to wrap a ' + exptype + ' with parenthesis')
   }
 }
 
