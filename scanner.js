@@ -9,6 +9,7 @@
 var fs = require('fs')
 var byline = require('byline')
 var error = require('./error')
+var Token = require('./token')
 
 module.exports = function (filename, callback) {
   var baseStream = fs.createReadStream(filename, {encoding: 'utf8'})
@@ -37,7 +38,7 @@ function scan(line, linenumber, tokens) {
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",
-    "undefined|null|fn|close|return|if|else|only|do|while|for",
+    "undefined|null|fn|close|return|leave|if|else|only|do|while|for",
     "|break|continue|new|case|end|say|loge|_hidden|__factorial",
     ")$"].join(''))
   var bannedTokens = new RegExp([
@@ -52,9 +53,19 @@ function scan(line, linenumber, tokens) {
   var hexEscapeCharacters = /x[a-fA-F0-9]{2}/
   var emit = function (kind, lexeme, isEmpty) {
     if (isEmpty) {
-      tokens.push({kind: kind, lexeme: '', line: linenumber, col: start+1})
+      tokens.push(new Token({
+        kind: kind,
+        lexeme: '',
+        line: linenumber,
+        col: start + 1
+      }))
     } else {
-      tokens.push({kind: kind, lexeme: lexeme || kind, line: linenumber, col: start+1})
+      tokens.push(new Token({
+        kind: kind,
+        lexeme: lexeme || kind,
+        line: linenumber,
+        col: start + 1
+      }))
     }
   }
 

@@ -10,7 +10,8 @@
   },
   "main": "./kobrac.js",
   "bin": {
-    "kobra": "./kobrac.js"
+    "kobra": "./kobra",
+    "kobrac": "./kobrac.js"
   },
   "devDependencies": {
     "mocha": "latest",

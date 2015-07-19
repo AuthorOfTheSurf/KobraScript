@@ -18,6 +18,7 @@ BinaryExpression.prototype.toString = function () {
 }
 
 BinaryExpression.prototype.generateJavaScript = function (state) {
+  var js = ''
   var lexeme = this.op.lexeme
   var left = this.left.generateJavaScript(state)
   var right = this.right.generateJavaScript(state)
@@ -32,17 +33,22 @@ BinaryExpression.prototype.generateJavaScript = function (state) {
   }
 
   if (lexeme === '**') {
-    return util.format('Math.pow(%s,%s)', left, right)
+    js = util.format('Math.pow(%s,%s)', left, right)
   } else if (lexeme === '-**') {
-    return util.format('((1.0)/Math.pow(%s,%s))', left, right)
+    js = util.format('((1.0)/Math.pow(%s,%s))', left, right)
   } else if (lexeme === 'is') {
-    return util.format('(typeof %s === typeof %s)', left, right)
+    js = util.format('(typeof %s === typeof %s)', left, right)
   } else if (lexeme === ':=:') {
-    // :^)
-    return util.format('%s = [%s, %s = %s][0]', right, left, left, right)
+    // Returns the value `a` in `a :=: b`, the new value for `b`
+    js = util.format('%s = [%s, %s = %s][0]', right, left, left, right)
   } else {
-    return util.format('%s %s %s', left, makeOp(lexeme), right)
+    js = util.format('%s %s %s', left, makeOp(lexeme), right)
   }
+
+  if (this.wrappedByParens) {
+    return '(' + js + ')'
+  }
+  return js
 }
 
 module.exports = BinaryExpression

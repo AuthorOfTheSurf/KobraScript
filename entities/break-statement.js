@@ -9,7 +9,7 @@ BreakStatement.prototype.toString = function () {
 }
 
 BreakStatement.prototype.analyze = function (context) {
-  if (!context.looped && !context.parent.looped) {
+  if (!context.looped) {
     error('illegal break in non-looping context')
   }
 }

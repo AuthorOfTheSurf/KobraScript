@@ -12,10 +12,12 @@ ClosureLiteral.prototype.toString = function() {
 }
 
 ClosureLiteral.prototype.analyze = function (context) {
-  var localContext = context.createChildContext()
   this.args.forEach(function (arg) {
     arg.analyze(context)
   })
+
+  var localContext = context.createChildContext()
+  localContext.isSubroutine = true
   this.body.analyze(localContext)
 }
 

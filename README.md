@@ -5,17 +5,19 @@ KobraScript is a language that harvests the power of JavaScript with an incredib
 
 ## Install
 You can install KobraScript into your global environment so that you can execute KobraScript programs from anywhere. To do so, run this command:
-  
+
     npm install -g kobrascript
-  
+
 You can execute KobraScript programs like so:
 
     kobra <name_of_program.ks>
 
-To see a list of commands, just type:
+You can also see the transpiled version of your code by running `kobrac`:
 
-    kobra
-  
+    kobrac <name_of_program.ks>
+
+To see a list of commands available, type `kobra` or `kobrac` with no arguments.
+
 
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
@@ -39,9 +41,9 @@ Variables with uninitialized values are set to undefined.
     $ total                                                 var total = undefined;
 
 #### Functions
-Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression -- use `undefined` or `0` if you want to return from a function early with success.
+Declare a function easily with `fn`. Open the block with `:`, and close using `end`, or `..`.  Also note that the `return` statement always expects an expression–use the `leave` statement to return early from a function without an expression.
 
-    fn average_intake (x):                                  function averageIntake (x) {
+    fn average_intake(x):                                   function averageIntake(x) {
         $ total = 0                                             var total = 0;
         for ($ i = 0; i < x.length; i++):                       for (var i = 0; i < x.length; i++) {
             total = total + x[i]                                    total = total + x[i];
@@ -56,13 +58,21 @@ Declare a function easily with `fn`. Open the block with `:`, and close using `e
          Kitchen.addOrder(item, quantity)                           Kitchen.addOrder(item, quantity);
        end                                                      };
 
+    fn bomb(code):                                          function bomb(code) {
+      if (code == "Password1"):                                 if (code === "Password1") {
+        leave                                                       return;
+      .. else:                                                  } else {
+        say "Boom!"                                                 console.log("Boom!")
+      end                                                       }
+    end                                                     }
+
 Similar to Javascript, anonymous self-calling functions are in KobraScript. These are typically used to create a private scope. In KobraScript, a closure literal may be constructed with `close`, followed by the inteded arguments as parameters enclosed in curly braces. One never has to worry about whether ones functions are being invoked on the fly. _Closed to the world, KobraScript may evaluate._
 
     close{}:                                                (function() {
       $ x = 10                                                  var x = 10;
       say x                                                     console.log(x);
     end                                                     }());
-    
+
     $ x = [1, 2, 3]                                         var x = [1, 2, 3];
     close{x}:                                               (function(x) {
       print "I am " + x[1] + " good"                            console.log("I am " + x[1] + " good");
@@ -117,7 +127,7 @@ Bite first, ask for booleans later. Kobrascript allows a lightning-quick, condit
 
 #### Exchange Statement
 KobraScript utilizes a Go/Python-inspired statement in order to exchange `:=:` the values of two variables.
-    
+
     $ a = 2,                                                var a = 2,
       b = 3                                                     b = 3;
     a :=: b                                                 var swap = a; a = b; b = swap; // Awful.
@@ -163,8 +173,8 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.2.0.0
-    * 
+    * KobraScript Syntax v.2.1.0
+    *
     */
 
     ### Macrosyntax
@@ -187,13 +197,16 @@ Arrays in KobraScript follow normal scripting language convention.
                      ('else'  BLOCK)?
                 |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
                 |    'while'  '('  EXP  ')'  BLOCK
+                |    'break'
+                |    'continue'
                 |    'return'  EXP
+                |    'leave'
                 |    EXP
 
         VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
         FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
-        
-        
+
+
         PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
         EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
