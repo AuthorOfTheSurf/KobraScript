@@ -1,7 +1,6 @@
 function WhileStatement(condition, body) {
   this.condition = condition
   this.body = body
-  this.body.looped = true
 }
 
 WhileStatement.prototype.toString = function () {
@@ -10,7 +9,9 @@ WhileStatement.prototype.toString = function () {
 
 WhileStatement.prototype.analyze = function (context) {
   this.condition.analyze(context)
+  context.looped = true
   this.body.analyze(context)
+  context.looped = false
 }
 
 WhileStatement.prototype.generateJavaScript = function (state) {

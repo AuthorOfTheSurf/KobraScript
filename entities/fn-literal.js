@@ -5,7 +5,6 @@ function FnLiteral(fntype, name, params, body) {
   this.name = name
   this.params = params
   this.body = body
-  this.body.subroutine = true
 }
 
 FnLiteral.prototype.toString = function () {
@@ -24,6 +23,7 @@ FnLiteral.prototype.analyze = function (context) {
   this.params.analyze(context)
 
   var localContext = context.createChildContext()
+  localContext.isSubroutine = true
   this.body.analyze(localContext)
 }
 
