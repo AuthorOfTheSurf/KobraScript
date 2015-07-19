@@ -308,7 +308,12 @@ function parseForStatement() {
 }
 
 function parseReturnStatement() {
-  match('return')
+  var r = match('return')
+  var line = r.line
+
+  if (tokens[0].line != line) {
+    error('Expected return statement to be on same line as return token', r)
+  }
   var expression = parseExpression()
   return new ReturnStatement(expression)
 }
