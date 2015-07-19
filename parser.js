@@ -539,8 +539,15 @@ function parseExpRoot() {
   } else if (at('(')) {
     match('(')
     var expression = parseExpression()
+    var type = expression.constructor.name
     match(')')
-    return expression
+
+    if (type !== 'BinaryExpression') {
+      error('There is no need to wrap ' + type + ' in parenthesis')
+    } else {
+      expression.wrappedByParens = true
+      return expression
+    }
   } else if (at('EOF')) {
     return
   } else {
