@@ -37,7 +37,7 @@ function scan(line, linenumber, tokens) {
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",
-    "undefined|null|fn|close|return|if|else|only|do|while|for",
+    "undefined|null|fn|close|return|leave|if|else|only|do|while|for",
     "|break|continue|new|case|end|say|loge|_hidden|__factorial",
     ")$"].join(''))
   var bannedTokens = new RegExp([

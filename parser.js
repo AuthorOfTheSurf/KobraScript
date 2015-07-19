@@ -23,6 +23,7 @@ var Program              = require('./entities/program'),
     WhileStatement       = require('./entities/while-statement'),
     SayStatement         = require('./entities/say-statement'),
     ReturnStatement      = require('./entities/return-statement'),
+    LeaveStatement       = require('./entities/leave-statement'),
     BreakStatement       = require('./entities/break-statement'),
     ContinueStatement    = require('./entities/continue-statement')
     Params               = require('./entities/params'),
@@ -94,7 +95,7 @@ function parseStatements() {
 function shouldParseStatement() {
   var statementStartingToken = [
     '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'close',
-    '++', '--', 'return', 'say', 'loge', 'break', 'continue'
+    '++', '--', 'return', 'leave', 'say', 'loge', 'break', 'continue'
   ]
   if (!continuing && at('..')) {
     return false
@@ -120,6 +121,8 @@ function parseStatement() {
     return parseSayStatement()
   } else if (at('return')) {
     return parseReturnStatement()
+  } else if (at('leave')) {
+    return parseLeaveStatement()
   } else if (at('break')) {
     return parseBreakStatement()
   } else if (at('continue')) {
@@ -306,12 +309,19 @@ function parseForStatement() {
 
 function parseReturnStatement() {
   match('return')
-  return new ReturnStatement(parseExpression())
+  var expression = parseExpression()
+  return new ReturnStatement(expression)
+}
+
+function parseLeaveStatement() {
+  match('leave')
+  return new LeaveStatement()
 }
 
 function parseSayStatement() {
   match()
-  return new SayStatement(parseExpression())
+  var expression = parseExpression()
+  return new SayStatement(expression)
 }
 
 function parseBreakStatement() {
