@@ -1,4 +1,4 @@
-![KobraScript Logo](https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg)
+[![KobraScript Logo](https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg)](https://github.com/AuthorOfTheSurf/KobraScript)
 ![Travis.CI build status](https://travis-ci.org/AuthorOfTheSurf/KobraScript.svg?branch=development)
 
 KobraScript is a language that harvests the power of JavaScript with an incredibly intuitive syntax.
