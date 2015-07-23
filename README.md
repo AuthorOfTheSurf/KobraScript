@@ -87,14 +87,18 @@ Fearlessly create a single-statement block by pointing `->` to it. Nice.
     end                                                     }
 
     fn numResponse (x):                                     function numResponse (x) {
-        if (x == 1) -> say "that's one!"                        if (x === 1) console.log("that's one!");
-        else if (x == 2) -> say "that's two!"                   else if (x === 2) console.log("that's two!");
-        else -> say "that's somthin' else!"                     else console.log("that's somthin' else!");
-    ..                                                      }
+      if (x == 1):                                              if (x === 1) {
+        say "that's one!"                                           console.log("that's one!");
+      .. else if (x == 2):                                      } else if (x === 2) {
+        say "that's two!"                                           console.log("that's two!");
+      .. else:                                                  } else {
+        say "that's somthin' else!"                                 console.log("that's somthin' else!");
+      end                                                       }
+    end                                                     }
 
     for ($ i = 0; i < nums["length"]; i++):                 for (var i = 0; i < nums.length; i++) {
       $ p = nums[i]                                             var p = nums[i];
-      only -> primes.push(p) if (p)                             if (p) { primes.push(p) }
+      if (p) -> primes.push(p)                                  if (p) { primes.push(p) }
     end                                                     }
 
     if (socket)                                             if (socket) {
