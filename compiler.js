@@ -16,7 +16,7 @@ Compiler.prototype.compile = function (argv) {
     }
 
     if (argv.t) {
-      logTokens(tokens)
+      this.logTokens(tokens)
       return
     }
     var program = parse(tokens)
@@ -47,3 +47,9 @@ Compiler.prototype.compile = function (argv) {
   })
 }
 
+Compiler.prototype.logTokens = function(tokens) {
+  var tokenIndex = 0
+  tokens.forEach(function (t) {
+      console.log(++tokenIndex + " - " + JSON.stringify(t))
+  })
+}

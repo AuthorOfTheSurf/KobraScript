@@ -27,13 +27,6 @@ if (noArgs) {
     error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks', { path: fileExtension })
     return
   }
-  var out = Compiler.compile()
+  var out = Compiler.compile(argv)
   return out
-}
-
-function logTokens(tokens) {
-  var tokenIndex = 0
-  tokens.forEach(function (t) {
-      console.log(++tokenIndex + " - " + JSON.stringify(t))
-  })
 }
