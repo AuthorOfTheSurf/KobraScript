@@ -2,13 +2,18 @@ var scan = require('./scanner')
 var parse = require('./parser')
 var error = require('./error')
 
-var Compiler = module.exports = function() {
+function Compiler() {
 
+}
+
+Compiler.New = function() {
+  return new Compiler()
 }
 
 Compiler.prototype.compile = function (argv) {
   // TODO: replace all direct console logging in
   // the scan callback to instead return strings
+  var self = this
 
   scan(argv._[0], function (tokens) {
     if (!error.ok) {
@@ -16,7 +21,7 @@ Compiler.prototype.compile = function (argv) {
     }
 
     if (argv.t) {
-      this.logTokens(tokens)
+      self.logTokens(tokens)
       return
     }
     var program = parse(tokens)
@@ -53,3 +58,5 @@ Compiler.prototype.logTokens = function(tokens) {
       console.log(++tokenIndex + " - " + JSON.stringify(t))
   })
 }
+
+module.exports = Compiler
