@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 var path = require('path')
 
-var scan          = require('./scanner')
-var parse         = require('./parser')
 var parseArgs = require('minimist')
 var opts = {
   boolean: ['t', 'a', 'o', 'i']
@@ -12,6 +10,7 @@ var noArgs = argv._.length === 0
 
 var currentDir    = path.dirname(argv._[0])
 var error = require('./error')
+var compile = require('./compiler').compile
 
 if (noArgs) {
   console.log([
@@ -29,31 +28,8 @@ if (noArgs) {
     error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks', { path: fileExtension })
     return
   }
-
-  scan(argv._[0], function (tokens) {
-    if (error.count > 0) { return }
-    if (argv.t) {
-      logTokens(tokens)
-      return
-    }
-    var program = parse(tokens, currentDir)
-    if (error.count > 0) { return }
-    if (argv.a) {
-      console.log(program.toString())
-      return
-    }
-    if (argv.o) {
-      program.optimize()
-    }
-    program.analyze()
-    if (error.count > 0) { return }
-    if (argv.i) {
-      program.showSemanticGraph()
-      return
-    }
-    var out = program.generateJavaScript()
-    console.log(out)
-  })
+  var out = Compiler.compile()
+  return out
 }
 
 function logTokens(tokens) {
