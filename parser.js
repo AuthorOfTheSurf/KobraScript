@@ -6,54 +6,51 @@
  *   var program = parse(tokens)
  */
 
-var scanner              = require('./scanner'),
-    error                = require('./error')
+var scanner              = require('./scanner')
+var error                = require('./error')
 
-var Program              = require('./entities/program'),
-    Block                = require('./entities/block'),
-    Type                 = require('./entities/type'),
-    FnLiteral            = require('./entities/fn-literal'),
-    ClosureLiteral       = require('./entities/closure-literal'),
-    Declaration          = require('./entities/declaration'),
-    Property             = require('./entities/property'),
-    ConditionalStatement = require('./entities/conditional-statement'),
-    OnlyIfStatement      = require('./entities/only-if-statement')
-    Conditional          = require('./entities/conditional'),
-    ForStatement         = require('./entities/for-statement'),
-    WhileStatement       = require('./entities/while-statement'),
-    SayStatement         = require('./entities/say-statement'),
-    ReturnStatement      = require('./entities/return-statement'),
-    LeaveStatement       = require('./entities/leave-statement'),
-    BreakStatement       = require('./entities/break-statement'),
-    ContinueStatement    = require('./entities/continue-statement')
-    Params               = require('./entities/params'),
-    UnaryExpression      = require('./entities/unary-expression'),
-    PostUnaryExpression  = require('./entities/post-unary-expression'),
-    BinaryExpression     = require('./entities/binary-expression'),
-    Name                 = require('./entities/name'),
-    IndexVar             = require('./entities/index-var'),
-    DottedVar            = require('./entities/dotted-var'),
-    Call                 = require('./entities/call'),
-    ArrayLiteral         = require('./entities/array-literal'),
-    ObjectLiteral        = require('./entities/object-literal'),
-    NumericLiteral       = require('./entities/numeric-literal'),
-    BooleanLiteral       = require('./entities/boolean-literal'),
-    StringLiteral        = require('./entities/string-literal'),
-    UndefinedLiteral     = require('./entities/undefined-literal'),
-    NullLiteral          = require('./entities/null-literal')
+var Program              = require('./entities/program')
+var Block                = require('./entities/block')
+var Type                 = require('./entities/type')
+var FnLiteral            = require('./entities/fn-literal')
+var ClosureLiteral       = require('./entities/closure-literal')
+var Declaration          = require('./entities/declaration')
+var Property             = require('./entities/property')
+var ConditionalStatement = require('./entities/conditional-statement')
+var OnlyIfStatement      = require('./entities/only-if-statement')
+var Conditional          = require('./entities/conditional')
+var ForStatement         = require('./entities/for-statement')
+var WhileStatement       = require('./entities/while-statement')
+var SayStatement         = require('./entities/say-statement')
+var ReturnStatement      = require('./entities/return-statement')
+var LeaveStatement       = require('./entities/leave-statement')
+var BreakStatement       = require('./entities/break-statement')
+var ContinueStatement    = require('./entities/continue-statement')
+var Params               = require('./entities/params')
+var UnaryExpression      = require('./entities/unary-expression')
+var PostUnaryExpression  = require('./entities/post-unary-expression')
+var BinaryExpression     = require('./entities/binary-expression')
+var Name                 = require('./entities/name')
+var IndexVar             = require('./entities/index-var')
+var DottedVar            = require('./entities/dotted-var')
+var Call                 = require('./entities/call')
+var ArrayLiteral         = require('./entities/array-literal')
+var ObjectLiteral        = require('./entities/object-literal')
+var NumericLiteral       = require('./entities/numeric-literal')
+var BooleanLiteral       = require('./entities/boolean-literal')
+var StringLiteral        = require('./entities/string-literal')
+var UndefinedLiteral     = require('./entities/undefined-literal')
+var NullLiteral          = require('./entities/null-literal')
 
 // Parser Globals
 var tokens
-var dirname
 
 // Used by multiple variable declaration
 var continuing = false
 
-module.exports = function (scanner_output, dir) {
-  tokens = scanner_output
-  dirname = dir
-  var program = parseProgram()
-  return program
+module.exports = function (lexographicTokens) {
+  tokens = lexographicTokens
+  return parseProgram()
 }
 
 function parseProgram() {
@@ -61,10 +58,10 @@ function parseProgram() {
     error('KobraScript programs may not be empty')
   }
 
-  var initialBlock = new Block(parseStatements())
+  var programBlock = new Block(parseStatements())
   match('EOF')
 
-  return new Program(initialBlock)
+  return new Program(programBlock)
 }
 
 function parseBlock() {

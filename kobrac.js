@@ -8,7 +8,6 @@ var opts = {
 var argv = parseArgs(process.argv.slice(2), opts)
 var noArgs = argv._.length === 0
 
-var currentDir    = path.dirname(argv._[0])
 var error = require('./error')
 var compile = require('./compiler').compile
 
