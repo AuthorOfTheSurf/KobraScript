@@ -11,7 +11,7 @@
   "main": "./kobrac.js",
   "bin": {
     "kobra": "./kobra",
-    "kobrac": "./kobrac.js"
+    "kobrac": "./kobra-cli.js"
   },
   "devDependencies": {
     "mocha": "latest",
