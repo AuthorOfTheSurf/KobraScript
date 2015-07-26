@@ -16,7 +16,7 @@ Compiler.prototype.compileAndOut = function (argv) {
   var self = this
 
   scan(argv._[0], function (tokens) {
-    if (!error.ok) {
+    if (error.count > 0) {
       return
     }
 
@@ -26,7 +26,7 @@ Compiler.prototype.compileAndOut = function (argv) {
     }
     var program = parse(tokens)
 
-    if (!error.ok) {
+    if (error.count > 0) {
       return
     }
 
@@ -40,7 +40,7 @@ Compiler.prototype.compileAndOut = function (argv) {
     }
     program.analyze()
 
-    if (!error.ok) {
+    if (error.count > 0) {
       return
     }
 
@@ -48,6 +48,7 @@ Compiler.prototype.compileAndOut = function (argv) {
       program.showSemanticGraph()
       return
     }
+
     console.log(program.generateJavaScript())
   })
 }
