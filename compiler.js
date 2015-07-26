@@ -10,7 +10,7 @@ Compiler.New = function() {
   return new Compiler()
 }
 
-Compiler.prototype.compile = function (argv) {
+Compiler.prototype.compileAndOut = function (argv) {
   // TODO: replace all direct console logging in
   // the scan callback to instead return strings
   var self = this
@@ -48,7 +48,7 @@ Compiler.prototype.compile = function (argv) {
       program.showSemanticGraph()
       return
     }
-    return program.generateJavaScript()
+    console.log(program.generateJavaScript())
   })
 }
 

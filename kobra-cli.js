@@ -27,6 +27,5 @@ if (noArgs) {
     error('Invalid extension for ' + path.basename(argv._[0]) + ', expected .ks', { path: fileExtension })
     return
   }
-  var out = Compiler.compile(argv)
-  return out
+  Compiler.compileAndOut(argv)
 }
