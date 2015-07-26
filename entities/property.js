@@ -1,20 +1,20 @@
-function Property(name, initializer) {
-  this.name = name
-  this.initializer = initializer
+function Property(key, value) {
+  this.key = key
+  this.value = value
 }
 
 Property.prototype.toString = function () {
-  return this.name + ': ' + this.initializer 
+  return this.key + ': ' + this.value 
 }
 
 Property.prototype.analyze = function (context) {
-  context.addVariable(this.name, this)
+  context.addVariable(this.key, this)
 }
 
 Property.prototype.generateJavaScript = function (state) {
-  var name = this.name.generateJavaScript(state)
-  var initializer = this.initializer.generateJavaScript(state)
-  return name + ': ' + initializer
+  var key = this.key.generateJavaScript(state)
+  var value = this.value.generateJavaScript(state)
+  return key + ': ' + value
 }
 
 module.exports = Property

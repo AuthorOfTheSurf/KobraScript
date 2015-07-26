@@ -150,13 +150,13 @@ function parseDeclaration() {
 }
 
 function parsePropertyStatement() {
-  var name = parseName()
+  var key = parseExpression()
   match(':')
   if (at(',')) {
-    return new Property(name, new UndefinedLiteral())
+    return new Property(key, new UndefinedLiteral())
   } else {
-    var initializer = parseExpression()
-    return new Property(name, initializer)
+    var value = parseExpression()
+    return new Property(key, value)
   }
 }
 
@@ -296,7 +296,7 @@ function parseForStatement() {
   match(';')
   var after = []
   after.push(parseExpression())
-  
+
   while (at(',')) {
     match()
     after.push(parseExpression())
