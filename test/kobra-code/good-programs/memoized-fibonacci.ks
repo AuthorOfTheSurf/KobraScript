@@ -8,7 +8,7 @@ $ fibonacci = close{}:
     $ value
     .. cacheValue = cache[n]
 
-    if (cacheValue):
+    if (cacheValue != undefined):
       value = cacheValue
     .. else:
       value = fib(n - 1) + fib(n - 2)
