@@ -276,6 +276,7 @@ function parseForStatement() {
   match('for')
   match('(')
   var assignments = []
+
   if (at('$')) {
     assignments.push(parseDeclaration())
     while (at([',','..'])) {
@@ -295,6 +296,7 @@ function parseForStatement() {
   match(';')
   var after = []
   after.push(parseExpression())
+  
   while (at(',')) {
     match()
     after.push(parseExpression())

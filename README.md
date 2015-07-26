@@ -177,7 +177,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.2.1.0
+    * KobraScript Syntax v.2.1.9
     *
     */
 
@@ -199,7 +199,7 @@ Arrays in KobraScript follow normal scripting language convention.
                      ('else'  '('  EXP  ')'  BLOCK)?
                 |    'only'  BLOCK  'if'  '('  EXP  ')'
                      ('else'  BLOCK)?
-                |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
+                |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK
                 |    'while'  '('  EXP  ')'  BLOCK
                 |    'break'
                 |    'continue'
@@ -233,6 +233,9 @@ Arrays in KobraScript follow normal scripting language convention.
         ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
         OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
         PROP    ::=  ID  ':'  EXP
+                |    STRLIT ':' EXP
+                |    NUMLIT ':' EXP
+                |    BOOLIT ':' EXP
 
 ### Microsyntax
 
