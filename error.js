@@ -26,10 +26,6 @@ function error(message, location) {
   error.count++
 }
 
-error.ok = function() {
-  return error.count == 0
-}
-
 error.quiet = false
 
 error.count = 0
