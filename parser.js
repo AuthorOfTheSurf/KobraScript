@@ -515,9 +515,9 @@ function parseExp9() {
 }
 
 function parseExpRoot() {
-  if (at('undefined')) {
+  if (at('UNDEFINEDLIT')) {
     return new UndefinedLiteral(match())
-  } else if (at('null')) {
+  } else if (at('NULLLIT')) {
     return new NullLiteral(match())
   } else if (at('BOOLIT')) {
     return new BooleanLiteral(match())
