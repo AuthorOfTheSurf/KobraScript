@@ -149,17 +149,6 @@ function parseDeclaration() {
   }
 }
 
-function parsePropertyStatement() {
-  var key = parseExpression()
-  match(':')
-  if (at(',')) {
-    return new Property(key, new UndefinedLiteral())
-  } else {
-    var value = parseExpression()
-    return new Property(key, value)
-  }
-}
-
 function parseName () {
   var name = match('ID')
   if (name) {
@@ -249,12 +238,29 @@ function parseArrayLiteral() {
   return new ArrayLiteral(elements)
 }
 
+function parsePropertyStatement() {
+  if (!at(['ID','STRLIT','NUMLIT','BOOLIT'])) {
+    var kind = tokens[0].kind
+    error(kind + ' is not a valid kind for a property key', tokens[0])
+  }
+  var key = parseExpression()
+  match(':')
+  if (at(',')) {
+    return new Property(key, new UndefinedLiteral())
+  } else {
+    var value = parseExpression()
+    return new Property(key, value)
+  }
+}
+
 function parseObjectLiteral() {
   var properties = []
   match('{')
-  if (at('ID')) {
+
+  if (!at('}')) {
     properties.push(parsePropertyStatement())
   }
+
   while (at(',')) {
     match()
     properties.push(parsePropertyStatement())
