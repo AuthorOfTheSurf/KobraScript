@@ -9,8 +9,9 @@ ObjectLiteral.prototype.toString = function () {
 }
 
 ObjectLiteral.prototype.analyze = function (context) {
-  var localContext = context.createChildContext()
   this.type = Type.OBJLIT
+  var localContext = context.createChildContext()
+  
   this.properties.forEach(function (p) {
   	p.analyze(localContext)
   })
