@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 var path = require('path')
 
-var parseArgs = require('minimist')
-var opts = {
+var argv = require('minimist')(process.argv.slice(2), {
   boolean: ['t', 'a', 'o', 'i']
-}
-var argv = parseArgs(process.argv.slice(2), opts)
+})
 var noArgs = argv._.length === 0
 
 var error = require('./error')

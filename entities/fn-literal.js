@@ -8,6 +8,7 @@ function FnLiteral(fntype, name, params, body) {
 }
 
 FnLiteral.prototype.toString = function () {
+  this.type = Type.OBJLIT
   var lexeme = this.fntype.lexeme
   var name = (this.name) ? this.name.name : ''
   var params = this.params.toString()
