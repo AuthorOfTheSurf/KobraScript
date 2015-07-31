@@ -1,7 +1,10 @@
+var Type = require('./type')
+
 function ClosureLiteral(args, body) {
   this.args = args // will change when `as` is added in
   this.body = body
   this.body.subroutine = true
+  this.type = Type.CLOSURE
 }
 
 ClosureLiteral.prototype.toString = function() {
