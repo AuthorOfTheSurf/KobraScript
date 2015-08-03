@@ -92,7 +92,7 @@ function parseStatements() {
 function shouldParseStatement() {
   var statementStartingToken = [
     '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'close',
-    '++', '--', 'return', 'leave', 'say', 'loge', 'break', 'continue'
+    '!', '++', '--', 'return', 'leave', 'say', 'loge', 'break', 'continue'
   ]
   if (!continuing && at('..')) {
     return false
