@@ -34,7 +34,7 @@ function scan(line, linenumber, tokens) {
   var start
   var pos = 0
   var threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/
-  var twoCharTokens = /<=|==|>=|\!=|\*\*|~=|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|\%=|-=|\+=|\->/
+  var twoCharTokens = /<=|==|>=|\!=|\*\*|~=|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|\%=|-=|\+=|\->|is/
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",

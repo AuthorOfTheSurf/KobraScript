@@ -1,0 +1,4 @@
+$ zen = true
+
+!!!zen
+!!!!!!!!zen

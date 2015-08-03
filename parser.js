@@ -92,7 +92,7 @@ function parseStatements() {
 function shouldParseStatement() {
   var statementStartingToken = [
     '$', '..', ',', 'ID', 'for', 'while', 'if', 'only', 'fn', 'close',
-    '++', '--', 'return', 'leave', 'say', 'loge', 'break', 'continue'
+    '!', '++', '--', 'return', 'leave', 'say', 'loge', 'break', 'continue'
   ]
   if (!continuing && at('..')) {
     return false
@@ -397,11 +397,7 @@ function parseExpression() {
 }
 
 function parseExp0() {
-  if (at(['!','++','--'])) {
-    var left = parseExp7()
-  } else {
-    var left = parseExp1()
-  }
+  var left = parseExp1()
   while (at('||')) {
     var op = match()
     var right = parseExp0()
@@ -490,7 +486,7 @@ function parseExp7() {
 function parseExp8() {
   if (at(['!','++','--','new'])) {
     var op = match()
-    var operand = parseExp9()
+    var operand = parseExp8()
     var left = new UnaryExpression(op, operand)
   } else {
     left = parseExp9()
