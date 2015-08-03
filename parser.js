@@ -397,11 +397,7 @@ function parseExpression() {
 }
 
 function parseExp0() {
-  if (at(['!','++','--'])) {
-    var left = parseExp7()
-  } else {
-    var left = parseExp1()
-  }
+  var left = parseExp1()
   while (at('||')) {
     var op = match()
     var right = parseExp0()
