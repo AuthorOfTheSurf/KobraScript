@@ -486,7 +486,7 @@ function parseExp7() {
 function parseExp8() {
   if (at(['!','++','--','new'])) {
     var op = match()
-    var operand = parseExp9()
+    var operand = parseExp8()
     var left = new UnaryExpression(op, operand)
   } else {
     left = parseExp9()
