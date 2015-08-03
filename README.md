@@ -177,7 +177,7 @@ Arrays in KobraScript follow normal scripting language convention.
 ### Macrosyntax
     **/
     * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.2.1.9
+    * KobraScript Syntax v.2.2.0
     *
     */
 
@@ -216,7 +216,7 @@ Arrays in KobraScript follow normal scripting language convention.
         EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
         EXP0    ::=  EXP1 (('||' | '#') EXP1)*
         EXP1    ::=  EXP2 ('&&' EXP2)*
-        EXP2    ::=  EXP3 ('==' | '~=' | '!='  EXP3)?
+        EXP2    ::=  EXP3 (('==' | '~=' | '!=' | 'is')  EXP3)?
         EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>')  EXP4)?
         EXP4    ::=  EXP5 ([+-] EXP5)*
         EXP5    ::=  EXP6 ([%*/] EXP6)*
