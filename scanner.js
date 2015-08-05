@@ -34,7 +34,7 @@ function scan(line, linenumber, tokens) {
   var start
   var pos = 0
   var threeCharTokens = /\-\*\*|:=:|\.\.\.|\-\-\-|\!\-\-/
-  var twoCharTokens = /<=|==|>=|\!=|\*\*|~=|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|\%=|-=|\+=|\->/
+  var twoCharTokens = /<=|==|>=|\!=|\*\*|~=|&&|\|\||~\?|~\!|\.\.|\+\+|\-\-|\*=|\/=|\%=|-=|\+=|\->|is/
   var oneCharTokens = /[\!\+\-\%\?\*\/\(\),:;=<>\|\$\{\}\#\.\[\]@]/
   var definedTokens = new RegExp([
     "^(?:",
@@ -46,7 +46,6 @@ function scan(line, linenumber, tokens) {
     "var|void|with|instanceof|function|try|catch|finally|throw|switch",
     ")$"].join(''))
   var numericLit = /(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?/
-  var booleanLit = /^(?:true|false)$/
   var oneCharEscapeChars = /[bfnrtv0\"\']/
   var controlEscapeChars = /c[a-zA-z]/
   var uniEscapeChars = /u[a-fA-F0-9]{4}/
@@ -67,6 +66,10 @@ function scan(line, linenumber, tokens) {
         col: start + 1
       }))
     }
+  }
+  var at = function(lexeme) {
+    var chunk = line.slice(pos, pos + lexeme.length)
+    return chunk === lexeme
   }
 
   var skipSpaces = function () {
@@ -90,9 +93,11 @@ function scan(line, linenumber, tokens) {
       skipSpaces()
     }
 
-    //  Capture for Boolean literals
-    var trueTest = line.slice(pos, pos + 4)
-    var falseTest = line.slice(pos, pos + 5)
+    // Check for literals that start at this position
+    var atTrue = at('true')
+    var atFalse = at('false')
+    var atNull = at('null')
+    var atUndefined = at('undefined')
 
     // Two-character tokens
     if (twoCharTokens.test(line.substring(pos, pos+2))) {
@@ -185,15 +190,26 @@ function scan(line, linenumber, tokens) {
       emit(line[pos++])
     }
 
-    // Boolean literals
-    else if (booleanLit.test(trueTest) || booleanLit.test(falseTest)) {
-      if (booleanLit.test(trueTest)) {
-        emit('BOOLIT', trueTest)
-        pos += 4
-      } else {
-        emit('BOOLIT', falseTest)
-        pos += 5
-      }
+    // Literals
+    else if (atTrue) {
+      var lexeme = 'true'
+      emit('BOOLIT', lexeme)
+      pos += lexeme.length
+    }
+    else if (atFalse) {
+      var lexeme = 'false'
+      emit('BOOLIT', lexeme)
+      pos += lexeme.length
+    }
+    else if (atNull) {
+      var lexeme = 'null'
+      emit('NULLLIT', lexeme)
+      pos += lexeme.length
+    }
+    else if (atUndefined) {
+      var lexeme = 'undefined'
+      emit('UNDEFINEDLIT', lexeme)
+      pos += lexeme.length
     }
 
     // Reserved words or identifiers

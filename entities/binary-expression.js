@@ -37,7 +37,7 @@ BinaryExpression.prototype.generateJavaScript = function (state) {
   } else if (lexeme === '-**') {
     js = util.format('((1.0)/Math.pow(%s,%s))', left, right)
   } else if (lexeme === 'is') {
-    js = util.format('(typeof %s === typeof %s)', left, right)
+    js = util.format('(typeof %s === %s)', left, right)
   } else if (lexeme === ':=:') {
     // Returns the value `a` in `a :=: b`, the new value for `b`
     js = util.format('%s = [%s, %s = %s][0]', right, left, left, right)

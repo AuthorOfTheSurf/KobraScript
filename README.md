@@ -1,3 +1,4 @@
+
 [![KobraScript Logo](https://raw.githubusercontent.com/AuthorOfTheSurf/KobraScript/master/ks-logo.jpg)](https://github.com/AuthorOfTheSurf/KobraScript)
 ![Travis.CI build status](https://travis-ci.org/AuthorOfTheSurf/KobraScript.svg?branch=development)
 
@@ -175,71 +176,71 @@ Arrays in KobraScript follow normal scripting language convention.
     $ enigma = [{code: '8878'}, [], false]                  var enigma = [{code: '8878'}, [], false];
 
 ### Macrosyntax
-    **/
-    * This is regarded as the the most up to date specification of KS
-    * KobraScript Syntax v.2.1.0
-    *
-    */
 
-    ### Macrosyntax
+This is regarded as the the most up-to-date specification of KS.
+*Except for the compiler itself of course.*
 
-        UNIT    ::=  PROGRAM
+KobraScript Syntax `v.2.2.0`
 
-        PROGRAM ::=  STMT+  (as BLOCK)
+    UNIT    ::=  PROGRAM
 
-        BLOCK   ::=  FREEBLK
-                |    SINGLE
-        FREEBLK ::=  ':'  STMT+  ('end' | '..')
-        SINGLE  ::=  '->'  STMT
+    PROGRAM ::=  STMT+  (as BLOCK)
 
-        STMT    ::=  VARDEC
-                |    FNDEC
-                |    'if'  '('  EXP  ')'  BLOCK
-                     ('else'  'if'  '('  EXP  ')'  BLOCK)*
-                     ('else'  '('  EXP  ')'  BLOCK)?
-                |    'only'  BLOCK  'if'  '('  EXP  ')'
-                     ('else'  BLOCK)?
-                |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  OPENBLK  'end'
-                |    'while'  '('  EXP  ')'  BLOCK
-                |    'break'
-                |    'continue'
-                |    'return'  EXP
-                |    'leave'
-                |    EXP
+    BLOCK   ::=  FREEBLK
+            |    SINGLE
+    FREEBLK ::=  ':'  STMT+  ('end' | '..')
+    SINGLE  ::=  '->'  STMT
 
-        VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
-        FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
+    STMT    ::=  VARDEC
+            |    FNDEC
+            |    'if'  '('  EXP  ')'  BLOCK
+                 ('else'  'if'  '('  EXP  ')'  BLOCK)*
+                 ('else'  '('  EXP  ')'  BLOCK)?
+            |    'only'  BLOCK  'if'  '('  EXP  ')'
+                 ('else'  BLOCK)?
+            |    'for'  '('  (VARDEC | ASSIGN (','))?  ';'  EXP  ';'  INCREMENT  ')'  BLOCK
+            |    'while'  '('  EXP  ')'  BLOCK
+            |    'break'
+            |    'continue'
+            |    'return'  EXP
+            |    'leave'
+            |    EXP
 
+    VARDEC  ::=  '$'  ID  '='  EXP  ((',' | '..')  ID  '='  EXP)*
+    FNDEC   ::=  'fn'  ID  PARAMS  BLOCK
 
-        PARAMS  ::=  '('  ID  (','  ID)*  ')'
+    PARAMS  ::=  '('  ID  (','  ID)*  ')'
 
-        EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
-        EXP0    ::=  EXP1 (('||' | '#') EXP1)*
-        EXP1    ::=  EXP2 ('&&' EXP2)*
-        EXP2    ::=  EXP3 ('==' | '~=' | '!='  EXP3)?
-        EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>')  EXP4)?
-        EXP4    ::=  EXP5 ([+-] EXP5)*
-        EXP5    ::=  EXP6 ([%*/] EXP6)*
-        EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
-        EXP7    ::=  ('~!' | '~?')?  EXP8
-        EXP8    ::=  ('!' | '++' | '--' | 'new')?  EXP9
-        EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
-        EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
-                |    | ID | CLOSLIT | FNLIT | ARRAY | OBJECT
-                |    '(' EXP ')'
+    EXP     ::=  EXP0 (('=' | '+=' | '-=' | '*=' | '/=' | '%=' | ':=:') EXP0)?
+    EXP0    ::=  EXP1 (('||' | '#') EXP1)*
+    EXP1    ::=  EXP2 ('&&' EXP2)*
+    EXP2    ::=  EXP3 (('==' | '~=' | '!=' | 'is')  EXP3)?
+    EXP3    ::=  EXP4 (('<' | '<=' | '>=' | '>')  EXP4)?
+    EXP4    ::=  EXP5 ([+-] EXP5)*
+    EXP5    ::=  EXP6 ([%*/] EXP6)*
+    EXP6    ::=  EXP7 (('**' | '-**')  EXP7)
+    EXP7    ::=  ('~!' | '~?')?  EXP8
+    EXP8    ::=  ('!' | '++' | '--' | 'new')?  EXP9
+    EXP9    ::=  EXPRT ('++' | '--' | '.' ID | '[' EXP ']' | '(' EXP (',' EXP)* ')')*
+    EXPRT   ::=  UNDEFLIT | NULLLIT | BOOLIT | STRLIT | NUMLIT
+            |    | ID | CLOSLIT | FNLIT | ARRAY | OBJECT
+            |    '(' EXP ')'
 
-        FNLIT   ::=  'fn'  (ID)? PARAMS  BLOCK
-        CLOSLIT ::=  'close'  '{'  (ID  (','  ID)*)?  '}'  BLOCK
-        ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
-        OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
-        PROP    ::=  ID  ':'  EXP
+    FNLIT   ::=  'fn'  (ID)? PARAMS  BLOCK
+    CLOSLIT ::=  'close'  '{'  (ID  (','  ID)*)?  '}'  BLOCK
+    ARRAYLIT::=  '['  (EXP  (','  EXP)*)?  ']'
+    OBJLIT  ::=  '{'  (PROP  (','  PROP)*)?  '}'
+    PROP    ::=  ID  ':'  EXP
+            |    STRLIT ':' EXP
+            |    NUMLIT ':' EXP
+            |    BOOLIT ':' EXP
 
 ### Microsyntax
 
-        NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
-        STRLIT  ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
-        BOOLIT  ::=  'true' | 'false'
-        UNDEFLIT::=  'undefined'
-        NULLLIT ::=  'null'
-        ID      ::=  [_a-zA-Z]\w*
-        COMMENT ::=  '//'  TEXT  '\n'
+    NUMLIT  ::=  -?(?:[1-9]\d*|0)(?:.\d+)?(?:[eE][+-]?\d+)?
+    STRLIT  ::=  (\"|\')(\\[bfnrtv0\"\']|\\c[a-zA-z]|\\u[a-fA-F0-9]{4}|\\x[a-fA-F0-9]{2}|.)*\1
+    BOOLIT  ::=  'true' | 'false'
+    UNDEFLIT::=  'undefined'
+    NULLLIT ::=  'null'
+    ID      ::=  [_a-zA-Z]\w*
+    COMMENT ::=  '//'  TEXT  '\n'
