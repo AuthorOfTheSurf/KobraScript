@@ -19,6 +19,18 @@ You can also see the transpiled version of your code by running `kobrac`:
 
 To see a list of commands available, type `kobra` or `kobrac` with no arguments.
 
+#### Program 1: A simple server 
+
+    $  express = require('express')                         var express = require('express');
+    .. app = express()                                      var app = express();
+
+    app.get('/', fn (req, res):                             app.get('/', function(req, res) {
+      res.send('hello world')                                   res.send('hello world');
+    ..)                                                     });
+
+    app.listen(3000)                                        app.listen(3000);
+
+KobraScript mirrors variable names when transpiling into JavaScript. This lets us run a [simple server](http://expressjs.com/en/4x/api.html#app) program using the popular Express Framework.
 
 #### Kobra Demands Respect (Hello, world!)
 Say my name...
