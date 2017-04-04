@@ -23,7 +23,7 @@ module.exports = function (filename, callback) {
     scan(stream.read(), ++linenumber, tokens)
   })
   stream.once('end', function () {
-    tokens.push({kind: 'EOF', lexeme: 'EOF'})
+    tokens.push(new Token({ kind: "EOF", lexeme: "EOF" }));
     callback(tokens)
   })
 }

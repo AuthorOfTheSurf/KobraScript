@@ -1,8 +1,8 @@
-function Token(obj) {
-  this.kind = obj.kind
-  this.lexeme = obj.lexeme
-  this.line = obj.line
-  this.col = obj.col
-}
+const Token = function(data) {
+  this.kind = data.kind;
+  this.lexeme = data.lexeme;
+  this.line = data.line;
+  this.col = data.col;
+};
 
-module.exports = Token
+module.exports = Token;

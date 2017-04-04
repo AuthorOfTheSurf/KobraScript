@@ -1,0 +1,19 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+  },
+  "plugins": ["mocha"],
+  "rules": {
+    "mocha/no-exclusive-tests": "error",
+    "mocha/no-skipped-tests": "error",
+    "mocha/no-global-tests": "error",
+    "mocha/no-sibling-hooks": "error",
+    "mocha/no-hooks-for-single-case": "error",
+    "mocha/no-top-level-hooks": "error",
+    "mocha/no-identical-title": "error",
+    "mocha/max-top-level-suites": "error",
+    "mocha/no-nested-tests": "error"
+  },
+}
