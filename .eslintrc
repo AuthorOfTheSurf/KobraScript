@@ -3,6 +3,9 @@
   "env": {
     "node": true
   },
+  "globals": {
+    "appRequire": true,
+  },
   "rules": {
     "indent": [ "error", 2]
   }

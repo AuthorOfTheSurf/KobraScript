@@ -3,6 +3,7 @@
   "version": "2.2.1",
   "description": "A compiler for the KobraScript language",
   "dependencies": {
+    "apprequire": "^1.0.1",
     "byline": "latest",
     "hashmap": "latest",
     "js-beautify": "^1.5.10",

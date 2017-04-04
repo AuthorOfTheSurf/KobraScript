@@ -43,6 +43,10 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
+apprequire@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/apprequire/-/apprequire-1.0.1.tgz#6f6f07b3d459de251c7c028d1bf8eeffe651489f"
+
 argparse@^1.0.7:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
