@@ -14,6 +14,10 @@
     "kobrac": "./kobra-cli.js"
   },
   "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-config-videoamp": "^2.1.0",
+    "eslint-plugin-import": "^2.2.0",
     "mocha": "latest",
     "should": "latest"
   },
